@@ -85,4 +85,59 @@ Enqueue jobs with:
 ```ruby
 ExampleJob.perform_later(args)
 ```
-# Practify
+
+## Docker Registry
+
+A local Docker registry is configured for the Practify application.
+
+### Starting the Registry
+
+```bash
+./bin/start-registry
+```
+
+Or using docker-compose directly:
+```bash
+docker-compose -f docker-compose.registry.yml up -d
+```
+
+The registry will be available at `localhost:5555`.
+
+### Stopping the Registry
+
+```bash
+./bin/stop-registry
+```
+
+Or:
+```bash
+docker-compose -f docker-compose.registry.yml down
+```
+
+### Configuring Docker (if needed)
+
+If you encounter issues pushing to the local registry, you may need to configure Docker to allow insecure registries:
+
+**macOS (Docker Desktop):**
+1. Open Docker Desktop
+2. Go to Settings → Docker Engine
+3. Add to the JSON configuration:
+   ```json
+   {
+     "insecure-registries": ["localhost:5555"]
+   }
+   ```
+4. Click "Apply & Restart"
+
+**Linux:**
+Edit `/etc/docker/daemon.json`:
+```json
+{
+  "insecure-registries": ["localhost:5555"]
+}
+```
+Then restart Docker: `sudo systemctl restart docker`
+
+### Using the Registry
+
+The Kamal configuration is set to use `localhost:5555/practify` as the image name. When you deploy with Kamal, it will automatically push images to this registry.

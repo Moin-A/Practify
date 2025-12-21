@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Start the local Docker registry for Practify
+
+set -e
+
+echo "Starting Practify Docker Registry..."
+docker-compose -f docker-compose.registry.yml up -d
+
+echo "Registry started at localhost:5555"
+echo ""
+echo "To view logs: docker-compose -f docker-compose.registry.yml logs -f"
+echo "To stop: docker-compose -f docker-compose.registry.yml down"
+echo ""
+echo "Make sure to configure Docker to allow insecure registries if needed:"
+echo "  macOS: Docker Desktop -> Settings -> Docker Engine -> Add 'localhost:5555' to insecure-registries"
+
