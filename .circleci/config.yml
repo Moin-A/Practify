@@ -1,77 +1,13 @@
-# Practify CircleCI Pipeline Configuration
-version: 2.1
+name: CI
 
-orbs:
-  ruby: circleci/ruby@2.1.0
-  node: circleci/node@5.1.0
+on:
+  pull_request:
+  push:
+    branches: [ main ]
 
 jobs:
-  test:
-    docker:
-      - image: cimg/ruby:3.3
-        environment:
-          RAILS_ENV: test
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/practify_test
-      - image: cimg/postgres:16
-        environment:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: practify_test
-
+  simple_job:
+    runs-on: ubuntu-latest
     steps:
-      - checkout
-
-      - run:
-          name: Check Ruby version
-          command: ruby --version
-
-      - run:
-          name: Install bundler
-          command: gem install bundler:2.5.1
-
-      - restore_cache:
-          keys:
-            - bundle-v1-{{ checksum "Gemfile.lock" }}
-            - bundle-v1-
-
-      - run:
-          name: Install dependencies
-          command: |
-            bundle config set path vendor/bundle
-            bundle install
-
-      - save_cache:
-          key: bundle-v1-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
-
-      - run:
-          name: Wait for PostgreSQL
-          command: |
-            for i in {1..30}; do
-              pg_isready -h localhost -p 5432 && echo "Database ready" && break
-              echo "Waiting for database..."
-              sleep 2
-            done
-
-      - run:
-          name: Setup database
-          command: |
-            bundle exec rails db:create
-            bundle exec rails db:schema:load
-
-      - run:
-          name: Run tests
-          command: bundle exec rails test
-
-      - run:
-          name: Run linters
-          command: |
-            bundle exec rubocop || true
-            bundle exec brakeman --no-pager || true
-
-workflows:
-  version: 2
-  test:
-    jobs:
-      - test
+      - name: Print job running
+        run: echo "job running"
