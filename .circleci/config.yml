@@ -1,13 +1,16 @@
-name: CI
-
-on:
-  pull_request:
-  push:
-    branches: [ main ]
+version: 2.1
 
 jobs:
-  simple_job:
-    runs-on: ubuntu-latest
+  job_running:
+    docker:
+      - image: cimg/base:stable
     steps:
-      - name: Print job running
-        run: echo "job running"
+      - checkout
+      - run:
+          name: Print job running
+          command: echo "job running"
+
+workflows:
+  main:
+    jobs:
+      - job_running
