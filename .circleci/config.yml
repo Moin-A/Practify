@@ -1,0 +1,89 @@
+version: 2.1
+
+# CircleCI configuration for Practify Rails app
+# Supports both cloud and self-hosted (local) runners
+
+orbs:
+  ruby: circleci/ruby@2.1.0
+  postgres: circleci/postgres@2.0.0
+  node: circleci/node@5.1.0
+
+jobs:
+  test:
+    # Using self-hosted runner
+    # Update resource_class with your namespace and resource class from CircleCI
+    # Format: self-hosted/<namespace>/<resource-class>
+    executor:
+      name: runner
+      resource_class: self-hosted/your-namespace/your-resource-class
+    
+    # Note: When using runner executor, Docker services are handled differently
+    # You may need to start PostgreSQL and Redis manually or use docker-compose
+    # For now, we'll use the runner's native environment
+    # docker:
+    steps:
+      - checkout
+      - run:
+          name: Start test services (PostgreSQL & Redis)
+          command: |
+            docker-compose -f docker-compose.test.yml up -d
+            sleep 5  # Wait for services to be ready
+      - run:
+          name: Check Ruby version
+          command: ruby --version
+      - run:
+          name: Install dependencies
+          command: |
+            bundle install --path vendor/bundle
+      - run:
+          name: Setup database
+          command: |
+            bundle exec rails db:create
+            bundle exec rails db:schema:load
+      - run:
+          name: Run tests
+          command: |
+            bundle exec rails test
+      - run:
+          name: Run linters
+          command: |
+            bundle exec rubocop || true
+            bundle exec brakeman --no-pager || true
+      - run:
+          name: Stop test services
+          command: |
+            docker-compose -f docker-compose.test.yml down
+
+  build-docker:
+    # Using self-hosted runner for Docker builds
+    executor:
+      name: runner
+      resource_class: self-hosted/your-namespace/your-resource-class
+    steps:
+      - checkout
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t moindev/practify:latest .
+      - run:
+          name: Test Docker image
+          command: |
+            docker run --rm moindev/practify:latest bundle exec rails --version
+      - run:
+          name: Push to Docker Hub
+          command: |
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            docker push moindev/practify:latest
+
+workflows:
+  version: 2
+  test-and-build:
+    jobs:
+      - test
+      - build-docker:
+          requires:
+            - test
+          filters:
+            branches:
+              only: main
+
