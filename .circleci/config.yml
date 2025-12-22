@@ -52,6 +52,12 @@ jobs:
       
       
       - run:
+          name: Install Kamal and dependencies
+          command: |
+            gem install kamal
+            kamal version
+      
+      - run:
           name: Install sshpass and setup SSH keys
           command: |
             apk add --no-cache openssh-client sshpass
