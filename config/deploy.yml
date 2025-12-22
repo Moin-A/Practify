@@ -27,13 +27,11 @@ registry:
   password:
     - KAMAL_REGISTRY_PASSWORD
 
-# Configure builder setup.
-builder:
-  arch: arm64
-  driver: docker
-  # Pass in additional build args needed for your Dockerfile.
-  # args:
-  #   RUBY_VERSION: <%= ENV["RBENV_VERSION"] || ENV["rvm_ruby_string"] || "#{RUBY_ENGINE}-#{RUBY_ENGINE_VERSION}" %>
+# Builder is disabled - images are built by CircleCI and pushed to Docker Hub
+# Kamal will pull the pre-built image from the registry
+# builder:
+#   arch: arm64
+#   driver: docker
 
 # Inject ENV variables into containers (secrets come from .kamal/secrets).
 env:
