@@ -54,7 +54,7 @@ jobs:
       - run:
           name: Install sshpass and setup SSH keys
           command: |
-            apt-get update && apt-get install -y sshpass
+            apk add --no-cache openssh-client sshpass
             mkdir -p ~/.ssh
             chmod 700 ~/.ssh
             # Generate SSH key pair
