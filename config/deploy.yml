@@ -26,11 +26,11 @@ proxy:
 
 # Credentials for your image host.
 # Using Docker Hub (docker.io) - no server specification needed
-# registry:
-#   server: docker.io
-#   username: moindev
-#   password:
-#     - KAMAL_REGISTRY_PASSWORD
+registry:
+  server: docker.io
+  username: moindev
+  password:
+    - KAMAL_REGISTRY_PASSWORD
 
 # Configure builder setup.
 builder:
