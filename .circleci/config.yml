@@ -56,6 +56,11 @@ jobs:
           command: |
             apk add --no-cache build-base gcc make musl-dev
             gem install kamal
+            # Add gem bin directory to PATH and persist it
+            GEM_BIN_DIR=$(gem env gemdir)/bin
+            export PATH="$PATH:$GEM_BIN_DIR"
+            echo "export PATH=\"\$PATH:$GEM_BIN_DIR\"" >> $BASH_ENV
+            # Verify kamal is accessible
             kamal version
             # Clean up build dependencies to reduce image size
             apk del build-base gcc make musl-dev
@@ -81,11 +86,13 @@ jobs:
       - run:
           name: Boot PostgreSQL accessory
           command: |
+            source $BASH_ENV
             kamal accessory boot db
       
       - run:
           name: Boot Redis accessory
           command: |
+            source $BASH_ENV
             kamal accessory boot redis
 
 workflows:
