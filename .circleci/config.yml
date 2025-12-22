@@ -78,13 +78,11 @@ jobs:
       - run:
           name: Boot PostgreSQL accessory
           command: |
-            source $BASH_ENV
             kamal accessory boot db
       
       - run:
           name: Boot Redis accessory
           command: |
-            source $BASH_ENV
             kamal accessory boot redis
 
 workflows:
