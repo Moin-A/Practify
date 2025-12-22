@@ -4,15 +4,23 @@ version: 2.1
 executors:
   docker-publisher:
     docker:
-      - image: kamal/simple-ruby-docker
-
+      - image: docker:dind
+    environment:
+      DOCKER_TLS_CERTDIR: ""
+    privileged: true
+  
 jobs:
   build-and-push:
     executor: docker-publisher
     steps:
       - checkout
       
-      - setup_remote_docker
+      - run:
+          name: Start Docker daemon
+          command: |
+            dockerd-entrypoint.sh &
+            sleep 5
+            docker info
       
       - run:
           name: Set environment variables
@@ -44,7 +52,9 @@ jobs:
             echo "Successfully pushed ${IMAGE_NAME}:${IMAGE_TAG} and ${IMAGE_NAME}:latest"
 
   deploy-accessories:
-    executor: docker-publisher
+    executor:
+      docker:
+        - image: kamal/simple-ruby-docker
     steps:
       - checkout
       
