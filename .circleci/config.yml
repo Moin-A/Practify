@@ -1,16 +1,50 @@
 version: 2.1
 
-jobs:
-  job_running:
+# Define Docker executor for building images
+executors:
+  docker-publisher:
     docker:
       - image: cimg/base:stable
+
+jobs:
+  build-and-push:
+    executor: docker-publisher
     steps:
       - checkout
+      
+      - setup_remote_docker:
+          version: 20.10.14
+      
       - run:
-          name: Print job running
-          command: echo "job running"
+          name: Set environment variables
+          command: |
+            export IMAGE_NAME="moindev/practify"
+            export IMAGE_TAG="${CIRCLE_SHA1:0:7}"
+            echo "Building image: ${IMAGE_NAME}:${IMAGE_TAG}"
+            echo "IMAGE_NAME=${IMAGE_NAME}" >> $BASH_ENV
+            echo "IMAGE_TAG=${IMAGE_TAG}" >> $BASH_ENV
+      
+      - run:
+          name: Login to Docker Hub
+          command: |
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      
+      - run:
+          name: Build Docker image
+          command: |
+            source $BASH_ENV
+            docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+            docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
+      
+      - run:
+          name: Push Docker image
+          command: |
+            source $BASH_ENV
+            docker push ${IMAGE_NAME}:${IMAGE_TAG}
+            docker push ${IMAGE_NAME}:latest
+            echo "Successfully pushed ${IMAGE_NAME}:${IMAGE_TAG} and ${IMAGE_NAME}:latest"
 
 workflows:
   main:
     jobs:
-      - job_running
+      - build-and-push
