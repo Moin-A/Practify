@@ -123,7 +123,4 @@ jobs:
 workflows:
   main:
     jobs:
-      - build-and-push
-      - deploy:
-          requires:
-            - build-and-push
+      - deploy          
