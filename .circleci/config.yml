@@ -52,10 +52,13 @@ jobs:
       
       
       - run:
-          name: Install Kamal and dependencies
+          name: Install build dependencies and Kamal
           command: |
+            apk add --no-cache build-base gcc make musl-dev
             gem install kamal
             kamal version
+            # Clean up build dependencies to reduce image size
+            apk del build-base gcc make musl-dev
       
       - run:
           name: Install sshpass and setup SSH keys
