@@ -7,10 +7,10 @@ image: moindev/practify
 # Deploy to these servers.
 servers:
   web:
-    - 192.168.0.1
+    - <%= ENV["DOMAIN"] || "practify.co.in" %>
   job:
     hosts:
-      - 192.168.0.1
+      - <%= ENV["DOMAIN"] || "practify.co.in" %>
     cmd: bundle exec sidekiq
 
 # Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
@@ -64,10 +64,9 @@ env:
 # aliases:
 #   shell: app exec --interactive --reuse "bash"
 
-# Use a different ssh user than root
-#
-# ssh:
-#   user: app
+# SSH configuration
+ssh:
+  user: root
 
 # Use a persistent storage volume.
 #
