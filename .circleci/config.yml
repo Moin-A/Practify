@@ -56,8 +56,7 @@ jobs:
       - run:
           name: Install Kamal
           command: |
-            gem install kamal
-            kamal version
+             gem install kamal -v 1.5.0
       
       - run:
           name: Install sshpass and setup SSH keys
