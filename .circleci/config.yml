@@ -89,7 +89,10 @@ jobs:
       
       - run:
           name: Stop conflicting services and Boot Traefik with SSL
-          command: |           
+          command: |
+            echo "Stopping conflicting services (nginx, apache, etc.)..."
+            # Stop nginx, apache, and any other web servers that might be using ports 80/443
+            ssh -o StrictHostKeyChecking=no root@$DOMAIN "sudo systemctl stop nginx 2>/dev/null || true; sudo systemctl stop apache2 2>/dev/null || true; sudo systemctl stop httpd 2>/dev/null || true; sudo systemctl disable nginx 2>/dev/null || true; sudo systemctl disable apache2 2>/dev/null || true; sudo systemctl disable httpd 2>/dev/null || true"
             echo "Booting Traefik with SSL configuration..."
             # Expand LETSENCRYPT_EMAIL variable locally before passing to SSH
             LETSENCRYPT_EMAIL_VALUE="${LETSENCRYPT_EMAIL:-admin@practify.co.in}"
