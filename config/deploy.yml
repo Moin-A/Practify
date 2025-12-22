@@ -43,9 +43,9 @@ builder:
 env:
   clear:
     RAILS_ENV: production
-    REDIS_URL: redis://192.168.0.1:6379/0
+    REDIS_URL: redis://172.17.0.1:6379/0
     # DATABASE_URL can be set as a secret or constructed from individual params
-    DATABASE_URL: postgresql://practify:${POSTGRES_PASSWORD}@192.168.0.1:5432/practify_production
+    DATABASE_URL: postgresql://practify:${POSTGRES_PASSWORD}@172.17.0.1:5432/practify_production
   secret:
     - RAILS_MASTER_KEY
     - PRACTIFY_DATABASE_PASSWORD
@@ -82,7 +82,7 @@ ssh:
 accessories:
   db:
     image: postgres:16
-    host: 192.168.0.1
+    host: <%= ENV["DOMAIN"] || "practify.co.in" %>
     port: 5432
     env:
       clear:
@@ -94,7 +94,7 @@ accessories:
       - data:/var/lib/postgresql/data
   redis:
     image: redis:7-alpine
-    host: 192.168.0.1
+    host: <%= ENV["DOMAIN"] || "practify.co.in" %>
     port: 6379
     directories:
       - data:/data
