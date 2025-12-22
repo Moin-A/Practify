@@ -50,9 +50,8 @@ jobs:
             echo "Successfully pushed ${IMAGE_NAME}:${IMAGE_TAG} and ${IMAGE_NAME}:latest"
 
   deploy-accessories:
-    executor:
-      docker:
-        - image: kamal/simple-ruby-docker
+    docker:
+      - image: kamal/simple-ruby-docker
     steps:
       - checkout
       
