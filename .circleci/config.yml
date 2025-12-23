@@ -116,7 +116,13 @@ jobs:
 workflows:
   main:
     jobs:
-      - build-and-push
+      - build-and-push:
+          filters:
+            branches:
+              only: main
       - deploy:
           requires:
             - build-and-push
+          filters:
+            branches:
+              only: main
