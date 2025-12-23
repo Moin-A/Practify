@@ -19,7 +19,7 @@ jobs:
           name: Set environment variables
           command: |
             export IMAGE_NAME="moindev/practify"
-            export IMAGE_TAG="${CIRCLE_SHA1:0:7}"
+            export IMAGE_TAG="${CIRCLE_SHA1}"
             echo "Building image: ${IMAGE_NAME}:${IMAGE_TAG}"
             echo "IMAGE_NAME=${IMAGE_NAME}" >> $BASH_ENV
             echo "IMAGE_TAG=${IMAGE_TAG}" >> $BASH_ENV
