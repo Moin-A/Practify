@@ -54,9 +54,6 @@ RUN SECRET_KEY_BASE_DUMMY=1 \
 # Final stage for app image
 FROM base
 
-LABEL service=practify
-
-
 # Copy built artifacts: gems, application
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
