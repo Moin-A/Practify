@@ -118,7 +118,7 @@ jobs:
       - run:
           name: Deploy Application
           command: |
-            kamal deploy
+            kamal deploy --skip-push
 
 workflows:
   main:
