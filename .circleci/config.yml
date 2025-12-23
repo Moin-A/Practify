@@ -77,9 +77,9 @@ jobs:
             ssh -o StrictHostKeyChecking=no root@$DOMAIN "echo 'SSH key authentication successful'"
 
       - run: 
-        name: push kamal secrets
-        command: |
-          kamal env push      
+          name: push kamal secrets
+          command: |
+            kamal env push      
       
       - run:
           name: Boot PostgreSQL accessory
