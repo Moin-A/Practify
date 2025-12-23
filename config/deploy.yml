@@ -43,7 +43,6 @@ traefik:
       - <%= ENV["DOMAIN"] || "practify.co.in" %>
   options:
     publish:
-      - "80:80"
       - "443:443"
 
 # Credentials for your image host.
