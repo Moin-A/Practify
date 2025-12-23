@@ -115,6 +115,11 @@ jobs:
             
             echo "✅ Traefik booted successfully with SSL configuration"
 
+      - run: 
+          name: push kamal secrets
+          command: |
+            kamal secrets push
+
       - run:
           name: Deploy Application
           command: |
