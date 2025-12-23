@@ -17,7 +17,30 @@ servers:
 # Remove this section when using multiple web servers and ensure you terminate SSL at your load balancer.
 #
 # Note: If using Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
-# Traefik is manually booted in CircleCI with SSL configuration (see .circleci/config.yml)
+# Traefik configuration with SSL via Let's Encrypt
+traefik:
+  image: traefik:v2.10
+  host_port: "80"
+  options:
+    publish:
+      - "443:443"
+    volume:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/opt/letsencrypt:/letsencrypt"
+  args:
+    providers.docker: true
+    entryPoints.web.address: ":80"
+    entryPoints.websecure.address: ":443"
+    entryPoints.web.http.redirections.entryPoint.to: websecure
+    entryPoints.web.http.redirections.entryPoint.scheme: https
+    certificatesResolvers.letsencrypt.acme.email: "admin@practify.co.in"
+    certificatesResolvers.letsencrypt.acme.storage: "/letsencrypt/acme.json"
+    certificatesResolvers.letsencrypt.acme.httpchallenge.entrypoint: web
+  labels:
+    traefik.http.routers.practify-web.rule: "Host(`practify.co.in`)"
+    traefik.http.routers.practify-web.entrypoints: websecure
+    traefik.http.routers.practify-web.tls.certresolver: letsencrypt
+    traefik.http.services.practify-web.loadbalancer.server.port: 3000
 
 # Credentials for your image host.
 # Using Docker Hub (docker.io) - no server specification needed
@@ -37,7 +60,6 @@ registry:
 env:
   clear:
     RAILS_ENV: production
-    REDIS_URL: redis://172.17.0.1:6379/0
     # DATABASE_URL can be set as a secret or constructed from individual params
     DATABASE_URL: postgresql://practify@172.17.0.1:5432/practify_production
   secret:
