@@ -7,7 +7,24 @@ image: moindev/practify
 # Deploy to these servers.
 servers:
   web:
-    - <%= ENV["DOMAIN"] || "practify.co.in" %>
+    hosts:
+      - <%= ENV["DOMAIN"] || "practify.co.in" %>
+    labels:
+      <% domain = (ENV["DOMAIN"] || "practify.co.in").to_s.gsub(/^https?:\/\//, '').gsub(/\/$/, '') %>
+      # Enable Traefik for this container (CRITICAL!)
+      traefik.enable: "true"
+      # HTTPS router (primary)
+      traefik.http.routers.practify-web.rule: "Host(`<%= domain %>`)"
+      traefik.http.routers.practify-web.entrypoints: "websecure"
+      traefik.http.routers.practify-web.tls.certresolver: "letsencrypt"
+      traefik.http.routers.practify-web.tls: "true"
+      # HTTP router (fallback)
+      traefik.http.routers.practify-web-http.rule: "Host(`<%= domain %>`)"
+      traefik.http.routers.practify-web-http.entrypoints: "web"
+      traefik.http.routers.practify-web-http.service: "practify-web"
+      # Service configuration
+      traefik.http.services.practify-web.loadbalancer.server.port: "3000"
+      traefik.http.services.practify-web.loadbalancer.passHostHeader: "true"
   job:
     hosts:
       - <%= ENV["DOMAIN"] || "practify.co.in" %>
@@ -36,11 +53,6 @@ traefik:
     certificatesResolvers.letsencrypt.acme.email: "admin@practify.co.in"
     certificatesResolvers.letsencrypt.acme.storage: "/letsencrypt/acme.json"
     certificatesResolvers.letsencrypt.acme.httpchallenge.entrypoint: web
-  labels:
-    traefik.http.routers.practify-web.rule: "Host(`practify.co.in`)"
-    traefik.http.routers.practify-web.entrypoints: websecure
-    traefik.http.routers.practify-web.tls.certresolver: letsencrypt
-    traefik.http.services.practify-web.loadbalancer.server.port: 3000
 
 # Credentials for your image host.
 # Using Docker Hub (docker.io) - no server specification needed
