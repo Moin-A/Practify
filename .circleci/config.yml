@@ -101,6 +101,11 @@ jobs:
             echo "✅ Conflicting services stopped"
 
       - run:
+          name: Boot Traefik via Kamal
+          command: |
+            kamal traefik boot
+
+      - run:
           name: Deploy Application
           command: |
             kamal deploy --skip-push
