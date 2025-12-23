@@ -9,5 +9,10 @@ jobs:
   simple_job:
     runs-on: self-hosted
     steps:
-      - name: Print job running
-        run: echo "job running"
+      - uses: actions/checkout@v4
+
+      - name: Install gems
+        run: bundle install
+
+      - name: Run RSpec
+        run: bundle exec rspec
