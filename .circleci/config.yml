@@ -109,9 +109,23 @@ jobs:
             echo "✅ Traefik booted with entrypoints: web (80), websecure (443)"
 
       - run:
+          name: Release any existing deploy locks
+          command: |
+            echo "Checking for existing Kamal locks..."
+            kamal lock release || echo "No lock to release"
+      
+      - run:
           name: Deploy Application
           command: |
             kamal deploy --skip-push
+          no_output_timeout: 20m
+      
+      - run:
+          name: Release deploy lock on failure
+          when: on_fail
+          command: |
+            echo "Deployment failed, releasing lock..."
+            kamal lock release || true
 
 workflows:
   main:
