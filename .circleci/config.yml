@@ -76,12 +76,6 @@ jobs:
             # Test SSH connection
             ssh -o StrictHostKeyChecking=no root@$DOMAIN "echo 'SSH key authentication successful'"
 
-      - run:
-          name: Release any existing deploy locks
-          command: |
-            echo "Checking for existing Kamal locks..."
-            kamal lock release || echo "No lock to release"              
-
       - run: 
           name: push kamal secrets
           command: |
@@ -113,6 +107,12 @@ jobs:
             LETSENCRYPT_EMAIL_VALUE="${LETSENCRYPT_EMAIL:-admin@practify.co.in}"
             ssh -o StrictHostKeyChecking=no root@$DOMAIN "sudo mkdir -p /opt/letsencrypt && sudo chmod 755 /opt/letsencrypt && docker run --name traefik --detach --restart unless-stopped --publish 80:80 --publish 443:443 --volume /var/run/docker.sock:/var/run/docker.sock --volume /opt/letsencrypt:/letsencrypt --log-opt max-size=\"10m\" traefik:v2.10 --providers.docker=true --log.level=DEBUG --entrypoints.web.address=:80 --entrypoints.websecure.address=:443 --certificatesresolvers.letsencrypt.acme.email=$LETSENCRYPT_EMAIL_VALUE --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
             echo "✅ Traefik booted with entrypoints: web (80), websecure (443)"
+
+      - run:
+          name: Release any existing deploy locks
+          command: |
+            echo "Checking for existing Kamal locks..."
+            kamal lock release || echo "No lock to release"
       
       - run:
           name: Deploy Application
