@@ -90,9 +90,9 @@ RSpec.describe User, type: :model do
     it 'destroys associated sessions when user is destroyed' do
       session = user.sessions.create!(ip_address: '127.0.0.1', user_agent: 'Test Browser')
       session_id = session.id
-      
+
       user.destroy
-      
+
       expect(Session.find_by(id: session_id)).to be_nil
     end
   end

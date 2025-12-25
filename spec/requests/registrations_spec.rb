@@ -122,7 +122,7 @@ RSpec.describe "Registrations", type: :request do
 
     context "with duplicate email address" do
       let!(:existing_user) { create(:user, email_address: "existing@example.com") }
-      
+
       let(:duplicate_attributes) do
         {
           user: {
@@ -183,4 +183,3 @@ RSpec.describe "Registrations", type: :request do
     end
   end
 end
-
