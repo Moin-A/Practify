@@ -7,7 +7,7 @@ class RegistrationsController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    
+
     if @user.save
       start_new_session_for @user
       redirect_to root_path, notice: "Welcome! You have signed up successfully."
@@ -21,4 +21,3 @@ class RegistrationsController < ApplicationController
       params.require(:user).permit(:email_address, :password, :password_confirmation)
     end
 end
-
