@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  resource :session
+  resource :registration
+  get "/auth/:provider/callback", to: "sessions#omniauth"
+  get "/auth/failure", to: "sessions#oauth_failure"
+  get "/login", to: "sessions#new"
+  resources :passwords, param: :token
   get "about", to: "pages#about"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

@@ -35,10 +35,23 @@ rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
 RSpec.configure do |config|
-  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_paths = [
-    Rails.root.join('spec/fixtures')
-  ]
+  # Include FactoryBot methods for easy use in specs
+  config.include FactoryBot::Syntax::Methods
+
+  # Configure OmniAuth for testing
+  config.before(:each) do
+    OmniAuth.config.test_mode = true
+  end
+
+  config.after(:each) do
+    OmniAuth.config.mock_auth[:google_oauth2] = nil
+  end
+
+  # Optional: Set default host for request specs (defaults to www.example.com)
+  # Uncomment if you want to use localhost in tests
+  config.before(:each, type: :request) do
+    host! 'localhost:3000'
+  end
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
