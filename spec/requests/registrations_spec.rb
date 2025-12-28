@@ -4,7 +4,7 @@ require 'pry'
 RSpec.describe "Registrations", type: :request do
   before do
     OmniAuth.config.test_mode = true  # No real HTTP requests to Google
-    
+
     # Stub the OAuth response
     OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
       provider: 'google_oauth2',
@@ -198,21 +198,20 @@ RSpec.describe "Registrations", type: :request do
   describe "Google OAuth registration" do
     describe "GET /registration/google" do
       it "redirects to Google OAuth authorization URL" do
-        get '/auth/google_oauth2'        
+        get '/auth/google_oauth2'
         expect(response).to have_http_status(:redirect)
-        expect(response.location).to include("auth/google_oauth2/callback")        
+        expect(response.location).to include("auth/google_oauth2/callback")
       end
-     
+
 
       it "allows unauthenticated access" do
-        get '/auth/google_oauth2'        
+        get '/auth/google_oauth2'
         expect(response).not_to redirect_to(new_session_path)
       end
     end
 
     describe "GET /registration/google/callback" do
-      context "with valid OAuth callback" do       
-       
+      context "with valid OAuth callback" do
         context "for new user" do
           it "creates a new user from Google OAuth data" do
             expect {
@@ -280,7 +279,7 @@ RSpec.describe "Registrations", type: :request do
             get '/auth/google_oauth2/callback'
             expect(response.cookies['session_id']).to be_present
             jar = ActionDispatch::Cookies::CookieJar.build(request, cookies.to_hash)
-            session = Session.find_by(id: jar.signed["session_id"])            
+            session = Session.find_by(id: jar.signed["session_id"])
             expect(session.user).to eq(existing_user)
           end
 
@@ -296,12 +295,12 @@ RSpec.describe "Registrations", type: :request do
         end
       end
 
-    
+
 
       context "with OAuth error from Google" do
         it "handles access_denied error (user cancelled)" do
           OmniAuth.config.mock_auth[:google_oauth2] = nil
-          get '/auth/google_oauth2/callback', params: { error: "access_denied" }          
+          get '/auth/google_oauth2/callback', params: { error: "access_denied" }
           expect(response).to redirect_to(new_session_path)
           expect(flash[:alert]).to include("Failed to sign in with Google. Email address can't be blank") if flash[:alert]
         end
@@ -335,7 +334,6 @@ RSpec.describe "Registrations", type: :request do
             get '/auth/google_oauth2/callback'
           }.not_to change(User, :count)
         end
-        
       end
 
       it "allows unauthenticated access" do
