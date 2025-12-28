@@ -31,7 +31,7 @@ RUN apt-get update -qq && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install the correct Bundler version to match Gemfile.lock
-RUN gem install bundler -v 2.3.7
+RUN gem install bundler -v 2.5.6
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
