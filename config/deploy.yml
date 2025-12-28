@@ -82,6 +82,11 @@ ssh:
 boot:
   wait: 60
 
+# Deployment hooks
+hooks:
+  pre_deploy:
+    - bin/rails db:migrate
+
 # Use a persistent storage volume.
 #
 # volumes:
