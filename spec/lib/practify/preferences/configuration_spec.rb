@@ -212,4 +212,46 @@ RSpec.describe Practify::Preferences::Configuration do
       expect(preferences).to include(:duplicate_setting)
     end
   end
+
+  describe '#[]' do
+    it 'returns default preference value when accessed via bracket notation' do
+      config_class.preference :some_preference, :string, default: 'default_value'
+      instance = config_class.new
+
+      expect(instance[:some_preference]).to eq('default_value')
+    end
+
+    it 'returns default value for different preference types' do
+      config_class.preference :string_pref, :string, default: 'test'
+      config_class.preference :integer_pref, :integer, default: 42
+      config_class.preference :boolean_pref, :boolean, default: true
+
+      instance = config_class.new
+
+      expect(instance[:string_pref]).to eq('test')
+      expect(instance[:integer_pref]).to eq(42)
+      expect(instance[:boolean_pref]).to eq(true)
+    end
+
+    it 'returns nil for preferences without default values' do
+      config_class.preference :no_default_pref, :string
+      instance = config_class.new
+
+      expect(instance[:no_default_pref]).to be_nil
+    end
+
+    it 'handles string and symbol keys' do
+      config_class.preference :test_pref, :string, default: 'value'
+      instance = config_class.new
+
+      expect(instance[:test_pref]).to eq('value')
+      expect(instance['test_pref']).to eq('value')
+    end
+
+    it 'raises NoMethodError with specific message when accessing a preference that does not exist' do
+      instance = config_class.new
+      expect { instance[:non_existent_preference] }.to raise_error(NoMethodError, "non_existent_preference preference not defined")
+      expect { instance.non_existent_preference }.to raise_error(NoMethodError)
+    end
+  end
 end
