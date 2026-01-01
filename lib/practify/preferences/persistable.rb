@@ -4,11 +4,11 @@ module Practify
       extend ActiveSupport::Concern
       included do
         include Preferable
-      end
-      # Persistence logic goes here
-      serialize :preferences, JSON
+        # Persistence logic goes here
+        serialize :preferences, JSON
 
-      after_initialize :initialize_preferences_defaults
+        after_initialize :initialize_preferences_defaults
+      end
 
       private
 
