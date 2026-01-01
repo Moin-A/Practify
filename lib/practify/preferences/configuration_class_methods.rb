@@ -18,6 +18,6 @@ module Practify
                 options[:default]
             end
         end
-      end
-   end
+    end
+  end
 end

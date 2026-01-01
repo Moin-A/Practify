@@ -47,7 +47,6 @@ RSpec.describe Practify::Preferences::Preferable do
       instance1 = test_class.new
       instance1.tags << "admin"
       instance2 = test_class.new
-      binding.pry
       expect(instance2.tags).to eq([])  # This would FAIL without Proc wrapping
       expect(instance2.tags).not_to equal(instance1.tags)  # Different object
     end

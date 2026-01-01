@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Practify::Preferences::Configuration do
+RSpec.describe Practify::Configuration do
   let(:config_class) do
     Class.new(described_class) do
       # Test class that inherits from Configuration
