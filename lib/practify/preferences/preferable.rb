@@ -17,7 +17,6 @@ module Practify
         @preferences_store ||= Hash.new
       end
 
-      alias_method :preferences, :preferences_store
 
       def defined_preferences
         self.class.defined_preferences

@@ -5,7 +5,8 @@ module Practify
       included do
         include Preferable
         # Persistence logic goes here
-        serialize :preferences, JSON
+
+        preference :some_setting, :string, default: "default_value"
 
         after_initialize :initialize_preferences_defaults
       end
@@ -13,7 +14,9 @@ module Practify
       private
 
       def initialize_preferences_defaults
-        self.preferences.merge(default_preferences)
+       if has_attribute?(:preferences)
+          self.preferences = default_preferences.merge(preferences)
+       end
       end
     end
   end
