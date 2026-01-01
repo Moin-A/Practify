@@ -31,7 +31,9 @@ module Practify
 
             define_method preference_default_getter_method_name(name) do
                 preferences.fetch(name) do
-                    instance_exec(&default)
+                    default_value = instance_exec(&default)
+                    preferences[name] = default_value
+                    default_value
                 end
             end
 

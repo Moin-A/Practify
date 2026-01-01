@@ -41,15 +41,6 @@ RSpec.describe Practify::Preferences::Preferable do
       expect(preferences.length).to eq(3)
       expect(preferences).to include(:pref1, :pref2, :pref3)
     end
-
-    it 'does not share mutable default values between instances' do
-      test_class.preference :tags, :array, default: []
-      instance1 = test_class.new
-      instance1.tags << "admin"
-      instance2 = test_class.new
-      expect(instance2.tags).to eq([])  # This would FAIL without Proc wrapping
-      expect(instance2.tags).not_to equal(instance1.tags)  # Different object
-    end
   end
 
   describe 'preference isolation between classes' do

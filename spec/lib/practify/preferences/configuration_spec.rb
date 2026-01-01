@@ -83,6 +83,15 @@ RSpec.describe Practify::Configuration do
         config_class.preference :test_setting, :string, default: nil
         expect(config_class.defined_preferences).to include(:test_setting)
       end
+
+      it 'does not share mutable default values between instances' do
+        config_class.preference :tags, :array, default: []
+        instance1 = config_class.new
+        instance1.tags << "admin"
+        instance2 = config_class.new
+        expect(instance2.tags).to eq([])  # This would FAIL without Proc wrapping
+        expect(instance2.tags).not_to equal(instance1.tags)  # Different object
+      end
     end
 
     context 'with encrypted_string type' do
