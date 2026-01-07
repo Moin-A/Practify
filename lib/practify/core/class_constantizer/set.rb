@@ -35,4 +35,3 @@ module Practify
     end
   end
 end
-
