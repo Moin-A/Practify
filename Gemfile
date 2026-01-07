@@ -65,6 +65,9 @@ group :development do
 
   # Deployment tool for containerized applications
   gem "kamal"
+
+  # Format ERB files with speed and precision [https://github.com/nebulab/erb-formatter]
+  gem "erb-formatter"
 end
 
 group :test do

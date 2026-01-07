@@ -67,6 +67,34 @@ Access the Sidekiq web interface at: `http://localhost:3000/sidekiq`
 rails test
 ```
 
+## ERB Formatting
+
+This project uses [erb-formatter](https://github.com/nebulab/erb-formatter) to automatically format ERB files.
+
+### Format all ERB files
+
+```bash
+rake erb:format
+```
+
+### Check if ERB files are formatted (dry run)
+
+```bash
+rake erb:check
+```
+
+### Format a single file from command line
+
+```bash
+bundle exec erb-format app/views/pages/about.html.erb --write
+```
+
+### Format from stdin/stdout
+
+```bash
+echo "<div>test</div>" | bundle exec erb-format --stdin
+```
+
 ## Background Jobs
 
 ActiveJob is configured to use Sidekiq. Create jobs in `app/jobs/`:
