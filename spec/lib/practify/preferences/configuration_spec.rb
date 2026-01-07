@@ -263,4 +263,16 @@ RSpec.describe Practify::Configuration do
       expect { instance.non_existent_preference }.to raise_error(NoMethodError)
     end
   end
+
+  describe '#roles' do
+    it 'returns a RoleConfiguration instance' do
+      expect(Practify.config).to be_a(AppConfiguration)
+    end
+  end
+
+  describe '#config' do
+    it 'returns a Config instance' do
+      expect(Practify.config).to be_a(AppConfiguration)
+    end
+  end
 end

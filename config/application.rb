@@ -1,6 +1,7 @@
 require_relative "boot"
 
 require "rails/all"
+require_relative "../lib/practify"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -22,7 +23,7 @@ module Practify
     # in config/environments, which are processed later.
     #
     # config.time_zone = "Central Time (US & Canada)"
-    config.eager_load_paths << Rails.root.join("lib")
+    # Note: config.autoload_lib already adds lib to autoload_paths and eager_load_paths
 
     # Configure generators to use RSpec instead of Minitest
     config.generators do |g|
