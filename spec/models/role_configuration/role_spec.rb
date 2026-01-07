@@ -9,4 +9,3 @@ RSpec.describe RoleConfiguration::Role, type: :model do
     end
   end
 end
-

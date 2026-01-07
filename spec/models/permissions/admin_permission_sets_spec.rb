@@ -8,9 +8,8 @@ RSpec.describe Permissions::AdminPermissionSets, type: :model do
     allow(ability).to receive(:can).and_return(true)
     allow(ability).to receive(:cannot).and_return(false)
     allow(ability).to receive(:user).and_return(user)
-    
   end
-  describe 'class structure' do  
+  describe 'class structure' do
     it 'inherits from Permissions::Base' do
       expect(described_class.superclass).to eq(Permissions::Base)
     end
@@ -22,9 +21,9 @@ RSpec.describe Permissions::AdminPermissionSets, type: :model do
 
   describe '#activate!' do
     let(:admin_permission_set) { described_class.new(ability) }
-   
 
-    it 'responds to activate!' do      
+
+    it 'responds to activate!' do
       expect(admin_permission_set).to respond_to(:activate!)
     end
 
@@ -38,7 +37,7 @@ RSpec.describe Permissions::AdminPermissionSets, type: :model do
       end
     end
 
-    it 'executes without raising an error' do      
+    it 'executes without raising an error' do
       expect { admin_permission_set.activate! }.not_to raise_error
     end
   end

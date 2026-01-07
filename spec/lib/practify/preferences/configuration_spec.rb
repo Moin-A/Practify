@@ -267,7 +267,7 @@ RSpec.describe Practify::Configuration do
   describe '#roles' do
     it 'returns a RoleConfiguration instance' do
       expect(Practify.config).to be_a(AppConfiguration)
-    end    
+    end
   end
 
   describe '#config' do

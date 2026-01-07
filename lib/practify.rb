@@ -4,6 +4,6 @@ module Practify
       @config ||= AppConfiguration.new
       yield @config if block_given?
       @config
-    end     
-  end  
+    end
+  end
 end

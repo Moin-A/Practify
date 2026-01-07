@@ -3,7 +3,7 @@
 
 
     def roles
-      RoleConfiguration.new.tap do |role_configuration|     
+      RoleConfiguration.new.tap do |role_configuration|
         role_configuration.assign_permissions "customer", "Permissions::AdminPermissionSets"
       end
     end
