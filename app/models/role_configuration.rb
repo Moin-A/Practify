@@ -11,13 +11,11 @@ class RoleConfiguration
   def initialize
     @role = Hash.new do |hash, name|
       hash[name] = Role.new(name)
-    end
-    binding.pry
+    end    
     @permissionsSets = Practify::Core::ClassConstantizer::Set.new
   end
 
-  def assign_permissions(name, permission_sets)
-    binding.pry
+  def assign_permissions(name, permission_sets)    
     @role[name.to_sym].permissionsSets.concat permission_sets
   end
 
