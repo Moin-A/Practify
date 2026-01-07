@@ -1,10 +1,4 @@
 module Practify
-  cattr_accessor :config
-  def self.config(&_block)
-    yield(Practify.config) if block_given?
-    @config ||= Practify::AppConfiguration.new
-  end
-
   module Preferences
     module Preferable
       extend ActiveSupport::Concern

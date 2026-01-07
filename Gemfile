@@ -19,6 +19,8 @@ gem "jbuilder"
 # Use Redis adapter to run Action Cable in production
 gem "redis", ">= 4.0.1"
 
+gem "cancancan"
+
 # Background job processing
 gem "sidekiq"
 
