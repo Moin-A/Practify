@@ -4,18 +4,18 @@ namespace :erb do
     require "erb/formatter"
 
     erb_files = Dir.glob("app/views/**/*.erb")
-    
+
     if erb_files.empty?
       puts "No ERB files found to format"
       exit
     end
 
     puts "Formatting #{erb_files.length} ERB file(s)..."
-    
+
     erb_files.each do |file|
       original_content = File.read(file)
       formatted_content = ERB::Formatter.format(original_content)
-      
+
       if original_content != formatted_content
         File.write(file, formatted_content)
         puts "✓ Formatted #{file}"
@@ -32,19 +32,19 @@ namespace :erb do
     require "erb/formatter"
 
     erb_files = Dir.glob("app/views/**/*.erb")
-    
+
     if erb_files.empty?
       puts "No ERB files found to check"
       exit
     end
 
     puts "Checking #{erb_files.length} ERB file(s)..."
-    
+
     unformatted = []
     erb_files.each do |file|
       original_content = File.read(file)
       formatted_content = ERB::Formatter.format(original_content)
-      
+
       if original_content != formatted_content
         unformatted << file
       end
@@ -60,4 +60,3 @@ namespace :erb do
     end
   end
 end
-

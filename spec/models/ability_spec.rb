@@ -2,6 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Ability, type: :model do
   let(:user) { User.new }
+  let(:role) { create(:role) }
+  let(:role_user) { create(:role_user, user: user, role: role) }
   let(:role_configuration) { instance_double(RoleConfiguration) }
 
   before do
@@ -10,7 +12,7 @@ RSpec.describe Ability, type: :model do
 
   describe 'initialization' do
     it 'calls activate_permissions on RoleConfiguration when initializing' do
-      expect(role_configuration).to receive(:activate_permissions).with(an_instance_of(Ability))
+      expect(role_configuration).to receive(:activate_permissions).with(an_instance_of(Ability), user)
       described_class.new(user)
     end
   end

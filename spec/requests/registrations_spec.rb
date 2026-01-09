@@ -262,6 +262,8 @@ RSpec.describe "Registrations", type: :request do
 
         context "for existing user" do
           let!(:existing_user) { create(:user, email_address: "test@example.com") }
+          let(:role) { create(:role) }
+          let(:role_user) { create(:role_user, user: existing_user, role: role) }
 
           it "does not create a duplicate user" do
             expect {
