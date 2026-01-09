@@ -9,6 +9,6 @@ class Ability
   end
 
   def activate_permissions
-    Practify.config.roles.activate_permissions self
+    Practify.config.roles.activate_permissions self, user
   end
 end

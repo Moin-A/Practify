@@ -1,6 +1,5 @@
 module Permissions
   class Base
-    include CanCan::Ability
     attr_reader :ability
 
     def initialize(ability)
