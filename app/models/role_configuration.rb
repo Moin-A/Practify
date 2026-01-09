@@ -10,17 +10,17 @@ class RoleConfiguration
   def initialize
     @role = Hash.new do |hash, name|
       hash[name] = Role.new(name)
-    end        
+    end
   end
 
-  def assign_permissions(name, permission_sets)      
+  def assign_permissions(name, permission_sets)
     @role[name.to_sym].permissionsSets.concat permission_sets
   end
 
 
   def activate_permissions(ability, user)
     # roles = ['default'] | user.spree_roles.map(&:name)
-    roles = ["default"] + user.roles.map(&:name)
+    roles = [ "default" ] + user.roles.map(&:name)
     applicable_permissions = Set.new
 
 
