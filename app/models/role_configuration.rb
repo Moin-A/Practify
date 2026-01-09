@@ -3,19 +3,17 @@ class RoleConfiguration
     attr_accessor :name, :permissionsSets
     def initialize(name)
       @name = name
-      @permissionsSets = Set.new
+      @permissionsSets = Practify::Core::ClassConstantizer::Set.new
     end
   end
-  attr_accessor :permissionsSets
 
   def initialize
     @role = Hash.new do |hash, name|
       hash[name] = Role.new(name)
-    end    
-    @permissionsSets = Practify::Core::ClassConstantizer::Set.new
+    end        
   end
 
-  def assign_permissions(name, permission_sets)    
+  def assign_permissions(name, permission_sets)      
     @role[name.to_sym].permissionsSets.concat permission_sets
   end
 
