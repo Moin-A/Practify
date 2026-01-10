@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  /* Primary Brand Colors */
+  --color-primary: #26BA9B;
+  --color-primary-dark: #1f9b81;
+  --color-primary-light: #4ec9b0;
+  
+  /* Custom Colors */
+  --color-teal-primary: #26BA9B;
+  --color-teal-primary-dark: #1f9b81;
+}
+
+@source "./app/views/**/*.html.erb";
+@source "./app/helpers/**/*.rb";
+@source "./app/components/**/*.{rb,html,erb}";
