@@ -12,7 +12,9 @@ class RegistrationsController < ApplicationController
       start_new_session_for @user
       redirect_to root_path, notice: "Welcome! You have signed up successfully."
     else
-      render :new, status: :unprocessable_entity
+     render turbo_stream: turbo_stream.update("flash", 
+      partial: "shared/alert", 
+      locals: { message: @user.errors.full_messages.to_sentence(words_connector: ", ", two_words_connector: ", ", last_word_connector: ", ") })
     end
   end
 
