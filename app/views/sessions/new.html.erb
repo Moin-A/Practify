@@ -3,6 +3,7 @@
     flex min-h-screen font-sans antialiased text-[#111] bg-white
     selection:bg-[#26BA9B]/20
   "
+  data-controller="tabs"
 >
 
   <div
@@ -134,10 +135,14 @@
         <button
           class="
             flex-1 py-1.5 font-semibold bg-white rounded-md shadow-sm border border-[#EEE]
-            text-[#111]
+            text-[#111] cursor-pointer
           "
+          data-tabs-target="signIn"
         >Sign In</button>
-        <button class="flex-1 py-1.5 font-semibold text-[#888]">Sign Up</button>
+        <button
+          data-tabs-target="signUp"
+          class="flex-1 py-1.5 font-semibold text-[#888] cursor-pointer"
+        >Sign Up</button>
       </div>
 
       <%= link_to "/auth/google_oauth2", class: "w-full flex items-center justify-center gap-2.5 py-2.5 border border-[#EEE] rounded-lg hover:bg-[#F9F9F9] transition-all mb-6 no-underline shadow-sm" do %>
@@ -154,9 +159,12 @@
         <span class="flex-shrink mx-2 text-[10px] uppercase text-[#AAA] font-bold">Or continue with email</span>
         <div class="flex-grow border-t border-[#F0F0F0]"></div>
       </div>
-
-      <%= render "sessions/sign_in" %>
-
+      <div data-tabs-target="signInForm">
+        <%= render "sessions/sign_in" %>
+      </div>
+      <div data-tabs-target="signUpForm" class="hidden">
+        <%= render template: "registrations/new", locals: { user: User.new } %>
+      </div>
     </div>
   </div>
 </div>
