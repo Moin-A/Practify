@@ -79,3 +79,5 @@ group :test do
   gem "rspec-rails"
   gem "factory_bot_rails"
 end
+
+gem "omnes", "~> 0.2.2"
