@@ -123,7 +123,7 @@
       flex flex-col justify-center items-center w-full lg:w-1/2 p-8 bg-white
     "
   >
-    <div class="w-full max-w-[320px]">
+    <div class="w-full max-w-[320px] relative">
       <h2 class="text-[26px] font-bold tracking-[-0.02em] text-[#111] mb-1">Welcome back</h2>
       <p class="text-[#666] text-[13px] mb-8">Sign in to your account to continue</p>
 
@@ -164,6 +164,9 @@
       </div>
       <div data-tabs-target="signUpForm" class="hidden">
         <%= render template: "registrations/new", locals: { user: User.new } %>
+      </div>
+      <div id="flash" class="absolute bottom-2 left-0 right-0 bottom-[-120px]">
+        <%= render "shared/alert" %>
       </div>
     </div>
   </div>
