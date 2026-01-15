@@ -15,7 +15,24 @@
   /* Typography Refinements */
   --font-sans: "Inter", "Geist", system-ui, sans-serif;
   --tracking-tightest: -0.03em;
+  /* ... your existing variables ... */
+
+  /* Typography Refinements */
+  --font-sans: "Inter", "Geist", system-ui, sans-serif;
+  --tracking-tightest: -0.03em;
+
+  /* Custom Font Sizes */
+  --font-size-base: 0.875rem; 
+  --font-size-sm: 0.75rem;
+  --line-height-base: 1.25rem;
 }
+
+@layer base {
+  html {
+    font-size: var(--font-size-base);
+  }
+}
+
 
 /* Explicitly watch your files */
 @source "./app/views/**/*.html.erb";

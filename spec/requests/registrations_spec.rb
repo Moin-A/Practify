@@ -62,7 +62,8 @@ RSpec.describe "Registrations", type: :request do
 
       it "logs the user in by setting session cookie" do
         post registration_path, params: valid_attributes
-        expect(response.cookies['session_id']).to be_present
+        jar = ActionDispatch::Cookies::CookieJar.build(request, response.cookies)
+        expect(jar.signed[:session_id]).to be_present
       end
 
       it "stores the correct session in the cookie" do
@@ -70,6 +71,9 @@ RSpec.describe "Registrations", type: :request do
         # Verify a session was created for the new user
         user = User.find_by(email_address: "newuser@example.com")
         expect(user.sessions.count).to eq(1)
+
+        jar = ActionDispatch::Cookies::CookieJar.build(request, response.cookies)
+        expect(jar.signed[:session_id]).to eq(user.sessions.first.id)
       end
     end
 
@@ -249,7 +253,8 @@ RSpec.describe "Registrations", type: :request do
 
           it "logs the user in by setting session cookie" do
             get '/auth/google_oauth2/callback'
-            expect(response.cookies['session_id']).to be_present
+            jar = ActionDispatch::Cookies::CookieJar.build(request, response.cookies)
+            expect(jar.signed[:session_id]).to be_present
           end
 
           it "normalizes email address from Google OAuth" do
@@ -279,9 +284,9 @@ RSpec.describe "Registrations", type: :request do
 
           it "logs in the existing user" do
             get '/auth/google_oauth2/callback'
-            expect(response.cookies['session_id']).to be_present
-            jar = ActionDispatch::Cookies::CookieJar.build(request, cookies.to_hash)
-            session = Session.find_by(id: jar.signed["session_id"])
+            jar = ActionDispatch::Cookies::CookieJar.build(request, response.cookies)
+            expect(jar.signed[:session_id]).to be_present
+            session = Session.find_by(id: jar.signed[:session_id])
             expect(session.user).to eq(existing_user)
           end
 

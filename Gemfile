@@ -23,6 +23,10 @@ gem "redis", ">= 4.0.1"
 
 gem "cancancan"
 
+# ViewComponent for building reusable view components
+gem "view_component"
+gem "classy-yaml"
+
 # Background job processing
 gem "sidekiq"
 

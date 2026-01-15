@@ -15,6 +15,5 @@ class AddUserProfileTable < ActiveRecord::Migration[8.0]
     end
 
     add_index :user_profiles, :user_id, unique: true unless index_exists?(:user_profiles, :user_id)
-
   end
 end
