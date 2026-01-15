@@ -41,6 +41,8 @@ RSpec.configure do |config|
   # Configure OmniAuth for testing
   config.before(:each) do
     OmniAuth.config.test_mode = true
+    # Ensure default roles exist for tests
+    Role.find_or_create_by!(name: "Client")
   end
 
   config.after(:each) do

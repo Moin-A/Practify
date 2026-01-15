@@ -20,7 +20,8 @@ class RoleConfiguration
 
   def activate_permissions(ability, user)
     # roles = ['default'] | user.spree_roles.map(&:name)
-    roles = [ "default" ] + user.roles.map(&:name)
+    roles = [ "default" ]
+    roles += user.roles.map(&:name) if user
     applicable_permissions = Set.new
 
 

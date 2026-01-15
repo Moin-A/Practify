@@ -25,6 +25,7 @@ class User < ApplicationRecord
   end
   private
   def set_default_role
-    self.roles << Role.find_by(name: "Client")
+    role = Role.find_by(name: "Client")
+    self.roles << role if role
   end
 end
