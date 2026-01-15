@@ -5,7 +5,6 @@ module HomePage
     end
 
     def component
-      
     end
 
     def render?

@@ -1,11 +1,10 @@
 module HomePage
 class HomeComponent < ApplicationComponent
-  def initialize(current_user: nil) 
+  def initialize(current_user: nil)
     @current_user = current_user
   end
 
   def component
-    
     if @current_user.super_admin?
       HomePage::SuperAdminComponent.new(current_user: @current_user)
     elsif @current_user.client?

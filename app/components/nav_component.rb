@@ -2,7 +2,7 @@ class NavComponent < ApplicationComponent
     def svg_inner_content(name)
         path = Rails.root.join("public", "#{name.downcase}.svg")
         return "" unless File.exist?(path)
-    
+
         # Read the file and strip the outer <svg> tags
         raw_svg = File.read(path)
         raw_svg.gsub(/<svg[^>]*>|<\/svg>/i, "").html_safe
