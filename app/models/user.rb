@@ -5,4 +5,26 @@ class User < ApplicationRecord
   has_many :roles, through: :role_users
   validates :email_address, presence: true, uniqueness: true
   normalizes :email_address, with: ->(e) { e.strip.downcase }
+
+  after_initialize :set_default_role, if: :new_record?
+
+  def super_admin?
+    roles.exists?(name: "SuperAdmin")
+  end
+
+  def client?
+    roles.exists?(name: "Client")
+  end
+
+  def therapist?
+    roles.exists?(name: "therapist")
+  end
+
+  def admin?
+    roles.exists?(name: "admin")
+  end
+  private
+  def set_default_role
+    self.roles << Role.find_by(name: "Client")
+  end
 end
