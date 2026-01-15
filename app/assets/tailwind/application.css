@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand Colors */
+  --color-brand: #26BA9B;
+  --color-brand-hover: #1f9b81;
+  
+  /* Cursor-style Neutral Palette */
+  --color-cursor-bg: #0B0C0D;
+  --color-cursor-text-muted: #888888;
+  --color-cursor-border: rgba(255, 255, 255, 0.08);
+  --color-input-bg: #FAFAFA;
+  --color-input-border: #EEEEEE;
+
+  /* Typography Refinements */
+  --font-sans: "Inter", "Geist", system-ui, sans-serif;
+  --tracking-tightest: -0.03em;
+}
+
+/* Explicitly watch your files */
+@source "./app/views/**/*.html.erb";
+@source "./app/helpers/**/*.rb";
+@source "./app/javascript/**/*.js";

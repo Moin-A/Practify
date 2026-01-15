@@ -1,0 +1,19 @@
+{
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": [
+          "comment",
+          "comment.block",
+          "comment.line",
+          "comment.block.documentation",
+          "punctuation.definition.comment"
+        ],
+        "settings": {
+          "foreground": "#6A9955"
+        }
+      }
+    ]
+  }
+}
+

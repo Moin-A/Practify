@@ -1,0 +1,48 @@
+<% message ||= flash[:notice] || flash[:alert] %>
+<% alert_type = local_assigns[:type] || (flash[:notice] ? :notice : :alert) %>
+
+<% if message.present? %>
+
+  <div
+    class="
+      <%= alert_type == :notice ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800' %> border rounded-lg p-4 mb-4 flex
+      items-center gap-3
+    "
+    role="alert"
+    id="flash"
+  >
+    <% if alert_type == :notice %>
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="shrink-0"
+      >
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+        <polyline points="22 4 12 14.01 9 11.01"/>
+      </svg>
+    <% else %>
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="shrink-0"
+      >
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" x2="12" y1="8" y2="12"/>
+        <line x1="12" x2="12.01" y1="16" y2="16"/>
+      </svg>
+    <% end %>
+    <p class="text-sm font-medium flex-1"><%= message %></p>
+  </div>
+<% end %>

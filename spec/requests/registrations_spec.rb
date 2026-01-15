@@ -21,8 +21,8 @@ RSpec.describe "Registrations", type: :request do
 
     it "displays the signup form" do
       get new_registration_path
-      expect(response.body).to include("Sign Up")
-      expect(response.body).to include("Sign up")
+      expect(response.body).to include("Create Account")
+      expect(response.body).to include("Work Email")
     end
   end
 
@@ -96,15 +96,12 @@ RSpec.describe "Registrations", type: :request do
         }.not_to change(Session, :count)
       end
 
-      it "returns unprocessable entity status" do
+      it "returns turbo stream response with errors" do
         post registration_path, params: invalid_attributes
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
-
-      it "displays the form again with errors" do
-        post registration_path, params: invalid_attributes
-        expect(response.body).to include("Sign Up")
-        expect(response.body).to include("error")
+        expect(response).to have_http_status(:ok)
+        expect(response.media_type).to eq(Mime[:turbo_stream])
+        expect(response.body).to include('turbo-stream action="update" target="flash"')
+        expect(response.body).to include("Email address")
       end
     end
 
@@ -125,10 +122,11 @@ RSpec.describe "Registrations", type: :request do
         }.not_to change(User, :count)
       end
 
-      it "displays the form again with errors" do
+      it "returns turbo stream response with errors" do
         post registration_path, params: mismatched_attributes
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.body).to include("Sign Up")
+        expect(response).to have_http_status(:ok)
+        expect(response.media_type).to eq(Mime[:turbo_stream])
+        expect(response.body).to include('turbo-stream action="update" target="flash"')
       end
     end
 
@@ -151,10 +149,12 @@ RSpec.describe "Registrations", type: :request do
         }.not_to change(User, :count)
       end
 
-      it "displays the form again with errors" do
+      it "returns turbo stream response with errors" do
         post registration_path, params: duplicate_attributes
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.body).to include("Sign Up")
+        expect(response).to have_http_status(:ok)
+        expect(response.media_type).to eq(Mime[:turbo_stream])
+        expect(response.body).to include('turbo-stream action="update" target="flash"')
+        expect(response.body).to include("Email address has already been taken")
       end
     end
 
