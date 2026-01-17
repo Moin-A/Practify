@@ -1,0 +1,183 @@
+<% user_profile ||= @user_profile %>
+
+<%= form_with model: user_profile, local: true, class: "flex-1 p-8 overflow-y-auto max-w-7xl mx-auto"   do |form| %>
+  <% if user_profile.errors.any? %>
+    <div class="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4 mb-6">
+      <h2 class="font-bold mb-2">
+        <%= pluralize(user_profile.errors.count, "error") %>
+        prohibited this profile from being saved:
+      </h2>
+      <ul class="list-disc list-inside space-y-1">
+        <% user_profile.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="space-y-5 p-8">
+    <h2 class="text-[26px] font-bold py-4">Edit Profile</h2>
+    <div class="space-y-1.5">
+      <%= form.label :first_name,
+                 "First Name",
+                 class:
+                   "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
+      <div class="relative group">
+        <div
+          class="
+            absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-300
+            group-focus-within:text-brand transition-colors
+          "
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <%= form.text_field :first_name,
+                        required: true,
+                        placeholder: "Enter your first name",
+                        class:
+                          "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB]" %>
+      </div>
+    </div>
+
+    <div class="space-y-1.5">
+      <%= form.label :last_name,
+                 "Last Name",
+                 class:
+                   "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
+      <div class="relative group">
+        <div
+          class="
+            absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-300
+            group-focus-within:text-brand transition-colors
+          "
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <%= form.text_field :last_name,
+                        required: true,
+                        placeholder: "Enter your last name",
+                        class:
+                          "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB]" %>
+      </div>
+    </div>
+
+    <div class="space-y-1.5">
+      <%= form.label :profile_picture,
+                 "Profile Picture URL",
+                 class:
+                   "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
+      <div class="relative group">
+        <div
+          class="
+            absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-300
+            group-focus-within:text-brand transition-colors
+          "
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 21-3.35-3.35"/></svg>
+        </div>
+        <%= form.url_field :profile_picture,
+                       placeholder: "https://example.com/image.jpg",
+                       class:
+                         "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB]" %>
+      </div>
+    </div>
+
+    <div class="space-y-1.5">
+      <%= form.label :bio,
+                 "Bio",
+                 class:
+                   "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
+      <div class="relative group">
+        <div
+          class="
+            absolute top-3 left-0 flex items-start pl-3.5 text-slate-300
+            group-focus-within:text-brand transition-colors py-4
+          "
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+        </div>
+        <%= form.text_area :bio,
+                       rows: 4,
+                       placeholder: "Tell us about yourself...",
+                       class:
+                         "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB] resize-none" %>
+      </div>
+    </div>
+
+    <div class="space-y-1.5">
+      <%= form.label :location,
+                 "Location",
+                 class:
+                   "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
+      <div class="relative group">
+        <div
+          class="
+            absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-300
+            group-focus-within:text-brand transition-colors
+          "
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <%= form.text_field :location,
+                        placeholder: "City, State or Country",
+                        class:
+                          "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB]" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 p-8 flex gap-3">
+    <%= form.submit "Update Profile",
+                class:
+                  "px-6 py-3 bg-[#111] hover:bg-[#222] text-white font-bold rounded-lg text-[13px] transition-all shadow-md active:scale-[0.99] cursor-pointer" %>
+    <%= link_to "Cancel",
+    root_path,
+    class:
+      "px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-lg text-[13px] transition-all active:scale-[0.99] cursor-pointer" %>
+  </div>
+<% end %>

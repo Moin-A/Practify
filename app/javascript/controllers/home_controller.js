@@ -16,9 +16,7 @@ export default class extends Controller {
   }
 
   // This function is triggered by data-action="click->home#switch" in your HTML
-  switch(event) {
-    event.preventDefault()
-    
+  switch(event) { 
     // Get the clicked link element (not the SVG or text inside)
     const clickedIcon = event.currentTarget
     

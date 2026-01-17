@@ -8,12 +8,12 @@ class AddUserProfileTable < ActiveRecord::Migration[8.0]
       t.string :bio
       t.string :location
       t.jsonb :professional_info, default: {}
-    end
+    end unless table_exists?(:user_profiles)
 
     def down
       drop_table :user_profiles
     end
 
-    add_index :user_profiles, :user_id, unique: true unless index_exists?(:user_profiles, :user_id)
+    add_index :user_profiles, :user_id, unique: true unless index_exists?(:user_profiles, :user_id) unless index_exists?(:user_profiles, :user_id)
   end
 end

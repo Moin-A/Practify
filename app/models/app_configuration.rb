@@ -2,11 +2,12 @@
     preference :some_setting, :string, default: "default_value"
 
     preference :sidebar_menu_items, :array, default: [
-      { name: "Home", icon: "home", path: "/home" },
-      { name: "Calendar", icon: "calendar", path: "/calendar" },
-      { name: "Clients", icon: "clients", path: "/clients" },
-      { name: "Billing", icon: "billing", path: "/billing" },
-      { name: "Settings", icon: "settings", path: "/settings" }
+      { name: "Home", icon: "home", path: :root_path },
+      { name: "Calendar", icon: "calendar", path: :edit_user_profile_path },
+      { name: "Clients", icon: "clients", path: :edit_user_profile_path },
+      { name: "Billing", icon: "billing", path: :edit_user_profile_path },
+      { name: "Settings", icon: "settings", path: :edit_user_profile_path },
+      { name: "Profile", icon: "User", path: :edit_user_profile_path }
     ]
 
 

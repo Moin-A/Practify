@@ -1,4 +1,10 @@
 <%# Dashboard Main Container %>
-<div class="mx-auto px-2 py-2"  data-controller="home">
- <%= render HomePage::HomeComponent.new(current_user: @current_user) %>
+<div
+  class="
+    mx-auto px-2 py-2 flex min-h-screen bg-slate-50 font-sans text-slate-900
+  "
+  data-controller="home"
+>
+  <%= render NavComponent.new(current_user: @current_user) %>
+  <%= render HomePage::HomeComponent.new(current_user: @current_user) %>
 </div>
