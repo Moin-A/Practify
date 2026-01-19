@@ -23,7 +23,20 @@
         <%= svg_inner_content(item[:icon]) %>
       <% end %>
       
-      <%= item[:name] %>       
+      <%= item[:name] %>    
+      <% if item[:name] == "Profile" %>
+      <span class="inline-block px-1.5 py-0.5 border border-black text-[9px] font-light  tracking-[0.15em] leading-none rounded-sm text-black bg-transparent">
+      <%if current_user.super_admin? %>
+        SuperAdmin
+      <% elsif current_user.admin? %>
+        Admin
+      <% elsif current_user.client? %>
+        Client
+      <% else %>
+        User
+      <% end %>
+      </span>
+      <% end %>   
     <% end %>
   <% end %>
 </nav>

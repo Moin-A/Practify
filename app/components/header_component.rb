@@ -1,6 +1,6 @@
 class HeaderComponent < ApplicationComponent
   def initialize(title: nil, subtitle: nil)
-    @title = title || "Good morning, Dr Smith"
-    @subtitle = subtitle || "Here's your practice overview for today"
+    @title = title
+    @subtitle = subtitle || I18n.t("practice_overview_title")
   end
 end

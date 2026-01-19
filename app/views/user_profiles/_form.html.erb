@@ -1,6 +1,6 @@
 <% user_profile ||= @user_profile %>
 
-<%= form_with model: user_profile, local: true, class: "flex-1 p-8 overflow-y-auto max-w-7xl mx-auto"   do |form| %>
+<%= form_with model: user_profile, local: true, multipart: true, class: "flex-1 p-8 overflow-y-auto max-w-7xl mx-auto"   do |form| %>
   <% if user_profile.errors.any? %>
     <div class="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4 mb-6">
       <h2 class="font-bold mb-2">
@@ -80,8 +80,8 @@
     </div>
 
     <div class="space-y-1.5">
-      <%= form.label :profile_picture,
-                 "Profile Picture URL",
+      <%= form.label :avatar,
+                 "Profile Picture",
                  class:
                    "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
       <div class="relative group">
@@ -102,11 +102,18 @@
             stroke-linejoin="round"
           ><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 21-3.35-3.35"/></svg>
         </div>
-        <%= form.url_field :profile_picture,
-                       placeholder: "https://example.com/image.jpg",
-                       class:
-                         "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB]" %>
+        <%= form.file_field :avatar,
+                        accept: "image/*",
+                        class:
+                          "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand/10 file:text-brand hover:file:bg-brand/20 file:cursor-pointer" %>
       </div>
+      <% if user_profile.avatar.attached? %>
+        <div class="mt-2">
+          <p class="text-xs text-gray-600 mb-1">Current avatar:</p>
+          <%= image_tag user_profile.avatar,
+          class: "w-20 h-20 object-cover rounded-lg border border-gray-200" %>
+        </div>
+      <% end %>
     </div>
 
     <div class="space-y-1.5">

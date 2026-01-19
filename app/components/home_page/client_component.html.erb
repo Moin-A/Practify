@@ -1,7 +1,7 @@
 <main class="flex-1 p-8 overflow-y-auto max-w-7xl mx-auto">
-  <%= render HeaderComponent.new(title: @title, subtitle: @subtitle) %>
-   <main class="flex-1 overflow-auto bg-slate-50/50">
-  <div class="mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <%= render HeaderComponent.new(title: title, subtitle: @subtitle) %>
+   <div class="flex-1 overflow-auto bg-slate-50/50">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     
     <%# --- Left Column (Main Content) --- %>
     <div class="lg:col-span-2 space-y-6">
