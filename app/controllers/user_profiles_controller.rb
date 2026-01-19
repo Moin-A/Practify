@@ -30,15 +30,6 @@ class UserProfilesController < ApplicationController
     #   format.turbo_stream { render turbo_stream: turbo_stream.update("user_profile", partial: "user_profiles/form", locals: { user_profile: @user_profile }) }
     #   format.html { render :edit }
     # end
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          "dashboard_content",
-          partial: "user_profiles/form",
-          locals: { user_profile: @user_profile }
-        )
-      end
-    end
   end
 
   def update
