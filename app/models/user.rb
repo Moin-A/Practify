@@ -4,7 +4,7 @@ class User < ApplicationRecord
   has_many :role_users, dependent: :destroy
   has_many :roles, through: :role_users
   has_one :user_profile, dependent: :destroy
-  has_many :calendars, dependent: :destroy
+  has_one :calendar, dependent: :destroy
   has_many :appointments, dependent: :destroy
   validates :email_address, presence: true, uniqueness: true
   normalizes :email_address, with: ->(e) { e.strip.downcase }
@@ -27,6 +27,13 @@ class User < ApplicationRecord
   def admin?
     roles.exists?(name: "admin")
   end
+
+  def calendar
+    # super calls the original has_one getter
+    # if it's nil, we create a new one immediately
+    super || create_calendar(timezone: Time.zone.name, name: "Default Calendar")
+  end
+
   private
   def set_default_role
     role = Role.find_by(name: "Client")
@@ -34,6 +41,6 @@ class User < ApplicationRecord
   end
 
   def create_user_profile
-    UserProfile.find_or_create_by(user_id: self.id)
+    UserProfile.find_or_create_by!(user_id: self.id, timezone: Time.zone.name)
   end
 end

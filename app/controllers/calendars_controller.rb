@@ -6,6 +6,7 @@ class CalendarsController < ApplicationController
   end
 
   def show
+    @calendar = current_user.calendar
   end
 
   def new
@@ -41,7 +42,7 @@ class CalendarsController < ApplicationController
   private
 
   def set_calendar
-    @calendar = current_user.calendars.find(params[:id])
+    @calendar = current_user.calendar
   end
 
   def calendar_params

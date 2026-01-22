@@ -26,6 +26,7 @@ module Practify
     # Note: config.autoload_lib already adds lib to autoload_paths and eager_load_paths
 
     # Configure generators to use RSpec instead of Minitest
+    config.time_zone = "Asia/Kolkata"
     config.generators do |g|
       g.test_framework :rspec,
         fixtures: false,
