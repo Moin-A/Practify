@@ -22,6 +22,7 @@ class NavComponent < ApplicationComponent
         public_send("root_path") unless Rails.application.routes.named_routes.key?(path.to_sym)
         public_send(path, user_profile.calendar) if path.to_sym == :calendar_path
         public_send(path, user_profile)
+        public_send(path, user_profile.calendar) if path.to_sym == :calendar_schedule_path
     end
 
     def svg_attributes

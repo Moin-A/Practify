@@ -1,0 +1,11 @@
+<div class="space-y-4" id="slots_list">
+  <% if slots&.any? %>
+    <% slots.each do |slot| %>
+      <%= render "schedules/slot_row", slot: slot %>
+    <% end %>
+  <% else %>
+    <div class="text-center py-8 text-slate-400">
+      <p>No slots available for this date.</p>
+    </div>
+  <% end %>
+</div>

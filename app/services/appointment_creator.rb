@@ -1,14 +1,14 @@
 class AppointmentCreator
-  def initialize(slot_id:, user:, appointment_params: {})
-    @slot_id = slot_id
-    @user = user
+  attr_reader :appointment_params, :slot
+  def initialize(slot:, appointment_params: {})
     @appointment_params = appointment_params
+    @slot = slot
   end
 
   def create
     return false unless slot_available?
 
-    @appointment = slot.build_appointment(@appointment_params.merge(user: @user))
+    @appointment = slot.build_appointment(appointment_params)
     @appointment.save
   end
 
@@ -22,9 +22,6 @@ class AppointmentCreator
 
   private
 
-  def slot
-    @slot ||= Slot.find_by(id: @slot_id)
-  end
 
   def slot_available?
     slot&.available?

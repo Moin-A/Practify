@@ -20,7 +20,7 @@ module Calendars
     end
 
     def render_in(view_context, &block)
-      @block = block      
+      @block = block
       view_context.render(
         partial: partial_name,
         locals: locals
@@ -28,7 +28,6 @@ module Calendars
     end
 
     def locals(&block)
-      
       @locals.merge(
         passed_block: @block,
         calendar: self,

@@ -33,8 +33,6 @@ class AppointmentsController < ApplicationController
     end
   end
 
-  def edit
-  end
 
   def update
     if @appointment.update(appointment_params)
@@ -51,7 +49,7 @@ class AppointmentsController < ApplicationController
 
   private
 
-  
+
   def set_slot
     @slot = Slot.find(appointment_params[:slot_id])
   end

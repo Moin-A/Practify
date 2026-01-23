@@ -18,9 +18,11 @@ class SlotsController < ApplicationController
 
     respond_to do |format|
       if @slot.save
+        @slots = @calendar.slots_for_date(@slot.start_at.to_date)
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.prepend("slots_list", partial: "schedules/slot_row", locals: { slot: @slot }),
+            turbo_stream.replace("slots_list", partial: "schedules/slot_list", locals: { slots: @slots }),
+            turbo_stream.update("current_date", @slot.start_at.strftime("%A, %B %d, %Y")),
             turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Slot was successfully created!", type: :notice }),
             turbo_stream.update("new_slot_form", "")
           ]
@@ -64,7 +66,7 @@ class SlotsController < ApplicationController
       raise ActiveRecord::RecordNotFound, "Calendar not found"
     end
   end
-  
+
 
   def set_slot
     @calendar = current_user.calendar
