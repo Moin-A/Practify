@@ -1,6 +1,6 @@
 class SlotsController < ApplicationController
+  before_action :set_calendar, only: [ :create, :new, :index ]
   before_action :set_slot, only: [ :show, :edit, :update, :destroy ]
-  before_action :set_calendar
 
   def index
     @slots = @calendar.slots
@@ -16,10 +16,18 @@ class SlotsController < ApplicationController
   def create
     @slot = @calendar.slots.build(slot_params)
 
-    if @slot.save
-      redirect_to calendar_slot_path(@calendar, @slot), notice: "Slot was successfully created."
-    else
-      render :new, status: :unprocessable_entity
+    respond_to do |format|
+      if @slot.save
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.prepend("slots_list", partial: "schedules/slot_row", locals: { slot: @slot }),
+            turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Slot was successfully created!", type: :notice }),
+            turbo_stream.update("new_slot_form", "")
+          ]
+        end
+      else
+        format.html { render :new, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -35,17 +43,31 @@ class SlotsController < ApplicationController
   end
 
   def destroy
+    start_date = params[:start_date]
     @slot.destroy
-    redirect_to calendar_slots_path(@calendar), notice: "Slot was successfully destroyed."
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Slot was successfully destroyed!", type: :notice }),
+          turbo_stream.remove("slot_#{@slot.id}")
+        ]
+      end
+    end
   end
 
   private
 
   def set_calendar
-    @calendar = current_user.calendars.find(params[:calendar_id])
+    @calendar = current_user.calendar
+    # Verify the calendar_id matches if provided (for nested routes)
+    if params[:calendar_id].present? && @calendar.id.to_s != params[:calendar_id].to_s
+      raise ActiveRecord::RecordNotFound, "Calendar not found"
+    end
   end
+  
 
   def set_slot
+    @calendar = current_user.calendar
     @slot = @calendar.slots.find(params[:id])
   end
 

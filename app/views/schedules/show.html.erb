@@ -1,0 +1,20 @@
+<div class="max-w-7xl mx-auto py-8">
+  <h1 class="text-2xl font-bold text-slate-800 mb-8">Schedule</h1>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <%# Calendar Section %>
+    <div class="">
+     
+      <%= month_calendar(events: @meetings) do |date, meetings| %>
+        <%= date %>
+      <% end %>
+    </div>
+
+    <%# Appointments Section %>
+   
+      <div class="w-full max-w-none mx-0 gap-6">        
+        <%= render template: "appointments/show", locals: { date: @date, slots: @slots, calendar: @calendar } %>
+      </div>
+   
+  </div>
+</div>

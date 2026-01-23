@@ -2,10 +2,7 @@ class Slot < ApplicationRecord
   belongs_to :calendar
   has_one :appointment, dependent: :destroy
 
-  enum status: {
-    draft: 0,
-    available: 1
-  }
+  enum :status, { draft: 0, available: 1 }
 
   validates :start_at, presence: true
   validates :end_at, presence: true

@@ -1,0 +1,76 @@
+<div class="max-w-2xl mx-auto py-8 px-4">
+  <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+    <div class="flex justify-between items-start mb-6">
+      <div class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h2 class="text-xl font-bold text-slate-700">Slot Details</h2>
+      </div>
+      <div class="flex items-center gap-2">
+        <%= link_to "Edit", edit_calendar_slot_path(@calendar, @slot), 
+            class: "px-4 py-1.5 bg-slate-100 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-200 transition-all" %>
+        <%= link_to calendar_slots_path(@calendar), 
+            class: "text-slate-400 hover:text-slate-600 transition-colors" do %>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        <% end %>
+      </div>
+    </div>
+
+    <hr class="border-slate-100 mb-6">
+
+    <div class="space-y-4">
+      <div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-lg">
+        <div class="flex items-center gap-4">
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <div>
+            <p class="text-xs text-slate-400 font-medium">Start Time</p>
+            <p class="text-sm font-bold text-slate-700">
+              <%= @slot.start_at.strftime("%B %d, %Y at %I:%M %p") %>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-lg">
+        <div class="flex items-center gap-4">
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <div>
+            <p class="text-xs text-slate-400 font-medium">End Time</p>
+            <p class="text-sm font-bold text-slate-700">
+              <%= @slot.end_at.strftime("%B %d, %Y at %I:%M %p") %>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-lg">
+        <div class="flex items-center gap-4">
+          <span class="px-2.5 py-0.5 <%= @slot.available? ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-orange-50 text-orange-500 border-orange-100' %> text-[10px] font-bold rounded-full border uppercase tracking-tighter">
+            <%= @slot.status %>
+          </span>
+          <div>
+            <p class="text-xs text-slate-400 font-medium">Status</p>
+            <p class="text-sm font-bold text-slate-700 capitalize"><%= @slot.status %></p>
+          </div>
+        </div>
+      </div>
+
+      <% if @slot.appointment %>
+        <div class="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-lg">
+          <p class="text-xs text-blue-600 font-medium mb-1">Appointment</p>
+          <p class="text-sm font-bold text-blue-800">
+            <%= link_to "View Appointment", appointment_path(@slot.appointment), 
+                class: "hover:underline" %>
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

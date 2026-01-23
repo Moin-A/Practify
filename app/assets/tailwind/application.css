@@ -95,6 +95,11 @@
     .simple-calendar .current-week {
       @apply bg-slate-50;
     }
+
+    .checked-date {
+      @apply bg-emerald-50;
+      @apply ring-1 ring-emerald-200;
+    }
   }
 
 

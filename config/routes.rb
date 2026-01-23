@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   resources :user_profiles, only: [ :edit, :update ]
   resources :calendars do
     resources :slots
+    resource :schedule, only: [ :show ]
   end
   resources :appointments
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

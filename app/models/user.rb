@@ -29,9 +29,7 @@ class User < ApplicationRecord
   end
 
   def calendar
-    # super calls the original has_one getter
-    # if it's nil, we create a new one immediately
-    super || create_calendar(timezone: Time.zone.name, name: "Default Calendar")
+    super || CalendarManager.create_default_calendar(self)
   end
 
   private

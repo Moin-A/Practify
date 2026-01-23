@@ -51,6 +51,7 @@ module Calendars
       td_class << "next-month" if start_date.month != day.month && day > start_date
       td_class << "current-month" if start_date.month == day.month
       td_class << "has-events" if sorted_events.fetch(day, []).any?
+      td_class << "checked-date" if day == start_date
 
       td_class
     end
@@ -71,8 +72,12 @@ module Calendars
       view_context.url_for(@params.merge(start_date_param => (date_range.first - date_range.count.days).iso8601))
     end
 
-    def url_for_today_view
-      view_context.url_for(@params.merge(start_date_param => Time.current.to_date.iso8601))
+    def url_for_today_view(date = Time.current.to_date)
+      view_context.url_for(@params.merge(start_date_param => date.iso8601))
+    end
+
+    def url_for_checked_date(date)
+      view_context.url_for(@params.merge(start_date_param => date.iso8601))
     end
 
     def date_range

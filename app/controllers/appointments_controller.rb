@@ -1,4 +1,7 @@
 class AppointmentsController < ApplicationController
+  include DateParsing
+  attr_reader :slot
+
   before_action :set_appointment, only: [ :show, :edit, :update, :destroy ]
   before_action :set_slot, only: [ :new, :create ]
 
@@ -7,6 +10,9 @@ class AppointmentsController < ApplicationController
   end
 
   def show
+    @date = parse_date_param
+    @calendar = current_user.calendar
+    @slots = @calendar.slots_for_date(@date)
   end
 
   def new
@@ -14,13 +20,15 @@ class AppointmentsController < ApplicationController
   end
 
   def create
-    slot_id = params[:slot_id] || appointment_params[:slot_id]
-    @slot = Slot.find(slot_id) if slot_id
-    @appointment = @slot&.build_appointment(appointment_params.except(:slot_id).merge(user: current_user))
+    creator = AppointmentCreator.new(
+      slot: slot,
+      appointment_params: appointment_params
+    )
 
-    if @appointment&.save
-      redirect_to appointment_path(@appointment), notice: "Appointment was successfully created."
+    if creator.create
+      redirect_to appointment_path(creator.appointment), notice: "Appointment was successfully created."
     else
+      @appointment = creator.appointment
       render :new, status: :unprocessable_entity
     end
   end
@@ -43,9 +51,9 @@ class AppointmentsController < ApplicationController
 
   private
 
+  
   def set_slot
-    slot_id = params[:slot_id] || params.dig(:appointment, :slot_id)
-    @slot = Slot.find(slot_id) if slot_id
+    @slot = Slot.find(appointment_params[:slot_id])
   end
 
   def set_appointment

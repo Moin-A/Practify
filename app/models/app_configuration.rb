@@ -3,7 +3,7 @@
 
     preference :sidebar_menu_items, :array, default: [
       { name: "Home", icon: "home", path: :root_path },
-      { name: "Calendar", icon: "calendar", path: :calendar_path },
+      { name: "Calendar", icon: "calendar", path: :calendar_schedule_path },
       { name: "Clients", icon: "clients", path: :edit_user_profile_path },
       { name: "Billing", icon: "billing", path: :edit_user_profile_path },
       { name: "Settings", icon: "settings", path: :edit_user_profile_path },

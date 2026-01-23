@@ -42,7 +42,7 @@ class CalendarsController < ApplicationController
   private
 
   def set_calendar
-    @calendar = current_user.calendar
+    @calendar = current_user.calendars.find(params[:id])
   end
 
   def calendar_params
