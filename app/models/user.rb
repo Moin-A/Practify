@@ -4,7 +4,7 @@ class User < ApplicationRecord
   has_many :role_users, dependent: :destroy
   has_many :roles, through: :role_users
   has_one :user_profile, dependent: :destroy
-  has_one :calendar, dependent: :destroy
+  has_one :calendar, dependent: :destroy, inverse_of: :user
   has_many :appointments, dependent: :destroy
   validates :email_address, presence: true, uniqueness: true
   normalizes :email_address, with: ->(e) { e.strip.downcase }
@@ -39,6 +39,6 @@ class User < ApplicationRecord
   end
 
   def create_user_profile
-    UserProfile.find_or_create_by!(user_id: self.id, timezone: Time.zone.name)
+    UserProfile.find_or_create_by!(user_id: self.id, first_name: email_address.split("@").first, last_name: email_address.split("@").last)
   end
 end

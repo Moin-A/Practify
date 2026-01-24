@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resources :calendars do
     resources :slots
     resource :schedule, only: [ :show ]
+    post "release_all_slots", to: "slots#release_all_slots"
   end
   resources :appointments
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

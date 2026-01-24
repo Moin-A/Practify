@@ -1,5 +1,5 @@
 class Calendar < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, inverse_of: :calendar
   has_many :slots, dependent: :destroy
 
   validates :timezone, presence: true

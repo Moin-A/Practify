@@ -19,10 +19,15 @@ class NavComponent < ApplicationComponent
     end
 
     def target_path(path, user_profile)
-        public_send("root_path") unless Rails.application.routes.named_routes.key?(path.to_sym)
-        public_send(path, user_profile.calendar) if path.to_sym == :calendar_path
-        public_send(path, user_profile)
-        public_send(path, user_profile.calendar) if path.to_sym == :calendar_schedule_path
+        if path.to_sym === :root_path
+            public_send("root_path")
+        elsif path.to_sym === :calendar_path
+            public_send("calendar_path", user_profile.calendar)
+        elsif path.to_sym === :edit_user_profile_path
+            public_send("edit_user_profile_path", user_profile)
+        elsif path.to_sym === :calendar_schedule_path
+            public_send("calendar_schedule_path", user_profile.calendar)
+        end
     end
 
     def svg_attributes

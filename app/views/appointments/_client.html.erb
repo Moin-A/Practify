@@ -4,9 +4,9 @@
   "
 >
 
-  <div class="flex justify-between items-start mb-2">
-    <div class="flex flex-col">
-      <div class="flex items-center gap-2">
+  <div class="justify-between items-start mb-2">
+    <div class="flex flex-col my-4">
+      <div class="flex items-center gap-2 mb-4">
         <svg
           class="w-5 h-5 text-emerald-500"
           fill="none"
@@ -20,7 +20,16 @@
             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <h2 class="text-xl font-bold text-slate-700">Interview Slots</h2>
+        <h2 class="text-lg font-bold text-slate-700">Interview Slots</h2>
+        <p class="text-xs text-slate-400 font-medium  mt-0.5" id="current_date">
+          <% if params[:start_date] %>
+            <%= Date.parse(params[:start_date]).strftime("%A, %B %d, %Y") %>
+          <% else %>
+            <%= Date.current.strftime("%A, %B %d, %Y") %>
+          <% end %>
+        </div>  
+        <%= render "schedules/slot_list", slots: slots %>
+      </p>
       </div>
     </div>
   </div>

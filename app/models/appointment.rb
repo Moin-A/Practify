@@ -4,7 +4,8 @@ class Appointment < ApplicationRecord
 
   validates :user_id, presence: true
   validates :slot_id, presence: true, uniqueness: true
-  validate :slot_must_be_available
+  validate :slot_must_be_available, if: -> { slot.present? }
+
 
   private
 

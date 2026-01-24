@@ -1,4 +1,4 @@
-<main class="flex-1 p-8 overflow-y-auto max-w-7xl mx-auto">
+<main class="flex-1 overflow-y-auto max-w-7xl mx-auto">
   <%= render HeaderComponent.new(title: title, subtitle: @subtitle) %>
    <div class="flex-1 overflow-auto bg-slate-50/50">
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -45,7 +45,8 @@
         </div>
         <p class="text-xs text-slate-400 mb-4">Available slots for Tomorrow</p>
         <div class="grid grid-cols-3 gap-3 mb-4">
-          <% ["9:00 AM", "10:00 AM", "11:00 AM", "2:00 PM", "3:00 PM", "4:00 PM"].each do |time| %>
+        <% debugger %>
+          <% next_day_available_slots.each do |time| %>
             <button class="py-3 border border-slate-100 rounded-xl text-sm font-bold text-slate-700 hover:border-emerald-500 hover:text-emerald-500 transition-all"><%= time %></button>
           <% end %>
         </div>

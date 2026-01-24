@@ -3,6 +3,7 @@ module HomePage
     attr_accessor :current_user
     def initialize(current_user: nil)
       @current_user = current_user
+      @calendar = current_user.calendar
     end
 
     def component

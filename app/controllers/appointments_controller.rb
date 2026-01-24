@@ -1,4 +1,5 @@
 class AppointmentsController < ApplicationController
+  load_and_authorize_resource
   include DateParsing
   attr_reader :slot
 

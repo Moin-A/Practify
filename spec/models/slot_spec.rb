@@ -19,6 +19,12 @@ RSpec.describe Slot, type: :model do
       expect(slot.errors[:end_at]).to include("can't be blank")
     end
 
+    it 'required a slot having a present or future start_at' do
+      slot = build(:slot, start_at: 1.day.ago, calendar: create(:calendar, user: create(:user)))
+      expect(slot).not_to be_valid
+      expect(slot.errors[:start_at]).to include("must be present or future")
+    end
+
     it 'requires end_at to be after start_at' do
       slot = build(:slot, start_at: 1.day.from_now, end_at: 1.day.ago)
       expect(slot).not_to be_valid
@@ -31,6 +37,7 @@ RSpec.describe Slot, type: :model do
       expect(slot.errors[:calendar_id]).to include("can't be blank")
     end
   end
+
 
   describe 'status enum' do
     it 'has draft status by default' do

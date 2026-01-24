@@ -34,7 +34,7 @@
     </span>
   </div>
   <div class="flex items-center gap-2">
-    <% if slot.available? %>
+    <% if slot.available? && current_user.client? %>
       <%= button_to "Book",
       appointments_path(slot_id: slot.id),
       method: :post,

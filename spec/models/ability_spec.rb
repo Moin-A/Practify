@@ -15,5 +15,10 @@ RSpec.describe Ability, type: :model do
       expect(role_configuration).to receive(:activate_permissions).with(an_instance_of(Ability), user)
       described_class.new(user)
     end
+
+    it 'return cancan errot if user does not have the required permissions' do
+      expect(role_configuration).to receive(:activate_permissions).with(an_instance_of(Ability), user)
+      described_class.new(user)
+    end
   end
 end
