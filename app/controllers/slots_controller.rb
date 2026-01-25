@@ -65,7 +65,8 @@ class SlotsController < ApplicationController
   end
 
   def release_all_slots
-  @slots =@calendar.slots_for_date(params[:start_date].to_date)
+  date = params[:start_date].present? ? params[:start_date].to_date : Date.current  
+  @slots =@calendar.slots_for_date(date)
 
   begin
     @slots.map { |slot| slot.available! unless slot.available? }.any?
