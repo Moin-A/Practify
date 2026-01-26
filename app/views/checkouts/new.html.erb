@@ -1,0 +1,178 @@
+<style>
+  /* Ensure Razorpay modal appears on top */
+  .razorpay-container,
+  .razorpay-checkout-frame {
+    z-index: 999999 !important;
+  }
+  iframe[src*="razorpay"] {
+    z-index: 999999 !important;
+  }
+</style>
+<div class="max-w-lg mx-auto py-8 px-4">
+  <!-- Header -->
+  <div class="text-center mb-8">
+    <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl mb-4 shadow-lg shadow-emerald-500/25">
+      <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+      </svg>
+    </div>
+    <h1 class="text-2xl font-bold text-slate-800 mb-1">Complete Payment</h1>
+    <p class="text-slate-500">Secure payment powered by Razorpay</p>
+  </div>
+
+  <!-- Flash Messages -->
+  <% if flash[:alert] %>
+    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 flex items-center gap-3">
+      <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+      </svg>
+      <span><%= flash[:alert] %></span>
+    </div>
+  <% end %>
+
+  <% if @order && @razorpay_key %>
+    <!-- Amount Card -->
+    <div class="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-6 mb-6 border border-slate-200">
+      <div class="flex justify-between items-center">
+        <span class="text-slate-600 font-medium">Amount to pay</span>
+        <span class="text-3xl font-bold text-slate-800">₹<%= number_with_precision(@amount / 100.0, precision: 2) %></span>
+      </div>
+    </div>
+
+    <!-- Order Info -->
+    <div class="bg-white rounded-xl p-4 mb-6 border border-slate-200">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-slate-500">Order ID</p>
+          <p class="font-mono text-sm text-slate-700"><%= @order.id %></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pay Button -->
+    <button id="pay-button" class="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/25 transition-all duration-200 flex items-center justify-center gap-3">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+      </svg>
+      Pay ₹<%= number_with_precision(@amount / 100.0, precision: 2) %> Securely
+    </button>
+
+    <!-- Security Note -->
+    <div class="mt-6 flex items-center justify-center gap-2 text-sm text-slate-500">
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+      </svg>
+      <span>Secured by Razorpay • 256-bit encryption</span>
+    </div>
+
+    <!-- Razorpay Checkout.js -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+      (function() {
+        function initRazorpay() {
+          var payButton = document.getElementById('pay-button');
+          if (!payButton) {
+            console.error('Pay button not found');
+            return;
+          }
+          
+          // Prevent double-binding
+          if (payButton.dataset.razorpayBound === 'true') return;
+          payButton.dataset.razorpayBound = 'true';
+
+          payButton.onclick = function(e) {
+            e.preventDefault();
+            
+            var options = {
+              key: '<%= @razorpay_key %>',
+              amount: <%= @amount %>,
+              currency: 'INR',
+              name: 'Practify',
+              description: 'Payment for services',
+              order_id: '<%= @order.id %>',
+              prefill: {
+                email: '<%= Current.user&.email_address %>',
+                name: '<%= Current.user&.email_address&.split('@')&.first %>'
+              },
+              theme: {
+                color: '#4F46E5'
+              },
+              handler: function(response) {
+                // Payment successful - submit to server for verification
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '<%= verify_checkout_path %>';
+                
+                var csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+                
+                var params = {
+                  authenticity_token: csrfToken,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_signature: response.razorpay_signature<% if @appointment_id %>,
+                  appointment_id: '<%= @appointment_id %>'<% end %>
+                };
+                
+                for (var key in params) {
+                  var input = document.createElement('input');
+                  input.type = 'hidden';
+                  input.name = key;
+                  input.value = params[key];
+                  form.appendChild(input);
+                }
+                
+                document.body.appendChild(form);
+                form.submit();
+              },
+              modal: {
+                ondismiss: function() {
+                  console.log('Payment cancelled');
+                }
+              }
+            };
+            
+          try {
+            console.log('Opening Razorpay with options:', options);
+            var rzp = new Razorpay(options);
+            rzp.on('payment.failed', function(response) {
+              console.error('Payment failed:', response.error);
+              alert('Payment failed: ' + response.error.description);
+            });
+            rzp.open();
+            console.log('Razorpay modal opened');
+          } catch (error) {
+            console.error('Razorpay error:', error);
+            alert('Unable to open payment gateway: ' + error.message);
+          }
+          };
+        }
+        
+        // Handle both full page loads and Turbo navigations
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initRazorpay);
+        } else {
+          initRazorpay();
+        }
+        document.addEventListener('turbo:load', initRazorpay);
+      })();
+    </script>
+
+  <% else %>
+    <!-- Error State -->
+    <div class="bg-red-50 border border-red-200 rounded-2xl p-8 text-center">
+      <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+      </div>
+      <h3 class="text-lg font-semibold text-red-800 mb-2">Unable to create order</h3>
+      <p class="text-red-600 mb-4">There was an error connecting to the payment gateway.</p>
+      <%= link_to "Try Again", new_checkout_path, class: "inline-block px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors" %>
+    </div>
+  <% end %>
+</div>

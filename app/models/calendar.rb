@@ -5,7 +5,7 @@ class Calendar < ApplicationRecord
   validates :timezone, presence: true
   validates :user_id, presence: true
 
-  def slots_for_date(date = Date.current)
+  def slots_for_date(date = Date.current)    
     start_of_day = date.beginning_of_day
     end_of_day = date.end_of_day
     slots.where(start_at: start_of_day..end_of_day)

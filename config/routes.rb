@@ -13,6 +13,12 @@ Rails.application.routes.draw do
     post "release_all_slots", to: "slots#release_all_slots"
   end
   resources :appointments
+
+  # Checkout / Payment flow (Razorpay Checkout.js)
+  get "checkout", to: "checkouts#new", as: :new_checkout
+  post "checkout/verify", to: "checkouts#verify", as: :verify_checkout
+  get "checkout/success", to: "checkouts#success", as: :checkout_success
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

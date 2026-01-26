@@ -6,3 +6,8 @@
 Rails.application.config.filter_parameters += [
   :passw, :email, :secret, :token, :_key, :crypt, :salt, :certificate, :otp, :ssn
 ]
+
+# Credit card sensitive data - NEVER log these
+Rails.application.config.filter_parameters += [
+  :number, :card_number, :verification_value, :cvv, :cvc, :cc_number
+]

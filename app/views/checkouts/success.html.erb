@@ -1,0 +1,65 @@
+<div class="max-w-lg mx-auto py-12 px-4">
+  <!-- Success Icon -->
+  <div class="text-center mb-8">
+    <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full mb-6 shadow-lg shadow-emerald-500/30">
+      <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+      </svg>
+    </div>
+    <h1 class="text-3xl font-bold text-slate-800 mb-2">Payment Successful!</h1>
+    <p class="text-slate-500">Your payment has been processed successfully.</p>
+  </div>
+
+  <% if @payment_method %>
+    <!-- Payment Details -->
+    <div class="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100 mb-8">
+      <div class="p-4 flex justify-between items-center">
+        <span class="text-slate-500">Amount</span>
+        <span class="text-xl font-bold text-slate-800"><%= @payment_method.display_amount %></span>
+      </div>
+      <div class="p-4 flex justify-between items-center">
+        <span class="text-slate-500">Transaction ID</span>
+        <span class="font-mono text-sm text-slate-700"><%= @payment_method.gateway_transaction_id %></span>
+      </div>
+      <div class="p-4 flex justify-between items-center">
+        <span class="text-slate-500">Order ID</span>
+        <span class="font-mono text-sm text-slate-700"><%= @payment_method.gateway_order_id %></span>
+      </div>
+      <div class="p-4 flex justify-between items-center">
+        <span class="text-slate-500">Gateway</span>
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+          <%= @payment_method.gateway_name %>
+        </span>
+      </div>
+      <% if @payment %>
+      <div class="p-4 flex justify-between items-center">
+        <span class="text-slate-500">Appointment</span>
+        <span class="text-slate-700">#<%= @payment.appointment_id %></span>
+      </div>
+      <% end %>
+      <div class="p-4 flex justify-between items-center">
+        <span class="text-slate-500">Status</span>
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+          <%= @payment_method.status.capitalize %>
+        </span>
+      </div>
+      <div class="p-4 flex justify-between items-center">
+        <span class="text-slate-500">Date</span>
+        <span class="text-slate-700"><%= @payment_method.created_at.strftime("%b %d, %Y at %I:%M %p") %></span>
+      </div>
+    </div>
+  <% elsif @transaction_id %>
+    <!-- Fallback: Just show transaction ID -->
+    <div class="bg-white rounded-2xl border border-slate-200 p-4 mb-8">
+      <div class="flex justify-between items-center">
+        <span class="text-slate-500">Transaction ID</span>
+        <span class="font-mono text-sm text-slate-700"><%= @transaction_id %></span>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Back to Home -->
+  <%= link_to root_path, class: "block w-full py-3 px-6 bg-slate-800 hover:bg-slate-900 text-white font-medium rounded-xl text-center transition-colors" do %>
+    Back to Home
+  <% end %>
+</div>

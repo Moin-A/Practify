@@ -1,45 +1,54 @@
 class AppointmentCreator
-  attr_reader :appointment_params, :slot, :errors
+  attr_reader :appointment_params, :slot, :appointment
+  
   def initialize(slot:, appointment_params: {})
     @appointment_params = appointment_params
     @slot = slot
     @errors = []
+    @appointment = nil
+  end
+
+  def errors
+    @errors
   end
 
   def create
-    return errors unless valid?
+    return false unless valid?
 
-    @appointment = slot.build_appointment(appointment_params)
-    @appointment.save
+    ActiveRecord::Base.transaction do
+      @appointment = slot.build_appointment(appointment_params)
+      # Payment is initialized but won't be saved (autosave: false)
+      # It will be saved later when payment_method is added during checkout
+      if @appointment.save
+        slot.update_column(:status, Slot.statuses[:booked])
+        true
+      else
+        @errors.concat(@appointment.errors.full_messages)
+        false
+      end
+    end
+  rescue StandardError => e
+    @errors << e.message
+    false
   end
 
   def valid?
     validate_duplicate_appointment
-    errors.empty?
+    validate_slot_available
+    @errors.empty?
   end
 
   private
-
-
-
-  def appointment
-    @appointment
-  end
-
-  def errors
-    @appointment&.errors || []
-  end
-
-  private
-
-
-  def slot_available?
-    slot&.available?
-  end
 
   def validate_duplicate_appointment
     if slot.appointment.present?
-      errors << "Appointment already exists for this slot"
+      @errors << "Appointment already exists for this slot"
+    end
+  end
+
+  def validate_slot_available
+    unless slot&.available?
+      @errors << "Slot is not available"
     end
   end
 end

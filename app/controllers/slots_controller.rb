@@ -65,7 +65,7 @@ class SlotsController < ApplicationController
   end
 
   def release_all_slots
-  date = params[:start_date].present? ? params[:start_date].to_date : Date.current  
+  date = params[:start_date].present? ? params[:start_date].to_date : Date.current
   @slots =@calendar.slots_for_date(date)
 
   begin

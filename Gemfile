@@ -87,3 +87,7 @@ end
 gem "omnes", "~> 0.2.2"
 
 gem "rails-controller-testing", "~> 1.0"
+
+# Payment processing
+gem "razorpay"
+gem "activemerchant"

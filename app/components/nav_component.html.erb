@@ -9,7 +9,7 @@
   </div>
 
   <nav class="flex-1 px-4 space-y-1"> 
-  <% Practify.config.sidebar_menu_items.each do |item| %>     
+  <% Practify.config.preferred_sidebar_menu_items.each do |item| %>     
     <%= link_to target_path(item[:path], user_profile), class: "flex items-center gap-3 px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-colors" do %>
       
       <%= tag.svg(**svg_attributes) do %>

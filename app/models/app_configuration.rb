@@ -1,6 +1,8 @@
   class AppConfiguration < Practify::Configuration
     preference :some_setting, :string, default: "default_value"
 
+    preference :encrypted_setting, :encrypted_string, default: "encrypted_valuehxahxbahxbahbxhabshxbxshb"
+
     preference :sidebar_menu_items, :array, default: [
       { name: "Home", icon: "home", path: :root_path },
       { name: "Calendar", icon: "calendar", path: :calendar_schedule_path },

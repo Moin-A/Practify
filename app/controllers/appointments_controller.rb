@@ -1,10 +1,10 @@
 class AppointmentsController < ApplicationController
-  load_and_authorize_resource
   include DateParsing
   attr_reader :slot
 
   before_action :set_appointment, only: [ :show, :edit, :update, :destroy ]
   before_action :set_slot, only: [ :new, :create ]
+  before_action :load_and_authorize_appointment, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @appointments = current_user.appointments
@@ -21,19 +21,33 @@ class AppointmentsController < ApplicationController
   end
 
   def create
+    return head :unprocessable_entity unless slot
+
+    authorize! :create, Appointment
+
     creator = AppointmentCreator.new(
       slot: slot,
-      appointment_params: appointment_params
+      appointment_params: appointment_params.merge(user: current_user)
     )
 
-    if creator.create
-      redirect_to appointment_path(creator.appointment), notice: "Appointment was successfully created."
-    else
-      @appointment = creator.appointment
-      render :new, status: :unprocessable_entity
+    respond_to do |format|
+      if creator.create
+        @appointment = creator.appointment
+        format.html { redirect_to appointment_path(@appointment), notice: "Appointment was successfully created." }
+        format.turbo_stream
+      else
+        @appointment = creator.appointment || Appointment.new
+        @errors = creator.errors
+        format.html { render :new, status: :unprocessable_entity }
+        format.turbo_stream { render :create, status: :unprocessable_entity }
+      end
     end
   end
 
+
+  def edit
+    # Edit action for CanCanCan compatibility
+  end
 
   def update
     if @appointment.update(appointment_params)
@@ -50,9 +64,13 @@ class AppointmentsController < ApplicationController
 
   private
 
+  def load_and_authorize_appointment
+    authorize! :manage, @appointment
+  end
 
   def set_slot
-    @slot = Slot.find(appointment_params[:slot_id])
+    slot_id = params.dig(:appointment, :slot_id) || params[:slot_id]
+    @slot = Slot.find(slot_id) if slot_id.present?
   end
 
   def set_appointment
