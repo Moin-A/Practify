@@ -3,8 +3,9 @@ class AppointmentsController < ApplicationController
   include DateParsing
   attr_reader :slot
 
-  before_action :set_appointment, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_appointment, only: [ :show, :update, :destroy ]
   before_action :set_slot, only: [ :new, :create ]
+
 
   def index
     @appointments = current_user.appointments
@@ -23,14 +24,19 @@ class AppointmentsController < ApplicationController
   def create
     creator = AppointmentCreator.new(
       slot: slot,
-      appointment_params: appointment_params
+      appointment_params: appointment_params.merge(user: current_user),
+      current_user: current_user
     )
-
-    if creator.create
-      redirect_to appointment_path(creator.appointment), notice: "Appointment was successfully created."
-    else
-      @appointment = creator.appointment
-      render :new, status: :unprocessable_entity
+    respond_to do |format|
+      format.turbo_stream do
+        if creator.create
+          render turbo_stream: [ turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Appointment was successfully created.", type: :notice }) ]
+        else
+          render turbo_stream: [
+            turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: creator.errors.join(", "), type: :alert })
+          ], status: :unprocessable_entity
+        end
+      end
     end
   end
 
@@ -60,6 +66,6 @@ class AppointmentsController < ApplicationController
   end
 
   def appointment_params
-    params.require(:appointment).permit(:notes, :slot_id)
+    params.require(:appointment).permit(:slot_id)
   end
 end
