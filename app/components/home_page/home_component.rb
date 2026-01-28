@@ -1,14 +1,15 @@
 module HomePage
 class HomeComponent < ApplicationComponent
-  def initialize(current_user: nil)
+  def initialize(current_user: nil, selected_slot_id: nil)
     @current_user = current_user
+    @selected_slot_id = selected_slot_id
   end
 
   def component
     if @current_user.super_admin?
       HomePage::SuperAdminComponent.new(current_user: @current_user)
     elsif @current_user.client?
-      HomePage::ClientComponent.new(current_user: @current_user)
+      HomePage::ClientComponent.new(current_user: @current_user, selected_slot_id: @selected_slot_id)
     elsif @current_user.therapist?
       HomePage::TherapistComponent.new(current_user: @current_user)
     elsif @current_user.admin?

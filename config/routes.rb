@@ -8,7 +8,11 @@ Rails.application.routes.draw do
   get "about", to: "pages#about"
   resources :user_profiles, only: [ :edit, :update ]
   resources :calendars do
-    resources :slots
+    resources :slots do
+      member do
+        post "confirm", to: "slots#confirm"
+      end
+    end
     resource :schedule, only: [ :show ]
     post "release_all_slots", to: "slots#release_all_slots"
   end

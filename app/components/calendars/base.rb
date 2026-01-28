@@ -88,7 +88,7 @@ module Calendars
     end
 
     def attribute
-      options.fetch(:attribute, :start_time).to_sym
+      options.fetch(:attribute, :start_at).to_sym
     end
 
     def end_attribute

@@ -100,6 +100,15 @@
       @apply bg-emerald-50;
       @apply ring-1 ring-emerald-200;
     }
+
+    .slot-selected {
+      border-color: #10b981 !important;
+      color: #10b981 !important;
+    }
+
+    .col-start-2 {
+      grid-column-start: 2;
+    }
   }
 
 

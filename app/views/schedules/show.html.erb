@@ -4,7 +4,6 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <%# Calendar Section %>
     <div class="lg:col-span-2 space-y-6">
-
       <%= month_calendar(events: @meetings) do |date, meetings| %>
         <%= date %>
       <% end %>

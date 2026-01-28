@@ -6,6 +6,7 @@ export default class extends Controller {
   // Light emerald shade for selected icon
   activeStyles = ["bg-emerald-50", "text-emerald-700", "font-medium"]
   inactiveStyles = ["text-slate-500"]
+  selectedSlot = ""
   
   connect() {
     // Set initial active icon
@@ -33,6 +34,17 @@ export default class extends Controller {
     // Add active styles to clicked icon
     this.activateIcon(clickedIcon)
     this.activeIcon = clickedIcon
+  }
+
+  selectSlot(event) {
+    try {
+      const slotId = event.currentTarget.dataset.slotId
+      this.selectedSlot = slotId
+      console.log("Selected slot:", slotId)
+    } catch (error) {
+      console.error("Error in selectSlot:", error)
+      throw error
+    }
   }
 
   activateIcon(element) {

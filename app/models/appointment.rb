@@ -1,6 +1,7 @@
 class Appointment < ApplicationRecord
   belongs_to :user
   belongs_to :slot
+  delegate :start_at, :end_at, :status, to: :slot
 
   validates :user_id, presence: true
   validates :slot_id, presence: true, uniqueness: true

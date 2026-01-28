@@ -1,6 +1,6 @@
 class SlotsController < ApplicationController
   before_action :set_calendar
-  load_and_authorize_resource through: :calendar, only: [ :show, :edit, :update, :destroy ]
+  load_and_authorize_resource only: [ :show, :edit, :update, :destroy, :confirm  ]
   before_action :authorize_calendar_for_slot_actions, only: [ :create, :new ]
 
   def index
@@ -30,11 +30,35 @@ class SlotsController < ApplicationController
         end
       else
 
+
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: @slot.errors.full_messages.to_sentence(words_connector: ", ", two_words_connector: ", ", last_word_connector: ", "), type: :alert }),
             turbo_stream.update("new_slot_form", "")
-          ]
+          ], status: :unprocessable_entity
+        end
+      end
+    end
+  end
+
+  def confirm
+    @slot = Slot.find(confirm_params_params[:id])
+
+
+    if @slot.status_changed? && @slot.errors.empty?
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Slot was successfully confirmed!", type: :notice })
+          ], status: :ok
+        end
+      end
+    else
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Slot is already booked!", type: :alert })
+          ], status: :unprocessable_entity
         end
       end
     end
@@ -65,7 +89,7 @@ class SlotsController < ApplicationController
   end
 
   def release_all_slots
-  date = params[:start_date].present? ? params[:start_date].to_date : Date.current  
+  date = params[:start_date].present? ? params[:start_date].to_date : Date.current
   @slots =@calendar.slots_for_date(date)
 
   begin
@@ -107,6 +131,10 @@ end
 
 
   def slot_params
-    params.require(:slot).permit(:start_at, :end_at, :status)
+    params.require(:slot).permit(:start_at, :end_at, :status, :slot_id)
+  end
+
+  def confirm_params_params
+    params.permit(:id)
   end
 end

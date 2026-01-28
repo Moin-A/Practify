@@ -92,7 +92,7 @@ RSpec.describe "Slots", type: :request do
       end
 
       it "renders the new template" do
-        post calendar_slots_path(calendar), params: invalid_attributes
+        post calendar_slots_path(calendar), params: invalid_attributes, headers: { "Accept" => "text/vnd.turbo-stream.html" }
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -116,9 +116,33 @@ RSpec.describe "Slots", type: :request do
     end
   end
 
+  describe "POST /calendars/:calendar_id/slots/:id/confirm" do
+    let(:other_user) { create(:user) }
+    let(:other_calendar) { create(:calendar, user: other_user) }
+    let(:other_slot) { create(:slot, calendar: other_calendar, status: "available") }
+    let(:slot) { create(:slot, calendar: calendar, user: user, status: "available") }
 
 
 
+    it "returns turbo stream format response" do
+      post confirm_calendar_slot_path(calendar, slot), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it "requires slot_id param" do
+      expect { post confirm_calendar_slot_path(calendar, slot_id: nil) }.to raise_error(ActionController::UrlGenerationError)
+    end
+
+    context "when slot is already booked" do
+      let(:booked_slot) { create(:slot, calendar: calendar, status: "booked") }
+
+      it "renders alert message via turbo stream" do
+        post confirm_calendar_slot_path(calendar, booked_slot), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include("Slot is already booked!")
+      end
+    end
+  end
 
   describe "authentication requirement" do
     it "requires authentication" do
