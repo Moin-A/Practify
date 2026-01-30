@@ -1,0 +1,7 @@
+<%= calendar do %>
+  <p>Hello from the block!</p>
+<% end %>
+<%= form_with model: @calendar, url: calendars_path do |form| %>
+  <%= form.text_field :name %>
+  <%= form.submit "Create Calendar" %>
+<% end %>

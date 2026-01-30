@@ -1,0 +1,11 @@
+<% if current_user.client? %>
+
+  <%= render "appointments/client", date: @date, slots: @slots, calendar: @calendar %>
+
+<% elsif current_user.super_admin? %>
+
+  <%= render "appointments/superadmin",
+  date: @date,
+  slots: @slots,
+  calendar: @calendar %>
+<% end %>

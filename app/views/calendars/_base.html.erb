@@ -1,0 +1,7 @@
+<div>
+  <h1>Calendar Base</h1>
+  <% month_days_array.each do |month| %>
+    <%= month %>
+  <% end %>
+  <% passed_block.call.html_safe if passed_block %>
+</div>
