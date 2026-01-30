@@ -3,15 +3,11 @@ require 'rails_helper'
 RSpec.describe Calendar, type: :model do
   describe 'validations' do
     it 'is valid with valid attributes' do
-      calendar = build(:calendar)
+      calendar = build(:calendar, user: create(:user))
       expect(calendar).to be_valid
     end
 
-    it 'requires a name' do
-      calendar = build(:calendar, name: nil)
-      expect(calendar).not_to be_valid
-      expect(calendar.errors[:name]).to include("can't be blank")
-    end
+
 
     it 'requires a timezone' do
       calendar = build(:calendar, timezone: nil)

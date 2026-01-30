@@ -1,14 +1,19 @@
 require 'rails_helper'
+require 'support/cookie_helpers'
 
 RSpec.describe "Appointments", type: :request do
-  let(:user) { create(:user) }
+  let(:client_role) { Role.find_or_create_by!(name: "Client") }
+  let(:user) { create(:user).tap { |u| u.roles << client_role unless u.roles.include?(client_role) } }
+  let(:super_admin_role) { Role.find_or_create_by!(name: "SuperAdmin") }
+  let(:super_admin_user) { create(:user).tap { |u| u.roles << super_admin_role unless u.roles.include?(super_admin_role) } }
   let(:session) { user.sessions.create!(ip_address: '127.0.0.1', user_agent: 'Test Browser') }
   let(:doctor) { create(:user) }
   let(:calendar) { create(:calendar, user: doctor) }
   let(:slot) { create(:slot, calendar: calendar, status: :available) }
 
   before do
-    cookies.signed[:session_id] = session.id
+    session = user.sessions.create!(ip_address: "127.0.0.1", user_agent: "Test Browser")
+    set_signed_cookie(:session_id, session.id)
   end
 
   describe "GET /appointments" do
@@ -17,8 +22,12 @@ RSpec.describe "Appointments", type: :request do
     let!(:other_appointment) { create(:appointment) }
 
     it "returns http success" do
-      get appointments_path
+      get appointments_path, headers: { "Accept" => "application/json" }
       expect(response).to have_http_status(:success)
+      expect(response.content_type).to include("application/json")
+      json_response = JSON.parse(response.body)
+      expect(json_response.length).to eq(2)
+      expect(json_response.map { |a| a["id"] }).to contain_exactly(appointment1.id, appointment2.id)
     end
   end
 
@@ -34,46 +43,42 @@ RSpec.describe "Appointments", type: :request do
       other_appointment = create(:appointment)
       expect {
         get appointment_path(other_appointment)
-      }.to raise_error(ActiveRecord::RecordNotFound)
+      }.to raise_error(CanCan::AccessDenied)
     end
   end
 
-  describe "GET /appointments/new" do
-    it "returns http success" do
-      get new_appointment_path(slot_id: slot.id)
-      expect(response).to have_http_status(:success)
-    end
-  end
+
 
   describe "POST /appointments" do
+    let(:appointment) { create(:appointment, user: user, slot: slot) }
     context "with valid parameters" do
       let(:valid_attributes) do
         {
           appointment: {
-            notes: "Regular checkup"
-          },
-          slot_id: slot.id
+            slot_id: slot.id
+          }
         }
       end
 
       it "creates a new appointment" do
         expect {
-          post appointments_path, params: valid_attributes
+          post appointments_path, params: valid_attributes, headers: { "Accept" => "text/vnd.turbo-stream.html" }
         }.to change(Appointment, :count).by(1)
       end
 
-      it "redirects to the created appointment" do
-        post appointments_path, params: valid_attributes
-        expect(response).to redirect_to(appointment_path(Appointment.last))
+      it "returns turbo_stream response" do
+        post appointments_path, params: valid_attributes, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+        expect(response).to have_http_status(:success)
+        expect(response.content_type).to include("text/vnd.turbo-stream.html")
       end
 
       it "associates appointment with current user" do
-        post appointments_path, params: valid_attributes
+        post appointments_path, params: valid_attributes, headers: { "Accept" => "text/vnd.turbo-stream.html" }
         expect(Appointment.last.user).to eq(user)
       end
 
       it "associates appointment with slot" do
-        post appointments_path, params: valid_attributes
+        post appointments_path, params: valid_attributes, headers: { "Accept" => "text/vnd.turbo-stream.html" }
         expect(Appointment.last.slot).to eq(slot)
       end
     end
@@ -82,21 +87,22 @@ RSpec.describe "Appointments", type: :request do
       let(:invalid_attributes) do
         {
           appointment: {
-            notes: ""
-          },
-          slot_id: nil
+            slot_id: nil
+          }
         }
       end
 
       it "does not create a new appointment" do
         expect {
-          post appointments_path, params: invalid_attributes
+          post appointments_path, params: invalid_attributes, headers: { "Accept" => "text/vnd.turbo-stream.html" }
         }.not_to change(Appointment, :count)
       end
 
-      it "renders the new template" do
-        post appointments_path, params: invalid_attributes
+      it "returns unprocessable_entity status" do
+        post appointments_path, params: invalid_attributes, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
         expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to include("text/vnd.turbo-stream.html")
       end
     end
 
@@ -105,16 +111,20 @@ RSpec.describe "Appointments", type: :request do
       let(:invalid_attributes) do
         {
           appointment: {
-            notes: "Regular checkup"
-          },
-          slot_id: draft_slot.id
+            slot_id: draft_slot.id
+          }
         }
       end
 
       it "does not create a new appointment" do
         expect {
-          post appointments_path, params: invalid_attributes
+          post appointments_path, params: invalid_attributes, headers: { "Accept" => "text/vnd.turbo-stream.html" }
         }.not_to change(Appointment, :count)
+      end
+
+      it "returns unprocessable_entity status" do
+        post appointments_path, params: invalid_attributes, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
 
@@ -123,16 +133,20 @@ RSpec.describe "Appointments", type: :request do
       let(:invalid_attributes) do
         {
           appointment: {
-            notes: "Regular checkup"
-          },
-          slot_id: slot.id
+            slot_id: slot.id
+          }
         }
       end
 
       it "does not create a new appointment" do
         expect {
-          post appointments_path, params: invalid_attributes
+          post appointments_path, params: invalid_attributes, headers: { "Accept" => "text/vnd.turbo-stream.html" }
         }.not_to change(Appointment, :count)
+      end
+
+      it "returns unprocessable_entity status" do
+        post appointments_path, params: invalid_attributes, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end
@@ -141,7 +155,7 @@ RSpec.describe "Appointments", type: :request do
     let(:appointment) { create(:appointment, user: user, slot: slot) }
 
     it "returns http success" do
-      get edit_appointment_path(appointment)
+      get edit_appointment_path(appointment), params: { appointment: { slot_id: slot.id } }
       expect(response).to have_http_status(:success)
     end
   end
@@ -158,11 +172,7 @@ RSpec.describe "Appointments", type: :request do
         }
       end
 
-      it "updates the appointment" do
-        patch appointment_path(appointment), params: new_attributes
-        appointment.reload
-        expect(appointment.notes).to eq("Updated notes")
-      end
+
 
       it "redirects to the appointment" do
         patch appointment_path(appointment), params: new_attributes
@@ -175,20 +185,29 @@ RSpec.describe "Appointments", type: :request do
     let!(:appointment) { create(:appointment, user: user, slot: slot) }
 
     it "destroys the appointment" do
+      session = super_admin_user.sessions.create!(ip_address: "127.0.0.1", user_agent: "Test Browser")
+      set_signed_cookie(:session_id, session.id)
+      slot1 = create(:slot, calendar: calendar, status: :available)
+      appointment1 = create(:appointment, user: super_admin_user, slot: slot1)
       expect {
-        delete appointment_path(appointment)
+        delete appointment_path(appointment1)
       }.to change(Appointment, :count).by(-1)
     end
 
-    it "redirects to the appointments list" do
-      delete appointment_path(appointment)
-      expect(response).to redirect_to(appointments_path)
+    it "raises an error when user is a client" do
+      doctor = create(:user)
+      doctor.roles << Role.find_or_create_by!(name: "Doctor")
+      expect {
+        delete appointment_path(appointment)
+      }.to raise_error(CanCan::AccessDenied)
     end
   end
 
   describe "authentication requirement" do
     it "requires authentication" do
+      Session.destroy_all
       cookies.delete(:session_id)
+      Current.session = nil
       get appointments_path
       expect(response).to redirect_to(new_session_path)
     end

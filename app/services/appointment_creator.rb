@@ -15,6 +15,7 @@ class AppointmentCreator
 
   def valid?
     validate_duplicate_appointment
+    validate_appointment_already_exists
     errors.empty?
   end
 
@@ -29,6 +30,13 @@ class AppointmentCreator
 
 
   private
+
+  def validate_appointment_already_exists
+    # #need to check if the appointment is already booked by the current user in same date as @slot.start_at
+    if current_user.appointments.joins(:slot).exists?(slots: { start_at: slot.start_at.beginning_of_day..slot.end_at.end_of_day })
+    errors << "Appointment already exists for this date"
+    end
+  end
 
 
   def slot_available?

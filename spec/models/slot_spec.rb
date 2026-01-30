@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Slot, type: :model do
   describe 'validations' do
     it 'is valid with valid attributes' do
-      slot = build(:slot)
+      slot = build(:slot, calendar: create(:calendar, user: create(:user)))
       expect(slot).to be_valid
     end
 
@@ -35,6 +35,12 @@ RSpec.describe Slot, type: :model do
       slot = build(:slot, calendar_id: nil)
       expect(slot).not_to be_valid
       expect(slot.errors[:calendar_id]).to include("can't be blank")
+    end
+
+    it 'requires a calendar to be present' do
+      slot = build(:slot, calendar: nil)
+      expect(slot).not_to be_valid
+      expect(slot.errors[:calendar]).to include("must exist")
     end
   end
 

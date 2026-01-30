@@ -1,4 +1,5 @@
 class AppointmentsController < ApplicationController
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
   load_and_authorize_resource
   include DateParsing
   attr_reader :slot
@@ -9,6 +10,7 @@ class AppointmentsController < ApplicationController
 
   def index
     @appointments = current_user.appointments
+    render json: @appointments
   end
 
   def show
@@ -49,6 +51,11 @@ class AppointmentsController < ApplicationController
     end
   end
 
+  def edit
+    @appointment = current_user.appointments.find(params[:id])
+    render json: @appointment
+  end
+
   def destroy
     @appointment.destroy
     redirect_to appointments_url, notice: "Appointment was successfully destroyed."
@@ -67,5 +74,13 @@ class AppointmentsController < ApplicationController
 
   def appointment_params
     params.require(:appointment).permit(:slot_id)
+  end
+
+  def record_not_found
+    respond_to do |format|
+      format.html { redirect_to appointments_path, alert: "Appointment not found" }
+      format.json { render json: { error: "Appointment not found" }, status: :unprocessable_entity }
+      format.turbo_stream { render turbo_stream: [ turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Appointment not found", type: :alert }) ], status: :unprocessable_entity }
+    end
   end
 end

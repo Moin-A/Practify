@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'support/cookie_helpers'
 
 RSpec.describe Appointment, type: :model do
   let(:user) { create(:user) }

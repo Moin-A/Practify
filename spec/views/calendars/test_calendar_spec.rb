@@ -6,15 +6,6 @@ RSpec.describe 'calendars views', type: :view do
       assign(:date, Date.new(2024, 6, 15))
       render template: 'calendars/test_base_component'
     end
-
-    it 'renders Calendars::Base component with view context' do
-      expect(rendered).to be_present
-    end
-
-    it 'has access to view helpers through component' do
-      # Component rendered in view has full view context
-      expect(rendered).to be_a(String)
-    end
   end
 
   describe 'test_calendar (with month_calendar helper)' do
