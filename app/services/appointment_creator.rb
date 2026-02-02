@@ -1,5 +1,5 @@
 class AppointmentCreator
-  attr_reader :appointment_params, :slot, :errors, :current_user
+  attr_reader :appointment_params, :slot, :errors, :current_user, :appointment
   def initialize(slot:, appointment_params: {}, current_user: nil)
     @appointment_params = appointment_params
     @slot = slot
@@ -9,8 +9,13 @@ class AppointmentCreator
 
   def create
     return false unless valid?
-    @appointment = slot.build_appointment(appointment_params)
-    @appointment.save
+    @appointment = slot.build_appointment(appointment_params.merge(publisher: slot.user, subscriber: current_user))
+    if @appointment.save
+      true
+    else
+      errors << @appointment.errors.full_messages.to_sentence(words_connector: ", ", two_words_connector: ", ", last_word_connector: ", ")
+      false
+    end
   end
 
   def valid?

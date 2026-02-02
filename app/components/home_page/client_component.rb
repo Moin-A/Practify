@@ -6,6 +6,7 @@ module HomePage
     @current_user = current_user
     @calendar = current_user.calendar
     @selected_slot_id = selected_slot_id
+    @appointment = current_user.appointments.joins(:slot).where(slots: { start_at: Time.current.beginning_of_day..Time.current.end_of_day }).first
   end
 
   def render?
@@ -38,7 +39,7 @@ module HomePage
   end
 
   def next_day
-    Time.current + 1.day
+    @next_day ||= Time.current + 1.day
   end
 
 
