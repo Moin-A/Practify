@@ -6,9 +6,9 @@ FactoryBot.define do
     
     after(:build) do |appointment|
       # Publisher is the slot's calendar owner (doctor)
-      appointment.publisher ||= appointment.slot.calendar.user if appointment.publisher.blank?
+      appointment.publisher ||= appointment.slot.user if appointment.slot&& appointment.slot.user && appointment.publisher.blank?
       # Subscriber is the user booking the appointment
-      appointment.subscriber ||= appointment.user if appointment.subscriber.blank?
+      appointment.subscriber ||= appointment.user if appointment.user && appointment.subscriber.blank?
     end
   end
 end
