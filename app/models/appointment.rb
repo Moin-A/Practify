@@ -12,7 +12,7 @@ class Appointment < ApplicationRecord
   validate :slot_must_be_available, if: -> { slot.present? }
 
   def update_joined_status
-    user.has_joined!(self) do |role|   
+    user.has_joined!(self) do |role|
      self["#{role}_joined"] = true
     end
   end

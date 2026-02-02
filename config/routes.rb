@@ -17,12 +17,12 @@ Rails.application.routes.draw do
     post "release_all_slots", to: "slots#release_all_slots"
   end
   resources :appointments do
-    resources :call_rooms, only: [:new, :create, :show]
+    resources :call_rooms, only: [ :new, :create, :show ]
     member do
       post "has_joined", to: "appointments#has_joined"
     end
   end
-  
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

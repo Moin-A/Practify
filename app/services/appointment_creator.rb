@@ -11,10 +11,10 @@ class AppointmentCreator
     return false unless valid?
     @appointment = slot.build_appointment(appointment_params.merge(publisher: slot.user, subscriber: current_user))
     if @appointment.save
-      return true
+      true
     else
       errors << @appointment.errors.full_messages.to_sentence(words_connector: ", ", two_words_connector: ", ", last_word_connector: ", ")
-      return false
+      false
     end
   end
 
@@ -50,7 +50,7 @@ class AppointmentCreator
 
 
 
-  def validate_duplicate_appointment   
+  def validate_duplicate_appointment
     if slot.appointment.present?
       if current_user && slot.appointment.user_id != current_user.id
         errors << "Appointment booked by another user"

@@ -1,6 +1,6 @@
 class CallRoomsController < ApplicationController
-  before_action :set_call_room, only: [:show]
-  before_action :set_appointment, only: [:new, :create,:show]
+  before_action :set_call_room, only: [ :show ]
+  before_action :set_appointment, only: [ :new, :create, :show ]
 
 
   def new
@@ -8,7 +8,7 @@ class CallRoomsController < ApplicationController
   end
 
   def create
-    @call_room = @appointment.build_call_room    
+    @call_room = @appointment.build_call_room
     # @call_room.name = "#{@appointment.publisher.user_profile.first_name} - #{@appointment.subscriber.user_profile.first_name}"
     if @call_room.save
       redirect_to appointment_call_room_path(@appointment, @call_room), notice: "Call room was successfully created."
@@ -20,13 +20,13 @@ class CallRoomsController < ApplicationController
   def show
     role = if current_user == @appointment.publisher
              :publisher
-           else
+    else
              :subscriber
-           end
+    end
 
     vonage_service = VonageVideoService.new
     session_id = @appointment.call_room.vonage_session_id
-    @token = VonageVideoService.new.generate_token(session_id,role: role)
+    @token = VonageVideoService.new.generate_token(session_id, role: role)
     @app_id = Rails.application.credentials.dig(:vonage, :app_id)
   end
 
@@ -36,13 +36,11 @@ class CallRoomsController < ApplicationController
     @call_room = CallRoom.find(params[:id])
   end
 
-  def set_appointment    
+  def set_appointment
     @appointment = Appointment.find(params[:appointment_id])
   end
 
   def call_room_params
     params.require(:call_room).permit(:name, :vonage_session_id)
   end
-
- 
 end

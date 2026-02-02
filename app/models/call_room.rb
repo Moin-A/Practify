@@ -26,7 +26,7 @@ class CallRoom < ApplicationRecord
   def can_start_session?
     return false unless start_at
     # Allow starting 15 minutes before the appointment time
-    Time.current >= (start_at - 15.minutes) && 
+    Time.current >= (start_at - 15.minutes) &&
     Time.current <= (end_at || start_at + 1.hour)
   end
 

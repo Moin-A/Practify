@@ -6,12 +6,12 @@ class VonageVideoService
         private_key: Rails.application.credentials.dig(:vonage, :private_key)
       )
     end
-  
+
     def create_session
       # media_mode: :routed is recommended for better stability and recording
       @client.video.create_session(media_mode: :routed).session_id
     end
-  
+
     def generate_token(session_id, role: :publisher)
       @client.video.generate_client_token(
         session_id: session_id,
@@ -19,4 +19,4 @@ class VonageVideoService
         expire_time: (Time.now + 24.hours).to_i # Optional: explicitly set expiry
       )
     end
-  end
+end

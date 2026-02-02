@@ -30,10 +30,10 @@ class AppointmentsController < ApplicationController
       current_user: current_user
     )
     respond_to do |format|
-      format.turbo_stream do      
-        if creator.create          
+      format.turbo_stream do
+        if creator.create
           render turbo_stream: [ turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Appointment was successfully created.", type: :notice }) ]
-        else          
+        else
           render turbo_stream: [
             turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: creator.errors.join(", "), type: :alert })
           ], status: :unprocessable_entity

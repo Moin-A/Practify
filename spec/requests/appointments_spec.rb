@@ -208,7 +208,7 @@ RSpec.describe "Appointments", type: :request do
     let(:doctor) { create(:user) }
     let(:appointment2) { create(:appointment, user: doctor, slot: slot, publisher: doctor, subscriber: user) }
 
-    it "returns http success" do     
+    it "returns http success" do
       post has_joined_appointment_path(appointment), headers: { "Accept" => "application/json" }
       expect(response).to have_http_status(:success)
       expect(response.content_type).to include("application/json")
@@ -220,8 +220,8 @@ RSpec.describe "Appointments", type: :request do
       post has_joined_appointment_path(appointment2), headers: { "Accept" => "application/json" }
       expect(appointment2.reload.publisher_joined).to be_truthy
     end
-    
-    it "updates the subscriber joined status" do      
+
+    it "updates the subscriber joined status" do
       post has_joined_appointment_path(appointment), headers: { "Accept" => "application/json" }
       expect(appointment.reload.subscriber_joined).to be_truthy
     end
