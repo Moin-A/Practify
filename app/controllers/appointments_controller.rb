@@ -4,7 +4,7 @@ class AppointmentsController < ApplicationController
   include DateParsing
   attr_reader :slot
 
-  before_action :set_appointment, only: [ :show, :update, :destroy ]
+  before_action :set_appointment, only: [ :show, :update, :destroy, :has_joined ]
   before_action :set_slot, only: [ :new, :create ]
 
 
@@ -30,10 +30,10 @@ class AppointmentsController < ApplicationController
       current_user: current_user
     )
     respond_to do |format|
-      format.turbo_stream do
-        if creator.create
+      format.turbo_stream do      
+        if creator.create          
           render turbo_stream: [ turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Appointment was successfully created.", type: :notice }) ]
-        else
+        else          
           render turbo_stream: [
             turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: creator.errors.join(", "), type: :alert })
           ], status: :unprocessable_entity
@@ -42,6 +42,14 @@ class AppointmentsController < ApplicationController
     end
   end
 
+  def has_joined
+    @appointment.update_joined_status
+    if @appointment.save
+      render json: { message: "Publisher joined the appointment" }
+    else
+      render json: { message: @appointment.errors.full_messages.join(", ") }, status: :unprocessable_entity
+    end
+  end
 
   def update
     if @appointment.update(appointment_params)

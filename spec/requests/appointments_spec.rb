@@ -203,6 +203,37 @@ RSpec.describe "Appointments", type: :request do
     end
   end
 
+  describe "POST /appointments/:id/has_joined" do
+    let(:appointment) { create(:appointment, user: user, slot: slot) }
+    let(:doctor) { create(:user) }
+    let(:appointment2) { create(:appointment, user: doctor, slot: slot, publisher: doctor, subscriber: user) }
+
+    it "returns http success" do     
+      post has_joined_appointment_path(appointment), headers: { "Accept" => "application/json" }
+      expect(response).to have_http_status(:success)
+      expect(response.content_type).to include("application/json")
+    end
+
+    it "updates the joined status" do
+      session = doctor.sessions.create!(ip_address: "127.0.0.1", user_agent: "Test Browser")
+      set_signed_cookie(:session_id, session.id)
+      post has_joined_appointment_path(appointment2), headers: { "Accept" => "application/json" }
+      expect(appointment2.reload.publisher_joined).to be_truthy
+    end
+    
+    it "updates the subscriber joined status" do      
+      post has_joined_appointment_path(appointment), headers: { "Accept" => "application/json" }
+      expect(appointment.reload.subscriber_joined).to be_truthy
+    end
+
+    it "returns unprocessable entity when the appointment is not found" do
+      post has_joined_appointment_path(9999), headers: { "Accept" => "application/json" }
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.content_type).to include("application/json")
+    end
+  end
+
+
   describe "authentication requirement" do
     it "requires authentication" do
       Session.destroy_all

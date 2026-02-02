@@ -12,19 +12,31 @@
   --color-input-bg: #FAFAFA;
   --color-input-border: #EEEEEE;
 
-  /* Typography Refinements */
-  --font-sans: "Inter", "Geist", system-ui, sans-serif;
-  --tracking-tightest: -0.03em;
-  /* ... your existing variables ... */
+  /* Custom Color Palette */
+  --color-clay: #D4A574;
+  --color-terracotta: #C17355;
+  --color-sage: #8B9D83;
+  --color-cream: #F7F3EE;
+  --color-charcoal: #2C2C2C;
+  --color-soft-white: #FDFCFA;
+  --color-stone: #B5A89A;
 
   /* Typography Refinements */
   --font-sans: "Inter", "Geist", system-ui, sans-serif;
+  --font-playfair: "Playfair Display", serif;
+  --font-crimson: "Crimson Pro", serif;
+  --font-dm-sans: "DM Sans", sans-serif;
   --tracking-tightest: -0.03em;
 
   /* Custom Font Sizes */
-  --font-size-base: 0.875rem; 
+  --font-size-base: 0.925rem; 
   --font-size-sm: 0.75rem;
   --line-height-base: 1.25rem;
+
+  /* Custom Shadows */
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.06);
+  --shadow-medium: 0 12px 48px rgba(0, 0, 0, 0.08);
+  --shadow-deep: 0 20px 60px rgba(0, 0, 0, 0.12);
 }
 
 @layer base {
@@ -110,6 +122,91 @@
       grid-column-start: 2;
     }
   }
+
+@layer utilities {
+  /* Custom Animations */
+  @keyframes fadeSlideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes grain {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-5%, -10%); }
+    20% { transform: translate(-15%, 5%); }
+    30% { transform: translate(7%, -25%); }
+    40% { transform: translate(-5%, 25%); }
+    50% { transform: translate(-15%, 10%); }
+    60% { transform: translate(15%, 0%); }
+    70% { transform: translate(0%, 15%); }
+    80% { transform: translate(3%, 35%); }
+    90% { transform: translate(-10%, 10%); }
+  }
+
+  @keyframes heartbeat {
+    0%, 100% {
+      transform: scale(1);
+    }
+    10% {
+      transform: scale(1.1);
+    }
+    20% {
+      transform: scale(1);
+    }
+    30% {
+      transform: scale(1.15);
+    }
+    40% {
+      transform: scale(1);
+    }
+  }
+
+  .animate-fade-slide-down {
+    animation: fadeSlideDown 0.8s ease-out;
+  }
+
+  .animate-fade-slide-up {
+    animation: fadeSlideUp 0.8s ease-out backwards;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  .animate-grain {
+    animation: grain 8s steps(10) infinite;
+  }
+
+  .animate-heartbeat {
+    animation: heartbeat 1.5s ease-in-out infinite;
+  }
+}
 
 
 

@@ -1,0 +1,45 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6">Join Video Call</h1>
+    
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">Appointment Details</h2>
+      <div class="space-y-2">
+        <p><strong>Appointment ID:</strong> <%= @appointment.id %></p>
+        <p><strong>Start Time:</strong> <%= @appointment.start_at.strftime("%B %d, %Y at %I:%M %p") if @appointment.start_at %></p>
+        <p><strong>End Time:</strong> <%= @appointment.end_at.strftime("%B %d, %Y at %I:%M %p") if @appointment.end_at %></p>
+        <% if @appointment.notes.present? %>
+          <p><strong>Notes:</strong> <%= @appointment.notes %></p>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-4">Video Call</h2>
+      <p class="mb-4">Click the button below to join the video call for this appointment.</p>
+      
+      <!-- Video call integration area -->
+      <div id="video-call-container" class="mb-4">
+        <!-- Video call widget/iframe will be inserted here -->
+        <p class="text-gray-600 italic">Video call interface will be loaded here</p>
+      </div>
+
+      <%= form_with model: [@appointment, @call_room], local: true, class: "space-y-4" do |f| %>
+        <%= turbo_frame_tag "start_session" do %>
+          <div class="flex gap-4">
+            <%= f.submit "Start Session", 
+                data: { turbo: false },
+                class: "justify-center w-1/3 px-6 py-3 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow",
+                id: "join-call-btn" %>
+            <%= link_to "Back to Appointment", root_path,
+                data: { turbo_frame: "_top" },
+                class: "bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg transition-colors" %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
+<div id="flash_messages" class="mb-6">
+  <%= turbo_frame_tag "flash_messages" %>
+</div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_19_070730) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_01_222209) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -48,7 +48,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_19_070730) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "publisher_id"
+    t.bigint "subscriber_id"
+    t.boolean "publisher_joined", default: false
+    t.boolean "subscriber_joined", default: false
+    t.index ["publisher_id"], name: "index_appointments_on_publisher_id"
     t.index ["slot_id"], name: "index_appointments_on_slot_id"
+    t.index ["subscriber_id"], name: "index_appointments_on_subscriber_id"
     t.index ["user_id"], name: "index_appointments_on_user_id"
   end
 
@@ -59,6 +65,49 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_19_070730) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_calendars_on_user_id"
+  end
+
+  create_table "call_rooms", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "vonage_session_id"
+    t.bigint "appointment_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["appointment_id"], name: "index_call_rooms_on_appointment_id"
+    t.index ["vonage_session_id"], name: "index_call_rooms_on_vonage_session_id", unique: true
+  end
+
+  create_table "payment_methods", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "razorpay_payment_id"
+    t.string "razorpay_order_id"
+    t.integer "amount"
+    t.string "currency"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "razorpay_signature"
+    t.string "type", default: "PaymentMethod::Razorpay"
+    t.string "gateway_transaction_id"
+    t.string "gateway_order_id"
+    t.jsonb "gateway_data", default: {}
+    t.index ["gateway_order_id"], name: "index_payment_methods_on_gateway_order_id"
+    t.index ["gateway_transaction_id"], name: "index_payment_methods_on_gateway_transaction_id"
+    t.index ["type"], name: "index_payment_methods_on_type"
+    t.index ["user_id"], name: "index_payment_methods_on_user_id"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.bigint "appointment_id", null: false
+    t.bigint "payment_method_id"
+    t.integer "amount", null: false
+    t.string "currency", default: "INR"
+    t.string "status", default: "pending"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["appointment_id"], name: "index_payments_on_appointment_id"
+    t.index ["payment_method_id"], name: "index_payments_on_payment_method_id"
+    t.index ["status"], name: "index_payments_on_status"
   end
 
   create_table "role_users", force: :cascade do |t|
@@ -123,7 +172,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_19_070730) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "appointments", "slots"
   add_foreign_key "appointments", "users"
+  add_foreign_key "appointments", "users", column: "publisher_id"
+  add_foreign_key "appointments", "users", column: "subscriber_id"
   add_foreign_key "calendars", "users"
+  add_foreign_key "call_rooms", "appointments"
+  add_foreign_key "payment_methods", "users"
+  add_foreign_key "payments", "appointments"
+  add_foreign_key "payments", "payment_methods"
   add_foreign_key "role_users", "roles"
   add_foreign_key "role_users", "users"
   add_foreign_key "sessions", "users"

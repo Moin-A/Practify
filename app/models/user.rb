@@ -28,6 +28,12 @@ class User < ApplicationRecord
     roles.exists?(name: "admin")
   end
 
+  def has_joined!(appointment)  
+    role = :publisher if appointment.publisher_id == self.id 
+    role = :subscriber if appointment.subscriber_id == self.id 
+    yield(role) if block_given?
+  end
+
   def calendar
     super || CalendarManager.create_default_calendar(self)
   end
