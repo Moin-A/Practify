@@ -1,142 +1,64 @@
 version: 2.1
 
-# Define Docker executor for building images
-executors:
-  docker-publisher:
-    docker:
-      - image: docker:dind
-  
 jobs:
-  build-and-push:
-    executor: docker-publisher
+  build_and_deploy:
+    docker:
+      - image: cimg/base:stable
     steps:
       - checkout
-      
       - setup_remote_docker:
-          docker_layer_caching: true
-      
+          version: 20.10.14
+
       - run:
-          name: Set environment variables
-          command: |
-            export IMAGE_NAME="moindev/practify"
-            export IMAGE_TAG="${CIRCLE_SHA1}"
-            echo "Building image: ${IMAGE_NAME}:${IMAGE_TAG}"
-            echo "IMAGE_NAME=${IMAGE_NAME}" >> $BASH_ENV
-            echo "IMAGE_TAG=${IMAGE_TAG}" >> $BASH_ENV
-      
-      - run:
-          name: Login to Docker Hub
+          name: Build and Push Docker Image (ARM64)
           command: |
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      
-      - run:
-          name: Build Docker image
-          command: |
-            source $BASH_ENV
-            docker build -t ${IMAGE_NAME}:${IMAGE_TAG} --label service="practify" .
-            docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
-      
-      - run:
-          name: Push Docker image
-          command: |
-            source $BASH_ENV
-            docker push ${IMAGE_NAME}:${IMAGE_TAG}
-            docker push ${IMAGE_NAME}:latest
-            echo "Successfully pushed ${IMAGE_NAME}:${IMAGE_TAG} and ${IMAGE_NAME}:latest"
-
-  deploy:
-    docker:
-      - image: cimg/ruby:3.1
-    steps:
-      - checkout
-
-      - setup_remote_docker:
-          docker_layer_caching: true
+            docker buildx create --use
+            docker buildx build \
+              --platform linux/arm64 \
+              --provenance=false \
+              -t $DOCKER_USERNAME/practify:latest \
+              --push .
 
       - run:
-          name: Install Kamal
+          name: Install Tailscale and Connect
           command: |
-             gem install kamal -v 1.5.0
-      
+            curl -fsSL https://tailscale.com/install.sh | sh
+            # Use the Auth Key from Tailscale Admin Console
+            sudo tailscale up --authkey=${TAILSCALE_AUTH_KEY} --hostname=circleci-job
+
       - run:
-          name: Install sshpass and setup SSH keys
+          name: Setup SSH and Tunnel
           command: |
-            sudo apt-get update && sudo apt-get install -y sshpass
             mkdir -p ~/.ssh
-            chmod 700 ~/.ssh
-            # Remove existing SSH keys if any
-            rm -f ~/.ssh/id_rsa ~/.ssh/id_rsa.pub
-            # Generate SSH key pair
-            ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N "" -q
-            # Add server to known_hosts
-            ssh-keyscan -H $DOMAIN >> ~/.ssh/known_hosts 2>/dev/null || true
-            # Copy public key to server using password authentication
-            export SSHPASS=$VM_INSTANCE_PASSWORD
-            sshpass -e ssh-copy-id -o StrictHostKeyChecking=no root@$DOMAIN || true
-            # Test SSH connection
-            ssh -o StrictHostKeyChecking=no root@$DOMAIN "echo 'SSH key authentication successful'"
+            # Using your id_ed25519 key
+            echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+            chmod 600 ~/.ssh/id_ed25519
+            ssh-keyscan -H $PI_HOST >> ~/.ssh/known_hosts
+            # Create tunnel to K3s API over Tailscale
+            ssh -f -N -L 6443:localhost:6443 $PI_USER@$PI_HOST -i ~/.ssh/id_ed25519
+      
+      - run:
+          name: Configure Kubectl and Deploy
+          command: |
+            mkdir -p ~/.kube
+            echo "$KUBECONFIG_DATA" | base64 -d > ~/.kube/config
+            sed -i 's|server: https://.*:6443|server: https://localhost:6443|g' ~/.kube/config
+            
+            # Install kubectl binary
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            chmod +x kubectl
+            sudo mv kubectl /usr/local/bin/
 
-      - run:
-          name: Release any existing deploy locks
-          command: |
-            echo "Checking for existing Kamal locks..."
-            kamal lock release || echo "No lock to release"              
-
-      - run: 
-          name: push kamal secrets
-          command: |
-            kamal env push      
-      
-      - run:
-          name: Boot PostgreSQL accessory
-          command: |
-            kamal accessory boot db || echo "Database might already be running"
-      
-      
-      - run:
-          name: Stop conflicting services
-          command: |
-            echo "Stopping nginx, apache, and any existing Traefik..."
-            ssh -o StrictHostKeyChecking=no root@$DOMAIN "sudo systemctl stop nginx 2>/dev/null || true"
-            ssh -o StrictHostKeyChecking=no root@$DOMAIN "sudo systemctl stop apache2 2>/dev/null || true"
-            ssh -o StrictHostKeyChecking=no root@$DOMAIN "sudo systemctl disable nginx 2>/dev/null || true"
-            ssh -o StrictHostKeyChecking=no root@$DOMAIN "sudo systemctl disable apache2 2>/dev/null || true"
-            # Stop and remove any manually created Traefik container
-            ssh -o StrictHostKeyChecking=no root@$DOMAIN "docker stop traefik 2>/dev/null || true"
-            ssh -o StrictHostKeyChecking=no root@$DOMAIN "docker rm traefik 2>/dev/null || true"
-            echo "✅ Conflicting services stopped"
-
-      - run:
-          name: Boot Traefik with SSL and entrypoints
-          command: |
-            echo "Booting Traefik with complete SSL configuration..."
-            LETSENCRYPT_EMAIL_VALUE="${LETSENCRYPT_EMAIL:-admin@practify.co.in}"
-            ssh -o StrictHostKeyChecking=no root@$DOMAIN "sudo mkdir -p /opt/letsencrypt && sudo chmod 755 /opt/letsencrypt && docker run --name traefik --detach --restart unless-stopped --publish 80:80 --publish 443:443 --volume /var/run/docker.sock:/var/run/docker.sock --volume /opt/letsencrypt:/letsencrypt --log-opt max-size=\"10m\" traefik:v2.10 --providers.docker=true --log.level=DEBUG --entrypoints.web.address=:80 --entrypoints.websecure.address=:443 --certificatesresolvers.letsencrypt.acme.email=$LETSENCRYPT_EMAIL_VALUE --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
-            echo "✅ Traefik booted with entrypoints: web (80), websecure (443)"
-      
-      - run:
-          name: Deploy Application
-          command: |
-            kamal deploy --skip-push
-          no_output_timeout: 20m
-      
-      - run:
-          name: Release deploy lock on failure
-          when: on_fail
-          command: |
-            echo "Deployment failed, releasing lock..."
-            kamal lock release || true
+            # Deploy
+            kubectl apply -f deployment.yaml
+            kubectl rollout restart deployment/practify -n practify
+            kubectl rollout status deployment/practify -n practify --timeout=5m
 
 workflows:
-  main:
+  deploy_workflow:
     jobs:
-      - build-and-push:
-          filters:
-            branches:
-              only: main
-      - deploy:
-          requires:
-            - build-and-push
+      - build_and_deploy:
           filters:
             branches:
               only: main
