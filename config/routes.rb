@@ -34,9 +34,11 @@ Rails.application.routes.draw do
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
   # Sidekiq Web UI (protect this route in production!)
-  require "sidekiq/web"
-  mount Sidekiq::Web => "/sidekiq"
+  # require "sidekiq/web"
+  # mount Sidekiq::Web => "/sidekiq"
 
-
+  Rails.application.routes.draw do
+    mount MissionControl::Jobs::Engine => "/jobs"
+  end
   root "home#show"
 end

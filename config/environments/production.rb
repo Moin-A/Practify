@@ -71,7 +71,8 @@ Rails.application.configure do
   # config.cache_store = :mem_cache_store
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
-  config.active_job.queue_adapter = :sidekiq
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
   config.active_job.queue_name_prefix = "practify_production"
 
   # Disable caching for Action Mailer templates even if Action Controller
@@ -99,6 +100,10 @@ Rails.application.configure do
 
   # Only use :id for inspections in production.
   config.active_record.attributes_for_inspect = [ :id ]
+
+  config.mission_control.jobs.http_basic_auth_user = "admin"
+  
+  config.mission_control.jobs.http_basic_auth_password = "password"
 
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [

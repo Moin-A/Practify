@@ -6,7 +6,7 @@
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=3.2.0
-FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
+FROM docker.io/library/ruby:3.2-bookworm AS base
 
 # Rails app lives here
 WORKDIR /rails
@@ -14,7 +14,8 @@ WORKDIR /rails
 # Install base packages
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set production environment
 ENV RAILS_ENV="production" \
@@ -28,7 +29,8 @@ FROM base AS build
 # Install packages needed to build gems
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config libxml2-dev libxslt1-dev && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install the correct Bundler version to match Gemfile.lock
 RUN gem install bundler -v 2.3.7
@@ -51,14 +53,10 @@ RUN SECRET_KEY_BASE_DUMMY=1 \
     RAILS_MASTER_KEY=${RAILS_MASTER_KEY} \
     ./bin/rails assets:precompile
 
-
-
-
 # Final stage for app image
 FROM base
 
 LABEL service=practify
-
 
 # Copy built artifacts: gems, application
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
