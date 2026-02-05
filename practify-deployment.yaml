@@ -31,17 +31,27 @@ spec:
           env:
             - name: RAILS_ENV
               value: "production"
----
-apiVersion: v1
-kind: Service
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: practify-service
+  name: practify-ingress
   namespace: practify
+  annotations:
+    # Tells Traefik to use the SSL certificate we just uploaded
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
 spec:
-  type: LoadBalancer
-  selector:
-    app: practify
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 3000
+  tls:
+  - hosts:
+    - rpi02.taila27a53.ts.net
+    secretName: practify-tls-cert
+  rules:
+  - host: rpi02.taila27a53.ts.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: practify-service
+            port:
+              number: 80
