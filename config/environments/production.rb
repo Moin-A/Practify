@@ -86,6 +86,11 @@ Rails.application.configure do
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true
 
+ # Allow your specific Tailscale domain
+  config.hosts << "rpi02.taila27a53.ts.net"
+
+  # Now that we have a real cert, keep this TRUE
+  config.force_ssl = true
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
