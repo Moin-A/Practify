@@ -3,8 +3,6 @@ kind: Deployment
 metadata:
   name: practify
   namespace: practify
-  labels:
-    app: practify
 spec:
   replicas: 1
   selector:
@@ -15,7 +13,6 @@ spec:
       labels:
         app: practify
     spec:
-      # Use the secret we just created to log into Docker Hub
       imagePullSecrets:
         - name: dockerhub-key
       containers:
@@ -24,21 +21,38 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
-          # This pulls all keys from your 'practify-secrets' (DB URL, Master Key, etc.)
           envFrom:
             - secretRef:
                 name: practify-secrets
           env:
             - name: RAILS_ENV
               value: "production"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: practify-service
+  namespace: practify
+spec:
+  selector:
+    app: practify
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: practify-ingress
   namespace: practify
   annotations:
-    # Tells Traefik to use the SSL certificate we just uploaded
+    # Forces Traefik to use the websecure (HTTPS) entrypoint
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    # Tells Traefik that this specific route REQUIRES TLS
+    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   tls:
   - hosts:
