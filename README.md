@@ -113,4 +113,7 @@ Enqueue jobs with:
 ```ruby
 ExampleJob.perform_later(args)
 ```
-# Practify
+
+## CI/CD
+
+This project uses GitHub Actions for continuous integration and deployment to Raspberry Pi.
