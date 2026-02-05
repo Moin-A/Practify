@@ -22,28 +22,56 @@ jobs:
           cat > /tmp/deploy_script.sh << 'SCRIPT'
           #!/bin/bash
           set -e
-          # This runs DIRECTLY on your Pi
-          mkdir -p ~/practify
-          cd ~/practify
-          if [ ! -d .git ]; then
+
+          # 1. SETUP DIRECTORY
+          # We use a specific folder and ensure we are INSIDE it
+          TARGET_DIR="$HOME/practify"
+          mkdir -p "$TARGET_DIR"
+          cd "$TARGET_DIR"
+
+          # 2. SYNC REPOSITORY
+          # If .git doesn't exist, clone. If it does, force sync to main.
+          if [ ! -d ".git" ]; then
+            echo "--- Cloning Repository ---"
             git clone https://github.com/Moin-A/Practify.git .
+          else
+            echo "--- Syncing Repository ---"
+            git fetch origin
+            git reset --hard origin/main
           fi
-          git pull origin main
-          
-          # Login to Docker Hub (using sudo if needed)
+
+          # 3. DOCKER BUILD & PUSH (NATIVE ON PI)
+          echo "--- Docker Login ---"
           echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           
-          # Build ARM64 image natively on Pi
+          echo "--- Building Image ---"
           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/practify:latest .
           
-          # Push to Docker Hub
+          echo "--- Pushing Image ---"
           sudo docker push ${{ secrets.DOCKER_USERNAME }}/practify:latest
+
+          # 4. DEPLOYMENT SANITY CHECK
+          # We search for the file to handle any nested folder issues
+          DEPLOY_YAML=$(find . -name "practify-deployment.yaml" | head -n 1)
+
+          if [ -z "$DEPLOY_YAML" ]; then
+            echo "❌ ERROR: practify-deployment.yaml not found!"
+            echo "Listing files to debug:"
+            ls -R
+            exit 1
+          fi
+
+          echo "🚀 Found manifest at: $DEPLOY_YAML"
+
+          # 5. KUBERNETES APPLY
+          # We use sudo for kubectl to match your successful manual test
+          sudo kubectl apply -f "$DEPLOY_YAML"
           
-          # Deploy to Kubernetes
-          kubectl apply -f practify-deployment.yaml
-          kubectl rollout restart deployment/practify -n practify
-          kubectl rollout status deployment/practify -n practify
+          echo "--- Restarting Deployment ---"
+          sudo kubectl rollout restart deployment/practify -n practify || true
+          sudo kubectl rollout status deployment/practify -n practify
           SCRIPT
           
+          # Move script to Pi and execute
           scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no /tmp/deploy_script.sh ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }}:/tmp/deploy_script.sh
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} 'bash /tmp/deploy_script.sh'
