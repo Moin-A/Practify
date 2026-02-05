@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: practify
+  namespace: practify
+  labels:
+    app: practify
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: practify
+  template:
+    metadata:
+      labels:
+        app: practify
+    spec:
+      # Use the secret we just created to log into Docker Hub
+      imagePullSecrets:
+        - name: dockerhub-key
+      containers:
+        - name: practify
+          image: moindev/practify:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          # This pulls all keys from your 'practify-secrets' (DB URL, Master Key, etc.)
+          envFrom:
+            - secretRef:
+                name: practify-secrets
+          env:
+            - name: RAILS_ENV
+              value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: practify-service
+  namespace: practify
+spec:
+  type: LoadBalancer
+  selector:
+    app: practify
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
