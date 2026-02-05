@@ -10,28 +10,37 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.PI_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+
       - name: Build and Deploy on Pi via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.PI_HOST }} # Your Tailscale 100.x.x.x IP
-          username: ${{ secrets.PI_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # This runs DIRECTLY on your Pi
-            cd ~/practify || git clone https://github.com/Moin-A/Practify.git ~/practify
-            cd ~/practify
-            git pull origin main
-            
-            # Login to Docker Hub
-            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-            
-            # Build ARM64 image natively on Pi
-            docker build -t ${{ secrets.DOCKER_USERNAME }}/practify:latest .
-            
-            # Push to Docker Hub
-            docker push ${{ secrets.DOCKER_USERNAME }}/practify:latest
-            
-            # Deploy to Kubernetes
-            kubectl apply -f deployment.yaml
-            kubectl rollout restart deployment/practify -n practify
-            kubectl rollout status deployment/practify -n practify
+        run: |
+          cat > /tmp/deploy_script.sh << 'SCRIPT'
+          #!/bin/bash
+          set -e
+          # This runs DIRECTLY on your Pi
+          cd ~/practify || git clone https://github.com/Moin-A/Practify.git ~/practify
+          cd ~/practify
+          git pull origin main
+          
+          # Login to Docker Hub
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          
+          # Build ARM64 image natively on Pi
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/practify:latest .
+          
+          # Push to Docker Hub
+          docker push ${{ secrets.DOCKER_USERNAME }}/practify:latest
+          
+          # Deploy to Kubernetes
+          kubectl apply -f deployment.yaml
+          kubectl rollout restart deployment/practify -n practify
+          kubectl rollout status deployment/practify -n practify
+          SCRIPT
+          
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no /tmp/deploy_script.sh ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }}:/tmp/deploy_script.sh
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} 'bash /tmp/deploy_script.sh'
