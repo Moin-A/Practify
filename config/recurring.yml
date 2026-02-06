@@ -18,6 +18,6 @@ production:
     schedule: every 2 minutes
 
 development:
-    post_call_heartbeat:
+  post_call_heartbeat:
     class: PostCallHeartBeatJob
     schedule: every 5 minutes
