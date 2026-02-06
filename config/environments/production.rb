@@ -87,7 +87,7 @@ Rails.application.configure do
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true
 
- # Allow your specific Tailscale domain
+  # Allow your specific Tailscale domain
   config.hosts << "rpi02.taila27a53.ts.net"
 
   # Now that we have a real cert, keep this TRUE
@@ -102,7 +102,7 @@ Rails.application.configure do
   config.active_record.attributes_for_inspect = [ :id ]
 
   config.mission_control.jobs.http_basic_auth_user = "admin"
-  
+
   config.mission_control.jobs.http_basic_auth_password = "password"
 
   # Enable DNS rebinding protection and other `Host` header attacks.

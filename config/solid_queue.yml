@@ -1,0 +1,11 @@
+production:
+  recurring:
+    post_call_heartbeat:
+      class: PostCallHeartBeatJob
+      cron: "*/2 * * * *"
+
+development:
+  recurring:
+    post_call_heartbeat:
+      class: PostCallHeartBeatJob
+      cron: "*/5 * * * *"
