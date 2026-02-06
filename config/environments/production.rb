@@ -104,6 +104,8 @@ Rails.application.configure do
   config.mission_control.jobs.http_basic_auth_user = "admin"
 
   config.mission_control.jobs.http_basic_auth_password = "password"
+  config.mission_control.jobs.http_basic_auth_user = ENV["MISSION_CONTROL_USER"]
+  config.mission_control.jobs.http_basic_auth_password = ENV["MISSION_CONTROL_PASSWORD"]
 
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [
