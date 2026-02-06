@@ -95,7 +95,6 @@ production:
   queue:
     <<: *default
     # Solid Queue can share the same DB but use a different name, 
-    # OR it can use the same URL. For simplicity on a Pi, 
-    # let's point it to the same connection:
+    # OR it can use the same URL. For simplicity on a Pi,     
     url: <%= ENV["DATABASE_URL"] %>
     migrations_paths: db/queue_migrate
