@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_01_222209) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_05_181714) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,6 +52,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_01_222209) do
     t.bigint "subscriber_id"
     t.boolean "publisher_joined", default: false
     t.boolean "subscriber_joined", default: false
+    t.integer "status", default: 0
     t.index ["publisher_id"], name: "index_appointments_on_publisher_id"
     t.index ["slot_id"], name: "index_appointments_on_slot_id"
     t.index ["subscriber_id"], name: "index_appointments_on_subscriber_id"

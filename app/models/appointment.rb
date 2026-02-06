@@ -4,8 +4,9 @@ class Appointment < ApplicationRecord
   belongs_to :publisher, class_name: "User"
   belongs_to :subscriber, class_name: "User"
   has_one :call_room, dependent: :destroy
-  delegate :start_at, :end_at, :status, to: :slot
+  delegate :start_at, :end_at, to: :slot
 
+  enum :status, { pending: 0, noshow: 1, cancelled: 1, completed: 2, expired: 3, publisher_joined: 4, subscriber_joined: 5, in_progress: 6 }
 
   validates :user_id, presence: true
   validates :slot_id, presence: true, uniqueness: true

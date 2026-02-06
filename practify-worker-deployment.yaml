@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: practify-worker
+  namespace: practify
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: practify-worker
+  template:
+    metadata:
+      labels:
+        app: practify-worker
+    spec:
+      containers:
+      - name: worker
+        image: moindev/practify:latest
+        command: ["/bin/sh", "-c"]
+        args: ["bin/jobs start"]  # This starts Solid Queue
+        env:
+          - name: RAILS_ENV
+            value: "production"
+        envFrom:
+          - secretRef:
+              name: practify-secrets
