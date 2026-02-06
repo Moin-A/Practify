@@ -21,58 +21,52 @@ jobs:
         run: |
           cat > /tmp/deploy_script.sh << 'SCRIPT'
           #!/bin/bash
-          set -e
+          # -e: exit on error, -x: show commands as they run
+          set -ex
 
-          # 1. SETUP DIRECTORY
-          # We use a specific folder and ensure we are INSIDE it
+          # 1. SETUP
           TARGET_DIR="$HOME/practify"
           mkdir -p "$TARGET_DIR"
           cd "$TARGET_DIR"
 
           # 2. SYNC REPOSITORY
-          # If .git doesn't exist, clone. If it does, force sync to main.
           if [ ! -d ".git" ]; then
-            echo "--- Cloning Repository ---"
+            echo "--- Cloning ---"
             git clone https://github.com/Moin-A/Practify.git .
           else
-            echo "--- Syncing Repository ---"
+            echo "--- Syncing ---"
             git fetch origin
             git reset --hard origin/main
           fi
 
-          # 3. DOCKER BUILD & PUSH (NATIVE ON PI)
+          # 3. DOCKER BUILD (NATIVE ARM)
           echo "--- Docker Login ---"
           echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           
-          echo "--- Building Image ---"
+          echo "--- Building & Pushing ---"
           sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/practify:latest .
-          
-          echo "--- Pushing Image ---"
           sudo docker push ${{ secrets.DOCKER_USERNAME }}/practify:latest
 
-          # 4. DEPLOYMENT SANITY CHECK
-          # We search for the file to handle any nested folder issues
+          # 4. FIND MANIFESTS
           DEPLOY_YAML=$(find . -name "practify-deployment.yaml" | head -n 1)
-
-          if [ -z "$DEPLOY_YAML" ]; then
-            echo "❌ ERROR: practify-deployment.yaml not found!"
-            echo "Listing files to debug:"
-            ls -R
-            exit 1
-          fi
-
-          echo "🚀 Found manifest at: $DEPLOY_YAML"
+          WORKER_YAML=$(find . -name "practify-worker-deployment.yaml" | head -n 1)
 
           # 5. KUBERNETES APPLY
-          # We use sudo for kubectl to match your successful manual test
+          echo "--- Applying Manifests ---"
           sudo kubectl apply -f "$DEPLOY_YAML"
+          sudo kubectl apply -f "$WORKER_YAML"
           
-          echo "--- Restarting Deployment ---"
-          sudo kubectl rollout restart deployment/practify -n practify || true
-          sudo kubectl rollout status deployment/practify -n practify
+          echo "--- Restarting Everything ---"
+          sudo kubectl rollout restart deployment/practify -n practify
+          sudo kubectl rollout restart deployment/practify-worker -n practify
+          
+          echo "--- Waiting for Status ---"
+          sudo kubectl rollout status deployment/practify -n practify --timeout=60s
+          
+          echo "✅ DEPLOYMENT COMPLETE"
           SCRIPT
           
-          # Move script to Pi and execute
+          # Move and Execute (These run on the GitHub Runner)
           scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no /tmp/deploy_script.sh ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }}:/tmp/deploy_script.sh
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} 'bash /tmp/deploy_script.sh'
           # 4. DEPLOYMENT SANITY CHECK
