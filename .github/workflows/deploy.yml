@@ -21,7 +21,6 @@ jobs:
         run: |
           cat > /tmp/deploy_script.sh << 'SCRIPT'
           #!/bin/bash
-          # -e: exit on error, -x: show commands as they run
           set -ex
 
           # 1. SETUP
@@ -51,47 +50,38 @@ jobs:
           DEPLOY_YAML=$(find . -name "practify-deployment.yaml" | head -n 1)
           WORKER_YAML=$(find . -name "practify-worker-deployment.yaml" | head -n 1)
 
+          if [ -z "$DEPLOY_YAML" ] || [ -z "$WORKER_YAML" ]; then
+            echo "❌ ERROR: Manifests not found!"
+            exit 1
+          fi
+
           # 5. KUBERNETES APPLY
           echo "--- Applying Manifests ---"
           sudo kubectl apply -f "$DEPLOY_YAML"
           sudo kubectl apply -f "$WORKER_YAML"
           
-          echo "--- Restarting Everything ---"
+          # 6. DATABASE MIGRATION
+          echo "--- Running Migrations ---"
+          # Wait briefly to ensure the deployment is recognized
+          sleep 5
+          # Run migrations (Primary + Solid Queue) via the Web Pod
+          sudo kubectl exec deployment/practify -n practify -- bundle exec rails db:prepare
+          
+          # 7. RESTART EVERYTHING
+          echo "--- Restarting Deployments ---"
           sudo kubectl rollout restart deployment/practify -n practify
           sudo kubectl rollout restart deployment/practify-worker -n practify
           
+          # 8. WAITING FOR HEALTHY STATUS
           echo "--- Waiting for Status ---"
           sudo kubectl rollout status deployment/practify -n practify --timeout=60s
+          sudo kubectl rollout status deployment/practify-worker -n practify --timeout=60s
           
-          echo "✅ DEPLOYMENT COMPLETE"
+          echo "✅ DEPLOYMENT & MIGRATION COMPLETE"
           SCRIPT
           
-          # Move and Execute (These run on the GitHub Runner)
+          # Transfer the script to the Pi
           scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no /tmp/deploy_script.sh ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }}:/tmp/deploy_script.sh
+          
+          # Execute the script on the Pi
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} 'bash /tmp/deploy_script.sh'
-          # 4. DEPLOYMENT SANITY CHECK
-          # Find both the Web and Worker manifests
-          DEPLOY_YAML=$(find . -name "practify-deployment.yaml" | head -n 1)
-          WORKER_YAML=$(find . -name "practify-worker-deployment.yaml" | head -n 1)
-
-          if [ -z "$DEPLOY_YAML" ] || [ -z "$WORKER_YAML" ]; then
-            echo "❌ ERROR: One or more manifests not found!"
-            exit 1
-          fi
-
-          echo "🚀 Found manifests: $DEPLOY_YAML and $WORKER_YAML"
-
-          # 5. KUBERNETES APPLY
-          sudo kubectl apply -f "$DEPLOY_YAML"
-          sudo kubectl apply -f "$WORKER_YAML"
-          
-          echo "--- Restarting Deployments ---"
-          # Restart both so they pick up new images and secrets
-          sudo kubectl rollout restart deployment/practify -n practify || true
-          sudo kubectl rollout restart deployment/practify-worker -n practify || true
-          
-          echo "--- Waiting for Web to be Ready ---"
-          sudo kubectl rollout status deployment/practify -n practify
-          
-          echo "--- Waiting for Worker to be Ready ---"
-          sudo kubectl rollout status deployment/practify-worker -n practify
