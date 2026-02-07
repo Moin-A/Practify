@@ -9,7 +9,15 @@ module HomePage
     @appointment = current_user.appointments
                                 .joins(:slot)
                                 .includes(publisher: :user_profile)
-                                .where("slots.start_at >= ?", next_day)
+                                .pending
+                                .where("slots.start_at >= ?", Time.now.beginning_of_day)
+                                .order("slots.start_at ASC")
+                                .first
+   @upcoming_appointment = current_user.appointments
+                                .joins(:slot)
+                                .pending
+                                .includes(publisher: :user_profile)
+                                .where("slots.start_at >= ?", next_day.beginning_of_day)
                                 .order("slots.start_at ASC")
                                 .first
   end
@@ -44,7 +52,7 @@ module HomePage
   end
 
   def next_day
-    @next_day ||= Time.current + 1.day
+    @next_day ||= Time.current
   end
 
 
@@ -64,6 +72,11 @@ module HomePage
   def appointment_created?(slot_id)
     slot = Slot.find_by(id: slot_id)
     slot.present? && slot.appointment.present?
+  end
+
+  def appointment_created_by_current_user?(slot_id)
+    slot = Slot.find_by(id: slot_id)
+    slot.present? && slot.appointment.present? && slot.appointment.subscriber == current_user
   end
 
 

@@ -78,6 +78,8 @@
               <% end %>
             </div>
           </div>
+        <% elsif @upcoming_appointment.present? %>
+          <%= render partial: "home_page/upcomming_appointment", locals: { appointment: @upcoming_appointment } %>
         <% else %>
           <div class="flex items-center justify-center py-8 text-gray-400">
             <p class="text-sm">No upcoming appointments scheduled</p>
@@ -88,10 +90,10 @@
             <%= link_to new_appointment_call_room_path(@appointment), class: "mx-auto justify-center flex w-2/3 flex-1 px-6 py-3 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow" do %>
               Join Session
             <% end %>
-          <% end %>
-          <button class="px-6 py-3 bg-white text-gray-700 font-semibold text-sm rounded-xl border border-gray-200 shadow-sm transition-all duration-200 hover:border-gray-300 hover:bg-gray-50">
-            Reschedule
-          </button>
+            <button class="px-6 py-3 bg-white text-gray-700 font-semibold text-sm rounded-xl border border-gray-200 shadow-sm transition-all duration-200 hover:border-gray-300 hover:bg-gray-50">
+              Reschedule
+            </button>
+          <% end %>          
         </div>
       </div>
       
@@ -135,9 +137,18 @@
                     class: "relative py-3 px-3 bg-white border rounded-lg text-center font-semibold text-sm shadow-sm transition-all duration-200 #{is_booked ? 'bg-emerald-600 border-emerald-600 text-white' : is_selected ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-gray-200 text-gray-700 hover:border-emerald-300 hover:shadow'}" do %>
                   
                   <% if is_booked %>
-                    <div class="absolute top-[-6px] right-[-6px] w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-emerald-600 border border-emerald-200 shadow-sm">
-                      ✓
-                    </div>
+                 
+                    <% if appointment_created_by_current_user?(slot[:id]) %>
+                      <div class="absolute top-[-6px] right-[-6px] flex flex-col items-end gap-0.5">                       
+                        <span class="text-[10px] font-medium text-emerald-600 bg-white px-1.5 py-0.5 rounded  border-emerald-200 whitespace-nowrap">
+                          booked
+                        </span>
+                      </div>
+                    <% else %>
+                      <div class="absolute  text-[10px] top-[-6px] right-[-6px] bg-white rounded-full px-1.5 py-0.5 flex items-center justify-center   rounded-sm text-orange-600 border-orange-200">
+                        unavailable
+                      </div>
+                    <% end %>                    
                   <% end %>
                   <span class="relative text-[#666] z-[1]"><%= slot[:time] %></span>
                 <% end %>
