@@ -13,4 +13,8 @@ class ApplicationController < ActionController::Base
   def current_user
     @current_user ||= Current.session&.user
   end
+
+  def super_admin_user
+    User.joins(:roles).where(roles: { name: "SuperAdmin" }).first
+  end
 end

@@ -9,7 +9,7 @@ module HomePage
     @appointment = current_user.appointments
                                 .joins(:slot)
                                 .includes(publisher: :user_profile)
-                                .pending
+                                .pending_or_in_progress_or_completed
                                 .where("slots.start_at >= ?", Time.now.beginning_of_day)
                                 .order("slots.start_at ASC")
                                 .first
@@ -52,7 +52,7 @@ module HomePage
   end
 
   def next_day
-    @next_day ||= Time.current
+    @next_day ||= Time.current + 1.day
   end
 
 

@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import OT from "@opentok/client"
 
 export default class extends Controller {
   static values = {
