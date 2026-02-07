@@ -6,7 +6,12 @@ module HomePage
     @current_user = current_user
     @calendar = current_user.calendar
     @selected_slot_id = selected_slot_id
-    @appointment = current_user.appointments.joins(:slot).where(slots: { start_at: Time.current.beginning_of_day..Time.current.end_of_day }).first
+    @appointment = current_user.appointments
+                                .joins(:slot)
+                                .includes(publisher: :user_profile)
+                                .where("slots.start_at >= ?", Time.current)
+                                .order("slots.start_at ASC")
+                                .first
   end
 
   def render?
@@ -64,6 +69,36 @@ module HomePage
 
   def slot_selected?(slot_id)
     selected_slot_id.to_s == slot_id.to_s
+  end
+
+  def doctor_profile
+    return nil unless @appointment&.publisher&.user_profile
+    @appointment.publisher.user_profile
+  end
+
+  def doctor_name
+    return nil unless doctor_profile&.first_name&.present? && doctor_profile&.last_name&.present?
+    "Dr. #{doctor_profile.first_name} #{doctor_profile.last_name}"
+  end
+
+  def doctor_title
+    return nil unless doctor_profile
+    doctor_profile.professional_info&.dig("title") || "Licensed Therapist"
+  end
+
+  def doctor_initials
+    return nil unless doctor_profile&.first_name&.present? && doctor_profile&.last_name&.present?
+    "#{doctor_profile.first_name[0]}#{doctor_profile.last_name[0]}".upcase
+  end
+
+  def appointment_date
+    return nil unless @appointment&.slot&.start_at
+    @appointment.slot.start_at.strftime("%A, %b %d")
+  end
+
+  def appointment_time
+    return nil unless @appointment&.slot&.start_at
+    @appointment.slot.start_at.strftime("%I:%M %p")
   end
  end
 end
