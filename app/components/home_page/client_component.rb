@@ -9,7 +9,7 @@ module HomePage
     @appointment = current_user.appointments
                                 .joins(:slot)
                                 .includes(publisher: :user_profile)
-                                .where("slots.start_at >= ?", Time.current)
+                                .where("slots.start_at >= ?", next_day)
                                 .order("slots.start_at ASC")
                                 .first
   end
