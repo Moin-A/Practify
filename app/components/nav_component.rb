@@ -22,11 +22,15 @@ class NavComponent < ApplicationComponent
         if path.to_sym === :root_path
             public_send("root_path")
         elsif path.to_sym === :calendar_path
-            public_send("calendar_path", user_profile.calendar)
+            calendar = user_profile&.calendar
+            return nil unless calendar
+            public_send("calendar_path", calendar)
         elsif path.to_sym === :edit_user_profile_path
             public_send("edit_user_profile_path", user_profile)
         elsif path.to_sym === :calendar_schedule_path
-            public_send("calendar_schedule_path", user_profile.calendar)
+            calendar = user_profile&.calendar
+            return nil unless calendar
+            public_send("calendar_schedule_path", calendar)
         end
     end
 

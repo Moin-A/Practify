@@ -8,26 +8,33 @@ class CallRoomsController < ApplicationController
   end
 
   def create
-    @call_room = @appointment.build_call_room
+    session_creator = CallRoomSessionCreator.new(appointment: @appointment)
+    ActiveRecord::Base.transaction do
+     @call_room = @appointment.create_call_room
+     raise ActiveRecord::Rollback unless session_creator.create
+    end
+
     # @call_room.name = "#{@appointment.publisher.user_profile.first_name} - #{@appointment.subscriber.user_profile.first_name}"
-    if @call_room.save
+    if @call_room.persisted?
       redirect_to appointment_call_room_path(@appointment, @call_room), notice: "Call room was successfully created."
     else
-       render turbo_stream: turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: @call_room.errors.full_messages.to_sentence(words_connector: ", ", two_words_connector: ", ", last_word_connector: ", ") })
+
+      render turbo_stream: turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: [ @call_room.errors.full_messages, session_creator.error_message ].flatten.join(", ") })
     end
   end
 
   def show
-    role = if current_user == @appointment.publisher
-             :publisher
-    else
-             :subscriber
-    end
+    # Authorization check - ensure user is part of this appointment
 
-    vonage_service = VonageVideoService.new
-    session_id = @appointment.call_room.vonage_session_id
-    @token = VonageVideoService.new.generate_token(session_id, role: role)
-    @app_id = Rails.application.credentials.dig(:vonage, :app_id)
+    session_creator = CallRoomSessionCreator.new(appointment: @appointment)
+    if session_creator.create
+      @token = session_creator.token
+      @app_id = session_creator.app_id
+      @role = session_creator.role
+      @session_id = session_creator.session_id
+    else
+      render turbo_stream: turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: session_creator.error_message })
+    end
   end
 
   private

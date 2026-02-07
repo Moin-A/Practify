@@ -2,7 +2,7 @@ class PostCallHeartBeatJob < ApplicationJob
   queue_as :default
 
   def perform
-     all_appointments = Appointment.includes(:slot).pending
+     all_appointments = Appointment.includes(:slot).pending_or_in_progress_or_completed
 
      all_appointments.each do |appointment|
       updated_appointment_status(appointment)
@@ -12,8 +12,11 @@ class PostCallHeartBeatJob < ApplicationJob
   private
 
   def updated_appointment_status(appointment)
-    return if appointment.slot.nil? || appointment.start_at > Time.now
-    if in_progress?(appointment)
+    return if appointment.slot.nil? ||  Time.now < appointment.start_at
+
+    if appointment.in_progress? &&  Time.now  > appointment.end_at
+      appointment.update(status: :completed)
+    elsif in_progress?(appointment) && appointment.publisher_or_subscriber_joined?
       appointment.update(status: :in_progress)
     elsif both_joined?(appointment)
       appointment.update(status: :completed)
@@ -32,6 +35,6 @@ class PostCallHeartBeatJob < ApplicationJob
   end
 
   def in_progress?(appointment)
-    appointment.end_at >= Time.now && appointment.start_at <= Time.now
+    appointment.start_at <= Time.now && appointment.end_at >= Time.now
   end
 end

@@ -4,6 +4,9 @@ FactoryBot.define do
     password { "password" }
     password_confirmation { "password" }
 
+    trait :super_admin do
+      roles { [ create(:role, name: "SuperAdmin") ] }
+    end
 
     after(:create) do |user|
         user.create_user_profile!(

@@ -108,8 +108,8 @@ RSpec.describe PostCallHeartBeatJob, type: :job do
     context 'when appointment is in the ongoing process' do
       let(:start_time) { 1.hour.ago }
       let(:end_time) { 2.hours.from_now }
-      let(:publisher_joined) { false }
-      let(:subscriber_joined) { false }
+      let(:publisher_joined) { true }
+      let(:subscriber_joined) { true }
       before do
         # Skip validation that requires start_at to be in the future
         slot.update_column(:start_at, start_time)
