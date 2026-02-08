@@ -121,14 +121,14 @@
         
         <%= helpers.turbo_frame_tag "quick_book" do %>
           <div class="grid grid-cols-3 gap-2.5 mb-5">
-            <% if next_day_available_slots.empty? %>
+            <% if next_day_available_slots(next_day).empty? %>
               <p class="text-center text-sm text-gray-400 font-medium col-span-3">
                 No slots available for tomorrow
               </p>
             <% else %>
-              <% next_day_available_slots.each do |slot| %>
+              <% next_day_available_slots(next_day).each do |slot| %>
                 <% is_booked = appointment_created?(slot[:id]) %>
-                <% is_selected = slot_selected?(slot[:id]) %>
+                <% is_selected = slot_selected?(slot[:id], selected_slot_id) %>
                 
                 <%= link_to root_path(selected_slot_id: slot[:id]), 
                     data: { turbo_frame: "quick_book" },

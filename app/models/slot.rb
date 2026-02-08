@@ -5,6 +5,8 @@ class Slot < ApplicationRecord
 
 
   enum :status, { draft: 0, available: 1, booked: 2 }
+  scope :available_on, ->(data) { where(start_at: data.beginning_of_day..data.end_of_day) }
+  scope :available, -> { where(status: :available) }
 
   validates :start_at, presence: true
   validates :end_at, presence: true
