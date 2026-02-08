@@ -76,13 +76,18 @@ class SlotsController < ApplicationController
   end
 
   def destroy
-    start_date = params[:start_date]
+    slot_date = @slot.start_at.to_date
+    slot_id = @slot.id
+    @selected_slot_id = params[:selected_slot_id] || params.dig(:appointment, :slot_id)
+    @selected_slot_id = nil if @selected_slot_id.present? && @selected_slot_id.to_s == slot_id.to_s
+    @date = slot_date
     @slot.destroy
+    @slots = @calendar.slots_for_date(slot_date)
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
-          turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Slot was successfully destroyed!", type: :notice }),
-          turbo_stream.remove("slot_#{@slot.id}")
+          turbo_stream.replace("slots_list", partial: "schedules/slot_list", locals: { slots: @slots }),
+          turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Slot was successfully destroyed!", type: :notice })
         ]
       end
     end
@@ -136,5 +141,9 @@ end
 
   def confirm_params_params
     params.permit(:id)
+  end
+
+  def parse_and_save_date_query_param
+    @date = parse_date_param
   end
 end
