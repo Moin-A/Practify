@@ -20,9 +20,11 @@ class SlotsController < ApplicationController
     respond_to do |format|
       if @slot.save
         @slots = @calendar.slots_for_date(@slot.start_at.to_date)
+        @date = @slot.start_at.to_date
+        @selected_slot_id = params[:selected_slot_id]
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.replace("slots_list", partial: "schedules/slot_list", locals: { slots: @slots }),
+            turbo_stream.replace("slots_list", partial: "schedules/slot_list", locals: { slots: @slots, calendar: @calendar, date: @date, selected_slot_id: @selected_slot_id }),
             turbo_stream.update("current_date", @slot.start_at.strftime("%A, %B %d, %Y")),
             turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Slot was successfully created!", type: :notice }),
             turbo_stream.update("new_slot_form", "")
@@ -86,7 +88,7 @@ class SlotsController < ApplicationController
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
-          turbo_stream.replace("slots_list", partial: "schedules/slot_list", locals: { slots: @slots }),
+          turbo_stream.replace("slots_list", partial: "schedules/slot_list", locals: { slots: @slots, calendar: @calendar, date: @date, selected_slot_id: @selected_slot_id }),
           turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Slot was successfully destroyed!", type: :notice })
         ]
       end
@@ -96,13 +98,15 @@ class SlotsController < ApplicationController
   def release_all_slots
   date = params[:start_date].present? ? params[:start_date].to_date : Date.current
   @slots =@calendar.slots_for_date(date)
+  @date = date
+  @selected_slot_id = params[:selected_slot_id]
 
   begin
     @slots.map { |slot| slot.available! unless slot.available? }.any?
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
-          turbo_stream.replace("slots_list", partial: "schedules/slot_list", locals: { slots: @slots }),
+          turbo_stream.replace("slots_list", partial: "schedules/slot_list", locals: { slots: @slots, calendar: @calendar, date: @date, selected_slot_id: @selected_slot_id }),
           turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "All slots were successfully released!", type: :notice })
         ]
       end
@@ -112,7 +116,7 @@ class SlotsController < ApplicationController
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
-          turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: e.message.split(":")[1].strip, type: :alert })
+          turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: e.message, type: :alert })
         ]
       end
     end

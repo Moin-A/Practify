@@ -8,6 +8,10 @@ module SlotsHelper
     slots.map { |slot| { time: slot.start_at.strftime("%I:%M %p"), id: slot.id } }
   end
 
+  def next_day
+    @next_day ||= Time.current + 1.day
+  end
+
   def selected_slot
     return nil unless selected_slot_id
     Slot.find_by(id: selected_slot_id)
