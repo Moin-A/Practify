@@ -1,6 +1,6 @@
 <% is_booked = appointment_created?(slot[:id]) %>
-<% is_selected = slot_selected?(slot[:id], @selected_slot_id) %>
-<%= link_to calendar_schedule_path(@calendar, { selected_slot_id: slot[:id], start_date: @date }), 
+<% is_selected = slot_selected?(slot[:id], selected_slot_id) %>
+<%= link_to calendar_schedule_path(calendar, { selected_slot_id: slot[:id], start_date: date }), 
     data: { turbo_frame: "interview_slots" },
     class: "relative py-3 px-3 bg-white border rounded-lg text-center font-semibold text-sm shadow-sm transition-all duration-200 block #{is_booked ? 'bg-emerald-600 border-emerald-600 text-white' : is_selected ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-gray-200 text-gray-700 hover:border-emerald-300 hover:shadow'}" do %>
   
