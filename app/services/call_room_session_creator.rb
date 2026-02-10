@@ -51,7 +51,7 @@ class CallRoomSessionCreator
 
   def validate_timing
     unless Time.current + 10.minutes > @appointment.start_at
-      errors << "please wait, the session has still time to start, you can join at #{@appointment.start_at + 10.minutes}"
+      errors << "please wait, the session has still time to start, you can join at #{(@appointment.start_at - 10.minutes).strftime("%B %d, %Y at %I:%M %p")}"
     end
   end
 

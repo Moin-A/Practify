@@ -1,0 +1,15 @@
+tmp/
+log/
+.DS_Store
+node_modules/
+.env
+config/master.key
+storage/
+public/assets
+public/packs
+public/packs-test
+.idea/
+.vscode/
+coverage/
+
+tmp/cache/bootsnap

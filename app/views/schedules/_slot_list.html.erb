@@ -1,4 +1,3 @@
-<%= turbo_frame_tag "interview_slots" do %>
   <div class="grid grid-cols-3 gap-2 overflow-visible" id="slots_list">
     <% if slots&.any? %>
       <% slots.each do |slot| %>
@@ -23,6 +22,5 @@
   <button disabled class="w-full mt-4 px-6 py-3 bg-gray-100 text-gray-400 font-semibold text-sm rounded-xl cursor-not-allowed">
     Select a Slot
   </button>
-<% end %>
 <% end %>
 <% end %>

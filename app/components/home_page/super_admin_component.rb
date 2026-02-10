@@ -9,7 +9,7 @@ module HomePage
       @appointment = current_user.appointments
             .joins(:slot)
             .includes(publisher: :user_profile)
-            .pending_or_in_progress_or_completed
+            .pending_or_in_progress_or_completed_or_booked
             .where("slots.start_at >= ?", Time.now.beginning_of_day)
             .order("slots.start_at ASC")
             .first

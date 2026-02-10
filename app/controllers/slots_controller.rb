@@ -1,6 +1,6 @@
 class SlotsController < ApplicationController
   before_action :set_calendar
-  load_and_authorize_resource only: [ :show, :edit, :update, :destroy, :confirm  ]
+  load_and_authorize_resource only: [ :show, :edit, :update, :confirm  ]
   before_action :authorize_calendar_for_slot_actions, only: [ :create, :new ]
 
   def index
@@ -78,6 +78,8 @@ class SlotsController < ApplicationController
   end
 
   def destroy
+    @slot = Slot.find(params[:id])
+    authorize! :destroy, @slot, message: "The Slot is already booked or in progress"
     slot_date = @slot.start_at.to_date
     slot_id = @slot.id
     @selected_slot_id = params[:selected_slot_id] || params.dig(:appointment, :slot_id)

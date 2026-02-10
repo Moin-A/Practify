@@ -17,6 +17,7 @@ class AppointmentsController < ApplicationController
     @date = parse_date_param
     @calendar = current_user.calendar
     @slots = @calendar.slots_for_date(@date)
+    @selected_slot_id = params[:selected_slot_id] || nil
   end
 
   def new

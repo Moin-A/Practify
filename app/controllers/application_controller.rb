@@ -5,6 +5,10 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user
 
+  rescue_from CanCan::AccessDenied do |exception|
+    message = exception.message || "You are not authorized to access this page."
+    render turbo_stream: [ turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: message, type: :alert }) ], status: :unprocessable_entity
+  end
 
   def current_ability
     @current_ability ||= Ability.new(current_user)

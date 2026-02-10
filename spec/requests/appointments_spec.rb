@@ -35,15 +35,14 @@ RSpec.describe "Appointments", type: :request do
     let(:appointment) { create(:appointment, user: user, slot: slot) }
 
     it "returns http success" do
-      get appointment_path(appointment)
+      get appointment_path(appointment, selected_slot_id: slot.id)
       expect(response).to have_http_status(:success)
     end
 
     it "prevents access to other user's appointments" do
       other_appointment = create(:appointment)
-      expect {
-        get appointment_path(other_appointment)
-      }.to raise_error(CanCan::AccessDenied)
+      get appointment_path(other_appointment)
+      expect(response).to have_http_status(:unprocessable_entity)
     end
   end
 
@@ -197,9 +196,8 @@ RSpec.describe "Appointments", type: :request do
     it "raises an error when user is a client" do
       doctor = create(:user)
       doctor.roles << Role.find_or_create_by!(name: "Doctor")
-      expect {
-        delete appointment_path(appointment)
-      }.to raise_error(CanCan::AccessDenied)
+      delete appointment_path(appointment)
+      expect(response).to have_http_status(:unprocessable_entity)
     end
   end
 

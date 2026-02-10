@@ -8,7 +8,7 @@
     <% if current_user.super_admin? || appointment_created_by_current_user?(slot[:id]) %>
       <div class="absolute top-[-6px] right-[-6px] flex flex-col items-end gap-0.5">                   
         <span class="text-[10px] font-medium text-emerald-600 bg-white px-1.5 py-0.5 rounded border-emerald-200 whitespace-nowrap">
-          <%= slot.appointment.status == "pending" ? 'Booked' : slot.appointment.status.titleize %>
+          <%=slot.appointment.status.titleize %>
         </span>
       </div>   
         <span class="relative text-[#666] z-[1]"><%= slot.start_at.strftime("%I:%M %p") %></span>

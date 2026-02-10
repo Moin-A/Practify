@@ -9,13 +9,13 @@ module HomePage
     @appointment = current_user.appointments
                                 .joins(:slot)
                                 .includes(publisher: :user_profile)
-                                .pending_or_in_progress_or_completed
+                                .pending_or_in_progress_or_completed_or_booked
                                 .where("slots.start_at >= ?", Time.now.beginning_of_day)
                                 .order("slots.start_at ASC")
                                 .first
    @upcoming_appointment = current_user.appointments
                                 .joins(:slot)
-                                .pending
+                                .booked
                                 .includes(publisher: :user_profile)
                                 .where("slots.start_at >= ?", next_day.beginning_of_day)
                                 .order("slots.start_at ASC")
@@ -49,10 +49,6 @@ module HomePage
 
   def avatar
     user_profile.avatar.attached? ? user_profile.avatar : "https://ui-avatars.com/api/?name=#{user_profile.first_name}+#{user_profile.last_name}"
-  end
-
-  def next_day
-    @next_day ||= Time.current + 1.day
   end
 
   def doctor_profile
