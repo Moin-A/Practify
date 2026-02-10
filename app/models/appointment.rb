@@ -6,8 +6,8 @@ class Appointment < ApplicationRecord
   has_one :call_room, dependent: :destroy
   delegate :start_at, :end_at, to: :slot
 
-  scope :pending_or_in_progress_or_completed, -> { where(status: [ :pending, :in_progress, :completed ]) }
-  enum :status, { pending: 0, noshow: 1, cancelled: 2, completed: 3, expired: 4, in_progress: 5 }
+  scope :pending_or_in_progress_or_completed_or_booked, -> { where(status: [ :pending, :in_progress, :completed, :booked ]) }
+  enum :status, { pending: 0, noshow: 1, cancelled: 2, completed: 3, expired: 4, in_progress: 5, booked: 6 }
 
   validates :user_id, presence: true
   validates :slot_id, presence: true, uniqueness: true

@@ -1,11 +1,15 @@
-<% if current_user.client? %>
-
-  <%= render "appointments/client", date: @date, slots: @slots, calendar: @calendar %>
-
-<% elsif current_user.super_admin? %>
-
-  <%= render "appointments/superadmin",
-  date: @date,
-  slots: @slots,
-  calendar: @calendar %>
+<%= turbo_frame_tag "interview_slots" do %>
+  <% if current_user.client? %>
+    <%= render "appointments/client",
+               date: @date,
+               slots: @slots,
+               calendar: @calendar,
+               selected_slot_id: @selected_slot_id %>
+  <% elsif current_user.super_admin? %>
+    <%= render "appointments/superadmin",
+               date: @date,
+               slots: @slots,
+               calendar: @calendar,
+               selected_slot_id: @selected_slot_id %>
+  <% end %>
 <% end %>

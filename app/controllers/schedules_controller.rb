@@ -5,12 +5,13 @@ class SchedulesController < ApplicationController
 
   def show
     @date = parse_date_param
-    @slots = @calendar.slots_for_date(@date)
+    @slots = Slot.available_on(@date).includes(:appointment)
     @meetings = @calendar.appointments_for_date(@date)
+    @selected_slot_id = params[:selected_slot_id] || nil
   end
 
 
-  private
+
 
   def set_calendar
     @calendar = Calendar.find(params[:calendar_id])

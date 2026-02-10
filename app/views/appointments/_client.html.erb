@@ -28,7 +28,7 @@
             <%= Date.current.strftime("%A, %B %d, %Y") %>
           <% end %>
         </div>  
-        <%= render "schedules/slot_list", slots: slots %>
+        <%= render "schedules/slot_list", slots: slots, calendar: calendar, date: date, selected_slot_id: selected_slot_id %>
       </p>
       </div>
     </div>

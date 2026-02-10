@@ -41,9 +41,8 @@ RSpec.describe "Calendars", type: :request do
       session = user.sessions.create!(ip_address: "127.0.0.1", user_agent: "Test Browser")
       set_signed_cookie(:session_id, session.id)
 
-      expect {
-        get calendar_schedule_path(other_calendar)
-      }.to raise_error(CanCan::AccessDenied, "You are not authorized to access this calendar")
+      get calendar_schedule_path(other_calendar)
+      expect(response).to have_http_status(:unprocessable_entity)
     end
   end
 

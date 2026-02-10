@@ -31,7 +31,7 @@
       </p>
     </div>
 
-    <%= link_to new_calendar_slot_path(@calendar, date: params[:start_date]), 
+    <%= link_to new_calendar_slot_path(calendar, date: params[:start_date]), 
             data: { turbo_frame: "new_slot_form" },
             class: "flex items-center gap-1.5 px-4 py-1.5 bg-emerald-500 text-white text-xs font-bold rounded-lg hover:bg-emerald-600 shadow-sm transition-all" do %>
       <span class="text-lg">+</span>
@@ -44,9 +44,10 @@
   <%= turbo_frame_tag "new_slot_form" %>
 
   <hr class="border-slate-50 mb-6">
-
-  <%= render "schedules/slot_list", slots: slots %>
-  <%= button_to calendar_release_all_slots_path(@calendar, start_date: params[:start_date]), 
+   
+  <%= render "schedules/slot_list", slots: slots, calendar: calendar, date: date, selected_slot_id: selected_slot_id %>
+  <div class="flex flex-row gap-2"> 
+  <%= button_to calendar_release_all_slots_path(calendar, start_date: params[:start_date]), 
     method: :post,
     class: "w-full cursor-pointer mt-4 px-4 py-2.5 bg-emerald-500 my-4 text-white text-sm font-bold rounded-lg hover:bg-emerald-600 mt-8 shadow-sm transition-all flex items-center justify-center gap-2" do %>
     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -54,4 +55,14 @@
     </svg>
     Release All Slots
   <% end %>
+  
+  <% if selected_slot_id.present? %>
+    <%= button_to calendar_slot_path(calendar, selected_slot_id), 
+        method: :delete,
+        params: { selected_slot_id: selected_slot_id },
+        class: "w-full cursor-pointer mt-4 px-4 py-2.5 bg-red-500 my-4 text-white text-sm font-bold rounded-lg hover:bg-red-600 mt-8 shadow-sm transition-all flex items-center justify-center gap-2" do %>
+      Delete Slot
+    <% end %>
+  <% end %>
+</div>
 </div>

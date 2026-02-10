@@ -7,6 +7,9 @@
       <%= month_calendar(events: @meetings) do |date, meetings| %>
         <%= date %>
       <% end %>
+      <div id="flash_messages" class="mb-6">
+        <%= turbo_frame_tag "flash_messages" %>
+      </div>
     </div>
 
     <%# Appointments Section %>
@@ -17,8 +20,9 @@
         date: @date,
         slots: @slots,
         calendar: @calendar,
+        selected_slot_id: @selected_slot_id,
       } %>
-    </div>
-
+    </div> 
   </div>
+ 
 </div>

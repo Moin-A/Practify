@@ -11,6 +11,7 @@ class AppointmentCreator
     return false unless valid?
     @appointment = slot.build_appointment(appointment_params.merge(publisher: slot.user, subscriber: current_user))
     if @appointment.save
+      @appointment.booked!
       true
     else
       errors << @appointment.errors.full_messages.to_sentence(words_connector: ", ", two_words_connector: ", ", last_word_connector: ", ")
@@ -23,16 +24,6 @@ class AppointmentCreator
     validate_appointment_already_exists
     errors.empty?
   end
-
-  private
-
-
-
-  def appointment
-    @appointment
-  end
-
-
 
   private
 

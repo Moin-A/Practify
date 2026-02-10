@@ -2,7 +2,7 @@ class PostCallHeartBeatJob < ApplicationJob
   queue_as :default
 
   def perform
-     all_appointments = Appointment.includes(:slot).pending_or_in_progress_or_completed
+     all_appointments = Appointment.includes(:slot).pending_or_in_progress_or_completed_or_booked
 
      all_appointments.each do |appointment|
       updated_appointment_status(appointment)
