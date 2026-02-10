@@ -1,53 +1,220 @@
-<script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
+<!-- app/views/appointments/show.html.erb -->
+<div class = "rounded-lg rounded-sm">
+<div data-controller="call-room" 
+     data-call-room-api-key-value="<%= @app_id %>"
+     data-call-room-session-id-value="<%= @session_id %>"
+     data-call-room-token-value="<%= @token %>"
+     data-call-room-user-name-value="<%= current_user.user_profile.full_name %>"
+     data-call-room-appointment-id-value="<%= @appointment_id %>"
+     data-call-room-csrf-token-value="<%= form_authenticity_token %>"
+     class="w-full h-screen bg-gray-900 text-white relative h-[620px] rounded-sm">
 
-<div 
-  data-controller="call-room"
-  data-call-room-api-key-value="<%= app_id %>"
-  data-call-room-session-id-value="<%= call_room.vonage_session_id %>"
-  data-call-room-token-value="<%= token %>"
-  data-call-room-user-name-value="<%= current_user.email_address %>"
-  data-call-room-appointment-id-value="<%= appointment_id %>"
-  data-call-room-csrf-token-value="<%= form_authenticity_token %>"
-  class="max-w-6xl mx-auto p-6"
->
-  <div class="flex justify-between items-center mb-6">
-    <h2 class="text-2xl font-bold">Room: <%= call_room.name %></h2>
-    <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-sm font-medium border border-emerald-500/30">
-      <span class="animate-pulse">●</span> Live
-    </span>
-  </div>
+  <div class="flex h-full">
+    <!-- Left side: Video area -->
+    <div class="flex-1 flex flex-col bg-black relative overflow-hidden">
+      
+      <!-- Publisher (your video) - Small corner window -->
+      <div class="absolute top-3 right-3 w-32 h-24 border-2 border-blue-500 rounded-lg overflow-hidden z-10 bg-gray-800 shadow-lg transition-transform hover:scale-105">
+        <div data-call-room-target="publisher" class="w-full h-full"></div>
+        <div class="absolute bottom-1 left-1 bg-black bg-opacity-70 text-white px-2 py-0.5 rounded text-xs font-semibold">
+          You
+        </div>
+      </div>
 
-  <div id="video-container">
-    <div id="subscribers" data-call-room-target="subscribers"></div>
-    <div id="publisher" data-call-room-target="publisher"></div>
+      <!-- Subscribers (other participants) -->
+      <div class="flex-1 flex items-center justify-center p-4 relative">
+        <div data-call-room-target="subscribers" class="w-full h-full flex flex-wrap gap-3 items-center justify-center"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none">
+          Waiting for others to join...
+        </div>
+      </div>
 
-    <div class="video-controls">
-      <button 
-        data-action="click->call-room#toggleMic" 
-        data-call-room-target="micBtn" 
-        class="control-btn"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
-        </svg>    
-      </button>
-      <button 
-        data-action="click->call-room#toggleCam" 
-        data-call-room-target="camBtn" 
-        class="control-btn"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
-        </svg>
-      </button>
-      <button 
+      <!-- Video controls -->
+      <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2.5 px-4 py-2 bg-black bg-opacity-80 rounded-full z-10 shadow-lg">
+        <button data-call-room-target="micBtn" 
+                data-action="click->call-room#toggleMic"
+                class="flex items-center gap-2 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold transition active:scale-95 shadow-lg shadow-emerald-600/30"
+                title="Toggle Microphone">
+         Mute <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+               <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 0 0 1.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06ZM17.78 9.22a.75.75 0 1 0-1.06 1.06L18.44 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06l1.72-1.72 1.72 1.72a.75.75 0 1 0 1.06-1.06L20.56 12l1.72-1.72a.75.75 0 1 0-1.06-1.06l-1.72 1.72-1.72-1.72Z" />
+              </svg>
+        </button>
+        
+        <button data-call-room-target="camBtn" 
+                data-action="click->call-room#toggleCam"
+                class="flex items-center gap-2 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold transition active:scale-95 shadow-lg shadow-emerald-600/30"
+                title="Toggle Camera">
+          Stop Video <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                        <path d="M.97 3.97a.75.75 0 0 1 1.06 0l15 15a.75.75 0 1 1-1.06 1.06l-15-15a.75.75 0 0 1 0-1.06ZM17.25 16.06l2.69 2.69c.944.945 2.56.276 2.56-1.06V6.31c0-1.336-1.616-2.005-2.56-1.06l-2.69 2.69v8.12ZM15.75 7.5v8.068L4.682 4.5h8.068a3 3 0 0 1 3 3ZM1.5 16.5V7.682l11.773 11.773c-.17.03-.345.045-.523.045H4.5a3 3 0 0 1-3-3Z" />
+                      </svg>
+
+        </button>              
+       <button 
         data-action="click->call-room#leaveSession" 
         class="control-btn off"
       >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">  
           <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M12 18.75H4.5a2.25 2.25 0 0 1-2.25-2.25V9m12.841 9.091L16.5 19.5m-1.409-1.409c.407-.407.659-.97.659-1.591v-9a2.25 2.25 0 0 0-2.25-2.25h-9c-.621 0-1.184.252-1.591.659m12.182 12.182L2.909 5.909M1.5 4.5l1.409 1.409" />
         </svg>
-      </button>
+      </button>   
+      </div>
+    </div>
+
+    <!-- Right side: Chat interface -->
+    <div class="w-72 flex flex-col bg-gray-800 border-l border-gray-700">
+      
+      <!-- Chat header -->
+      <div class="px-3 py-3 bg-gradient-to-r from-gray-900 to-gray-800 border-b border-gray-700">
+        <h3 class="flex items-center gap-1.5 text-sm font-semibold mb-1">
+          💬 Chat
+        </h3>
+        <span class="text-xs text-gray-400">Messages in this call</span>
+      </div>
+
+      <!-- Chat messages area -->
+      <div data-call-room-target="chatMessages" 
+           class="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-2.5">
+        <!-- Welcome message -->
+        <div class="text-center text-gray-400 text-xs py-2.5 px-3 bg-white bg-opacity-5 rounded-md my-2">
+          Welcome to the call! Send a message to get started.
+        </div>
+      </div>
+
+      <!-- Chat input form -->
+      <form data-action="submit->call-room#sendMessage" 
+            class="flex px-3 py-3 gap-2.5 bg-gray-900 border-t border-gray-700">
+        <input type="text" 
+               data-call-room-target="chatInput"
+               data-action="keydown->call-room#handleChatKeydown"
+               placeholder="Type a message..."
+               class="flex-1 px-3.5 py-2.5 bg-gray-700 border border-gray-600 rounded-full text-white text-xs focus:outline-none focus:border-blue-500 focus:bg-gray-600 placeholder-gray-400"
+               autocomplete="off"
+               maxlength="500">
+        <button type="submit" 
+                class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-full text-base transition-all hover:scale-110 hover:shadow-lg shadow-md"
+                title="Send message">
+          ➤
+        </button>
+      </form>
     </div>
   </div>
 </div>
+</div>
+
+<style>
+  /* Custom styles for muted/disabled states */
+  [data-call-room-target="micBtn"].muted,
+  [data-call-room-target="camBtn"].disabled {
+    @apply bg-red-600 hover:bg-red-700;
+  }
+
+  .h-\[620px\] {
+    height: 620px;
+    border-radius: 0.25rem;
+  }
+
+  .rounded-sm {
+    border-radius: 0.25rem;
+  }
+
+  /* Error banner styles */
+  [data-call-room-target="errorMessage"].error {
+    @apply bg-red-600 text-white border-b-2 border-red-700;
+  }
+
+  [data-call-room-target="errorMessage"].warning {
+    @apply bg-yellow-500 text-black border-b-2 border-yellow-600;
+  }
+
+  [data-call-room-target="errorMessage"].info {
+    @apply bg-blue-500 text-white border-b-2 border-blue-600;
+  }
+
+  /* Chat message bubbles - added via JavaScript */
+  .chat-message {
+    @apply flex flex-col max-w-[75%] animate-fadeIn;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .chat-message.self {
+    @apply self-end;
+  }
+
+  .chat-message.other {
+    @apply self-start;
+  }
+
+  .message-header {
+    @apply flex justify-between items-center mb-1 gap-2;
+  }
+
+  .sender-name {
+    @apply text-xs font-semibold text-gray-400;
+  }
+
+  .message-time {
+    @apply text-xs text-gray-500;
+  }
+
+  .message-text {
+    @apply py-2.5 px-3.5 rounded-2xl break-words leading-snug text-xs shadow-sm;
+  }
+
+  .chat-message.self .message-text {
+    @apply bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-br;
+  }
+
+  .chat-message.other .message-text {
+    @apply bg-gray-700 text-white rounded-bl;
+  }
+
+  /* Custom scrollbar for chat */
+  [data-call-room-target="chatMessages"]::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  [data-call-room-target="chatMessages"]::-webkit-scrollbar-track {
+    @apply bg-gray-900;
+  }
+
+  [data-call-room-target="chatMessages"]::-webkit-scrollbar-thumb {
+    @apply bg-gray-600 rounded;
+  }
+
+  [data-call-room-target="chatMessages"]::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+  }
+
+  /* Hide waiting message when there are subscribers */
+  [data-call-room-target="subscribers"]:not(:empty) ~ div {
+    display: none;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .w-72 {
+      width: 100%;
+      max-height: 40vh;
+    }
+    
+    .w-32 {
+      width: 100px;
+    }
+    
+    .h-24 {
+      height: 75px;
+    }
+
+
+  }
+</style>
