@@ -2,11 +2,11 @@ class UserProfilesController < ApplicationController
   before_action :set_user_profile, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @user_profile = current_user.user_profile
-    redirect_to user_profile_path(@user_profile) if @user_profile
+    @clients = UserProfile.includes(user: :roles).where(users: { roles: { name: "Client" } })
   end
 
   def show
+    @client = UserProfile.includes(user: :roles).find(params[:id])
   end
 
   def new
@@ -53,6 +53,6 @@ class UserProfilesController < ApplicationController
   end
 
   def user_profile_params
-    params.require(:user_profile).permit(:first_name, :last_name, :profile_picture, :bio, :location, :avatar, professional_info: {})
+    params.require(:user_profile).permit(:first_name, :last_name, :age, :gender, :profile_picture, :bio, :location, :avatar, professional_info: {})
   end
 end

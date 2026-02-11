@@ -1,0 +1,61 @@
+  <section 
+  data-controller="user-profile"
+  data-action="click->user-profile#toggle"
+  data-user-profile-type-param="observation"
+  class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm cursor-pointer transition-colors hover:border-slate-200"
+>
+  <h3 id="observations-title" class="text-xl font-bold text-slate-900 py-4">Clinical Observations</h3>
+  
+  <div data-user-profile-target="observation">
+    <div class="mb-10 bg-slate-50 p-6 rounded-2xl border border-dashed border-slate-200">
+      <textarea class="w-full bg-transparent border-none focus:ring-0 text-sm text-slate-700 placeholder:text-slate-400 resize-none" rows="3" placeholder="Click here to type a new clinical observation..."></textarea>
+      <div class="flex justify-end mt-4">
+        <button class="bg-white text-slate-900 px-5 py-2 rounded-xl text-xs font-bold shadow-sm border border-slate-200 hover:bg-slate-50 transition-colors">Post Note</button>
+      </div>
+    </div>
+    <div class="space-y-6 relative before:absolute before:mt-4 before:h-1/2 before:inset-y-2 before:inset-x-2 before:left-4 before:w-px before:bg-slate-100">
+    <article class="relative pl-12 group
+        before:absolute
+        before:content-['']
+        before:left-4
+        before:top-3
+        before:bottom-6
+        before:w-8
+        before:border-b
+        before:border-slate-100"
+
+      <article class="relative pl-12 group">
+        <div class="absolute left-0 top-1 w-8 h-8 rounded-full bg-white border-4 border-emerald-100 group-hover:border-emerald-500 transition-colors z-10"></div>
+        <header class="flex items-center gap-2 mb-2">
+          <span class="text-sm font-bold text-slate-900">Dr. Sarah Johnson</span>
+          <time class="text-[10px] font-bold text-slate-400 uppercase">Feb 5, 2026</time>
+        </header>
+        <div class="p-5 bg-slate-50/50 rounded-2xl border border-slate-100 group-hover:bg-white group-hover:shadow-md transition-all">
+          <p class="text-sm text-slate-600 leading-relaxed">Client showing significant improvement in stress management.</p>
+        </div>
+      </article>
+       <article class="relative pl-12 group
+        before:absolute
+        before:content-['']
+        before:left-4
+        before:top-3
+        before:bottom-6
+        before:w-8
+        before:border-b
+        before:border-slate-100"
+
+      <article class="relative pl-12 group">
+        <div class="absolute left-0 top-1 w-8 h-8 rounded-full bg-white border-4 border-emerald-100 group-hover:border-emerald-500 transition-colors z-10"></div>
+        <header class="flex items-center gap-2 mb-2">
+          <span class="text-sm font-bold text-slate-900">Dr. Sarah Johnson</span>
+          <time class="text-[10px] font-bold text-slate-400 uppercase">Feb 5, 2026</time>
+        </header>
+        <div class="p-5 bg-slate-50/50 rounded-2xl border border-slate-100 group-hover:bg-white group-hover:shadow-md transition-all">
+          <p class="text-sm text-slate-600 leading-relaxed">Client showing significant improvement in stress management.</p>
+        </div>
+      </article>
+    </div>
+    
+  </div>
+  
+</section>

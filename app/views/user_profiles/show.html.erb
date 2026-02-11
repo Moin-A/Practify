@@ -1,0 +1,55 @@
+<div data-controller="user-profile" class="w-full h-full">
+  <div class="max-w-7xl mx-auto">
+    <header class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+      <div class="flex items-center gap-5">
+        <button
+          class="group flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-500 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm"
+          onclick="window.history.back()"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            class="group-hover:-translate-x-0.5 transition-transform"
+          >
+            <path
+              d="M12.5 15L7.5 10L12.5 5"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+        <div>
+          <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Client Profile</h1>
+          <p class="text-slate-500 text-sm font-medium">Manage medical records and daily routines</p>
+        </div>
+      </div>
+      <button
+        class="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-slate-200 hover:bg-slate-800 hover:-translate-y-0.5 transition-all active:scale-95"
+      >
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path
+            d="M13.5 2.5L15.5 4.5M1.5 16.5H3.5L14.5 5.5L12.5 3.5L1.5 14.5V16.5Z"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        Edit Profile
+      </button>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <%= render partial: "user_profiles/client/details", locals: { client: @client } %>
+
+      <main class="lg:col-span-8 space-y-8">
+        <%= render partial: "user_profiles/client/notes", locals: { client: @client } %>
+        <%= render partial: "user_profiles/practitioner/observation", locals: { client: @client } %>
+      </main>
+    </div>
+  </div>
+</div>

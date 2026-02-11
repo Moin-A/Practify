@@ -1,11 +1,10 @@
 <% user_profile ||= @user_profile %>
 
-<%= form_with model: user_profile, local: true, multipart: true, class: "flex-1 overflow-y-auto max-w-7xl mx-auto"   do |form| %>
+<%= form_with model: user_profile, local: true, multipart: true, class: "flex-1 overflow-y-auto max-w-7xl mx-auto" do |form| %>
   <% if user_profile.errors.any? %>
     <div class="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4 mb-6">
       <h2 class="font-bold mb-2">
-        <%= pluralize(user_profile.errors.count, "error") %>
-        prohibited this profile from being saved:
+        <%= pluralize(user_profile.errors.count, "error") %> prohibited this profile from being saved:
       </h2>
       <ul class="list-disc list-inside space-y-1">
         <% user_profile.errors.each do |error| %>
@@ -17,174 +16,114 @@
 
   <div class="space-y-5 p-8">
     <h2 class="text-[26px] font-bold py-4">Edit Profile</h2>
+
+    <!-- First Name -->
     <div class="space-y-1.5">
-      <%= form.label :first_name,
-                 "First Name",
-                 class:
-                   "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
+      <%= form.label :first_name, "First Name", class: "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
       <div class="relative group">
-        <div
-          class="
-            absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-300
-            group-focus-within:text-brand transition-colors
-          "
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-300 group-focus-within:text-brand transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
         </div>
-        <%= form.text_field :first_name,
-                        required: true,
-                        placeholder: "Enter your first name",
-                        class:
-                          "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB]" %>
+        <%= form.text_field :first_name, required: true, placeholder: "Enter your first name", class: "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB]" %>
       </div>
     </div>
 
+    <!-- Last Name -->
     <div class="space-y-1.5">
-      <%= form.label :last_name,
-                 "Last Name",
-                 class:
-                   "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
+      <%= form.label :last_name, "Last Name", class: "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
       <div class="relative group">
-        <div
-          class="
-            absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-300
-            group-focus-within:text-brand transition-colors
-          "
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-300 group-focus-within:text-brand transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
         </div>
-        <%= form.text_field :last_name,
-                        required: true,
-                        placeholder: "Enter your last name",
-                        class:
-                          "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB]" %>
+        <%= form.text_field :last_name, required: true, placeholder: "Enter your last name", class: "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB]" %>
       </div>
     </div>
 
+    <!-- Avatar -->
     <div class="space-y-1.5">
-      <%= form.label :avatar,
-                 "Profile Picture",
-                 class:
-                   "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
+      <%= form.label :avatar, "Profile Picture", class: "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
       <div class="relative group">
-        <div
-          class="
-            absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-300
-            group-focus-within:text-brand transition-colors
-          "
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 21-3.35-3.35"/></svg>
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-300 group-focus-within:text-brand transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+            <circle cx="9" cy="9" r="2"/>
+            <path d="m21 21-3.35-3.35"/>
+          </svg>
         </div>
-        <%= form.file_field :avatar,
-                        accept: "image/*",
-                        class:
-                          "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand/10 file:text-brand hover:file:bg-brand/20 file:cursor-pointer" %>
+        <%= form.file_field :avatar, accept: "image/*", class: "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand/10 file:text-brand hover:file:bg-brand/20 file:cursor-pointer" %>
       </div>
       <% if user_profile.avatar.attached? %>
         <div class="mt-2">
           <p class="text-xs text-gray-600 mb-1">Current avatar:</p>
-          <%= image_tag user_profile.avatar,
-          class: "w-20 h-20 object-cover rounded-lg border border-gray-200" %>
+          <%= image_tag user_profile.avatar, class: "w-20 h-20 object-cover rounded-lg border border-gray-200" %>
         </div>
       <% end %>
     </div>
 
+    <!-- Bio -->
     <div class="space-y-1.5">
-      <%= form.label :bio,
-                 "Bio",
-                 class:
-                   "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
+      <%= form.label :bio, "Bio", class: "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
       <div class="relative group">
-        <div
-          class="
-            absolute top-3 left-0 flex items-start pl-3.5 text-slate-300
-            group-focus-within:text-brand transition-colors py-4
-          "
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+        <div class="absolute left-0 flex items-start pl-3.5 text-slate-300 group-focus-within:text-brand transition-colors py-4">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+          </svg>
         </div>
-        <%= form.text_area :bio,
-                       rows: 4,
-                       placeholder: "Tell us about yourself...",
-                       class:
-                         "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB] resize-none" %>
+        <%= form.text_area :bio, rows: 4, placeholder: "Tell us about yourself...", class: "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB] resize-none" %>
       </div>
     </div>
 
+    <!-- Gender -->
     <div class="space-y-1.5">
-      <%= form.label :location,
-                 "Location",
-                 class:
-                   "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
+      <%= form.label :gender, "Gender", class: "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
       <div class="relative group">
-        <div
-          class="
-            absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-300
-            group-focus-within:text-brand transition-colors
-          "
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-300 group-focus-within:text-brand transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5">
+            <path d="M16.5 2H22v5.5h-2V5.41l-3.6 3.6a6.5 6.5 0 1 1-1.4-1.4l3.6-3.6H16.5V2ZM10 9a4 4 0 1 0 0 8a4 4 0 0 0 0-8Z"/>
+          </svg>
         </div>
-        <%= form.text_field :location,
-                        placeholder: "City, State or Country",
-                        class:
-                          "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB]" %>
+        <%= form.select :gender, options_for_select([["Male", "male"], ["Female", "female"], ["Other", "other"]]), { prompt: "Select your gender" }, class: "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB]" %>
+      </div>
+    </div>
+
+    <!-- Age -->
+    <div class="space-y-1.5">
+      <%= form.label :age, "Age", class: "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
+      <div class="relative group">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-300 group-focus-within:text-brand transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+          <path stroke-linecap="round" stroke-linejoin="round"
+          d="M6 2h12M6 22h12M8 2c0 4 4 6 4 10s-4 6-4 10M16 2c0 4-4 6-4 10s4 6 4 10"/>
+        </svg>
+
+        </div>
+        <%= form.text_field :age, placeholder: "Enter your age", class: "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB]" %>
+      </div>
+    </div>
+
+    <!-- Location -->
+    <div class="space-y-1.5">
+      <%= form.label :location, "Location", class: "block text-[11px] font-bold text-[#666] uppercase tracking-wider" %>
+      <div class="relative group">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-300 group-focus-within:text-brand transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+        </div>
+        <%= form.text_field :location, placeholder: "City, State or Country", class: "w-full pl-10 pr-4 py-2.5 bg-input-bg border border-input-border rounded-lg text-[13px] focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all placeholder:text-[#BBB]" %>
       </div>
     </div>
   </div>
 
   <div class="mt-6 p-8 flex gap-3">
-    <%= form.submit "Update Profile",
-                class:
-                  "px-6 py-3 bg-[#111] hover:bg-[#222] text-white font-bold rounded-lg text-[13px] transition-all shadow-md active:scale-[0.99] cursor-pointer" %>
-    <%= link_to "Cancel",
-    root_path,
-    class:
-      "px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-lg text-[13px] transition-all active:scale-[0.99] cursor-pointer" %>
+    <%= form.submit "Update Profile", class: "px-6 py-3 bg-[#111] hover:bg-[#222] text-white font-bold rounded-lg text-[13px] transition-all shadow-md active:scale-[0.99] cursor-pointer" %>
+    <%= link_to "Cancel", root_path, class: "px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-lg text-[13px] transition-all active:scale-[0.99] cursor-pointer" %>
   </div>
 <% end %>
