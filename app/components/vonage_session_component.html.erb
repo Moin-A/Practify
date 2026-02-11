@@ -1,220 +1,121 @@
-<!-- app/views/appointments/show.html.erb -->
-<div class = "rounded-lg rounded-sm">
-<div data-controller="call-room" 
-     data-call-room-api-key-value="<%= @app_id %>"
-     data-call-room-session-id-value="<%= @session_id %>"
-     data-call-room-token-value="<%= @token %>"
-     data-call-room-user-name-value="<%= current_user.user_profile.full_name %>"
-     data-call-room-appointment-id-value="<%= @appointment_id %>"
-     data-call-room-csrf-token-value="<%= form_authenticity_token %>"
-     class="w-full h-screen bg-gray-900 text-white relative h-[620px] rounded-sm">
-
-  <div class="flex h-full">
-    <!-- Left side: Video area -->
-    <div class="flex-1 flex flex-col bg-black relative overflow-hidden">
-      
-      <!-- Publisher (your video) - Small corner window -->
-      <div class="absolute top-3 right-3 w-32 h-24 border-2 border-blue-500 rounded-lg overflow-hidden z-10 bg-gray-800 shadow-lg transition-transform hover:scale-105">
-        <div data-call-room-target="publisher" class="w-full h-full"></div>
-        <div class="absolute bottom-1 left-1 bg-black bg-opacity-70 text-white px-2 py-0.5 rounded text-xs font-semibold">
-          You
+<div class="min-h-screen py-6 px-4 sm:px-8">
+  <div class="max-w-7xl mx-auto">
+    
+    <div class="flex items-center justify-between mb-4 px-2">
+      <div class="flex items-center gap-3">
+        <div class="bg-emerald-600 p-2 rounded-lg shadow-lg shadow-emerald-200">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
         </div>
+        <h2 class="text-xl font-bold text-slate-800">Live Consultation <span class="text-slate-400 font-normal text-sm ml-2">#<%= @appointment_id %></span></h2>
       </div>
-
-      <!-- Subscribers (other participants) -->
-      <div class="flex-1 flex items-center justify-center p-4 relative">
-        <div data-call-room-target="subscribers" class="w-full h-full flex flex-wrap gap-3 items-center justify-center"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none">
-          Waiting for others to join...
-        </div>
-      </div>
-
-      <!-- Video controls -->
-      <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2.5 px-4 py-2 bg-black bg-opacity-80 rounded-full z-10 shadow-lg">
-        <button data-call-room-target="micBtn" 
-                data-action="click->call-room#toggleMic"
-                class="flex items-center gap-2 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold transition active:scale-95 shadow-lg shadow-emerald-600/30"
-                title="Toggle Microphone">
-         Mute <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-               <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 0 0 1.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06ZM17.78 9.22a.75.75 0 1 0-1.06 1.06L18.44 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06l1.72-1.72 1.72 1.72a.75.75 0 1 0 1.06-1.06L20.56 12l1.72-1.72a.75.75 0 1 0-1.06-1.06l-1.72 1.72-1.72-1.72Z" />
-              </svg>
-        </button>
-        
-        <button data-call-room-target="camBtn" 
-                data-action="click->call-room#toggleCam"
-                class="flex items-center gap-2 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold transition active:scale-95 shadow-lg shadow-emerald-600/30"
-                title="Toggle Camera">
-          Stop Video <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                        <path d="M.97 3.97a.75.75 0 0 1 1.06 0l15 15a.75.75 0 1 1-1.06 1.06l-15-15a.75.75 0 0 1 0-1.06ZM17.25 16.06l2.69 2.69c.944.945 2.56.276 2.56-1.06V6.31c0-1.336-1.616-2.005-2.56-1.06l-2.69 2.69v8.12ZM15.75 7.5v8.068L4.682 4.5h8.068a3 3 0 0 1 3 3ZM1.5 16.5V7.682l11.773 11.773c-.17.03-.345.045-.523.045H4.5a3 3 0 0 1-3-3Z" />
-                      </svg>
-
-        </button>              
-       <button 
-        data-action="click->call-room#leaveSession" 
-        class="control-btn off"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">  
-          <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M12 18.75H4.5a2.25 2.25 0 0 1-2.25-2.25V9m12.841 9.091L16.5 19.5m-1.409-1.409c.407-.407.659-.97.659-1.591v-9a2.25 2.25 0 0 0-2.25-2.25h-9c-.621 0-1.184.252-1.591.659m12.182 12.182L2.909 5.909M1.5 4.5l1.409 1.409" />
-        </svg>
-      </button>   
+      <div class="hidden md:flex items-center gap-2 text-xs font-medium text-slate-500 bg-white px-3 py-1.5 rounded-full shadow-sm border border-slate-200">
+        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+        Encrypted P2P Connection
       </div>
     </div>
 
-    <!-- Right side: Chat interface -->
-    <div class="w-72 flex flex-col bg-gray-800 border-l border-gray-700">
+    <div class="bg-white p-2 sm:p-3 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white relative overflow-hidden">
       
-      <!-- Chat header -->
-      <div class="px-3 py-3 bg-gradient-to-r from-gray-900 to-gray-800 border-b border-gray-700">
-        <h3 class="flex items-center gap-1.5 text-sm font-semibold mb-1">
-          💬 Chat
-        </h3>
-        <span class="text-xs text-gray-400">Messages in this call</span>
-      </div>
+      <div data-controller="call-room" 
+           data-call-room-api-key-value="<%= @app_id %>"
+           data-call-room-session-id-value="<%= @session_id %>"
+           data-call-room-token-value="<%= @token %>"
+           data-call-room-user-name-value="<%= current_user.user_profile.full_name %>"
+           data-call-room-appointment-id-value="<%= @appointment_id %>"
+           data-call-room-csrf-token-value="<%= form_authenticity_token %>"
+           class="w-full h-[650px] bg-slate-900 rounded-2xl overflow-hidden relative flex flex-col md:flex-row">
 
-      <!-- Chat messages area -->
-      <div data-call-room-target="chatMessages" 
-           class="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-2.5">
-        <!-- Welcome message -->
-        <div class="text-center text-gray-400 text-xs py-2.5 px-3 bg-white bg-opacity-5 rounded-md my-2">
-          Welcome to the call! Send a message to get started.
+        <div class="flex-1 flex flex-col bg-slate-950 relative overflow-hidden group">
+          
+          <div class="absolute top-4 left-4 w-40 h-28 border-2 border-white/20 rounded-xl overflow-hidden z-20 bg-slate-800 shadow-2xl transition-all hover:scale-105 hover:border-emerald-500">
+            <div data-call-room-target="publisher" class="w-full h-full object-cover"></div>
+            <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider">
+              You
+            </div>
+          </div>
+
+          <div class="flex-1 flex items-center justify-center relative p-4">
+            <div data-call-room-target="subscribers" class="w-full h-full flex flex-wrap gap-4 items-center justify-center"></div>
+            
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 space-y-4 pointer-events-none">
+              <div class="w-16 h-16 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
+              <p class="text-slate-400 text-sm font-medium">Waiting for participant to join...</p>
+            </div>
+          </div>
+
+          <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 px-6 py-3 bg-slate-900/80 backdrop-blur-xl rounded-2xl z-30 border border-white/10 shadow-2xl transition-opacity duration-300">
+            <button data-call-room-target="micBtn" data-action="click->call-room#toggleMic"
+                    class="p-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition-all active:scale-95 border border-white/5" title="Mute Mic">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+            </button>
+            
+            <button data-call-room-target="camBtn" data-action="click->call-room#toggleCam"
+                    class="p-3 bg-slate-800 hover:bg-slate-700 text-white flex gap-2 rounded-xl transition-all active:scale-95 border border-white/5" title="Stop Video">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            </button>
+
+            <div class="w-px h-6 bg-white/10 mx-1"></div>
+
+            <button data-action="click->call-room#leaveSession" 
+                    class="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl transition-all active:scale-95 flex items-center gap-2 shadow-lg shadow-red-500/20">
+              <span class="text-sm">Leave</span>
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="w-80 flex flex-col bg-slate-900/50 backdrop-blur-md border-l border-white/5">
+          <div class="p-4 border-b border-white/5 bg-slate-900/30">
+            <h3 class="text-sm font-bold flex items-center gap-2">
+              <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+              Session Chat
+            </h3>
+          </div>
+
+          <div data-call-room-target="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4">
+            <div class="text-[10px] text-center text-slate-500 uppercase tracking-widest py-4">
+              Conversation Started
+            </div>
+          </div>
+
+          <form data-action="submit->call-room#sendMessage" class="p-4 bg-slate-950/50">
+            <div class="relative flex items-center">
+              <input type="text" data-call-room-target="chatInput"
+                     placeholder="Message..."
+                     class="w-full pl-4 pr-12 py-3 bg-slate-800 border border-white/10 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder-slate-500">
+              <button type="submit" class="absolute right-2 p-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-500 transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-
-      <!-- Chat input form -->
-      <form data-action="submit->call-room#sendMessage" 
-            class="flex px-3 py-3 gap-2.5 bg-gray-900 border-t border-gray-700">
-        <input type="text" 
-               data-call-room-target="chatInput"
-               data-action="keydown->call-room#handleChatKeydown"
-               placeholder="Type a message..."
-               class="flex-1 px-3.5 py-2.5 bg-gray-700 border border-gray-600 rounded-full text-white text-xs focus:outline-none focus:border-blue-500 focus:bg-gray-600 placeholder-gray-400"
-               autocomplete="off"
-               maxlength="500">
-        <button type="submit" 
-                class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-full text-base transition-all hover:scale-110 hover:shadow-lg shadow-md"
-                title="Send message">
-          ➤
-        </button>
-      </form>
     </div>
   </div>
 </div>
-</div>
 
 <style>
-  /* Custom styles for muted/disabled states */
-  [data-call-room-target="micBtn"].muted,
-  [data-call-room-target="camBtn"].disabled {
-    @apply bg-red-600 hover:bg-red-700;
-  }
+  /* Button Active States */
+  [data-call-room-target="micBtn"].muted { @apply bg-red-500/20 text-red-500 border-red-500/50; }
+  [data-call-room-target="camBtn"].disabled { @apply bg-red-500/20 text-red-500 border-red-500/50; }
 
-  .h-\[620px\] {
-    height: 620px;
-    border-radius: 0.25rem;
-  }
+  /* Smooth Chat Bubbles */
+  .chat-message { @apply flex flex-col max-w-[85%] animate-in fade-in slide-in-from-bottom-2; }
+  .chat-message.self { @apply self-end; }
+  .chat-message.other { @apply self-start; }
+  
+  .message-text { @apply py-2 px-3 rounded-2xl text-sm leading-relaxed; }
+  .chat-message.self .message-text { @apply bg-emerald-600 text-white rounded-tr-none shadow-md shadow-emerald-900/20; }
+  .chat-message.other .message-text { @apply bg-slate-800 text-slate-200 rounded-tl-none border border-white/5; }
+  
+  .sender-name { @apply text-[10px] font-bold text-slate-500 mb-1 ml-1 uppercase tracking-tighter; }
+  
+  /* Auto-hide waiting spinner when video starts */
+  [data-call-room-target="subscribers"]:not(:empty) ~ div { display: none; }
 
-  .rounded-sm {
-    border-radius: 0.25rem;
-  }
-
-  /* Error banner styles */
-  [data-call-room-target="errorMessage"].error {
-    @apply bg-red-600 text-white border-b-2 border-red-700;
-  }
-
-  [data-call-room-target="errorMessage"].warning {
-    @apply bg-yellow-500 text-black border-b-2 border-yellow-600;
-  }
-
-  [data-call-room-target="errorMessage"].info {
-    @apply bg-blue-500 text-white border-b-2 border-blue-600;
-  }
-
-  /* Chat message bubbles - added via JavaScript */
-  .chat-message {
-    @apply flex flex-col max-w-[75%] animate-fadeIn;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .chat-message.self {
-    @apply self-end;
-  }
-
-  .chat-message.other {
-    @apply self-start;
-  }
-
-  .message-header {
-    @apply flex justify-between items-center mb-1 gap-2;
-  }
-
-  .sender-name {
-    @apply text-xs font-semibold text-gray-400;
-  }
-
-  .message-time {
-    @apply text-xs text-gray-500;
-  }
-
-  .message-text {
-    @apply py-2.5 px-3.5 rounded-2xl break-words leading-snug text-xs shadow-sm;
-  }
-
-  .chat-message.self .message-text {
-    @apply bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-br;
-  }
-
-  .chat-message.other .message-text {
-    @apply bg-gray-700 text-white rounded-bl;
-  }
-
-  /* Custom scrollbar for chat */
-  [data-call-room-target="chatMessages"]::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  [data-call-room-target="chatMessages"]::-webkit-scrollbar-track {
-    @apply bg-gray-900;
-  }
-
-  [data-call-room-target="chatMessages"]::-webkit-scrollbar-thumb {
-    @apply bg-gray-600 rounded;
-  }
-
-  [data-call-room-target="chatMessages"]::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-500;
-  }
-
-  /* Hide waiting message when there are subscribers */
-  [data-call-room-target="subscribers"]:not(:empty) ~ div {
-    display: none;
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .w-72 {
-      width: 100%;
-      max-height: 40vh;
-    }
-    
-    .w-32 {
-      width: 100px;
-    }
-    
-    .h-24 {
-      height: 75px;
-    }
-
-
-  }
+  /* Custom Scrollbar */
+  [data-call-room-target="chatMessages"]::-webkit-scrollbar { width: 4px; }
+  [data-call-room-target="chatMessages"]::-webkit-scrollbar-thumb { @apply bg-slate-700 rounded-full; }
 </style>
