@@ -13,7 +13,9 @@
             <dt class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50 pb-2">Vital Information</dt>
             <div class="flex justify-between items-center">
               <dt class="text-slate-500 text-sm font-medium">Age / Gender</dt>
+              <% if client.age.present? && client.gender.present? %>
               <dd class="text-slate-900 text-sm font-bold"><%= client.age %> yrs / <%= client.gender %></dd>
+              <% end %>
             </div>
             <div class="flex justify-between items-center">
               <dt class="text-slate-500 text-sm font-medium">Email</dt>
