@@ -24,8 +24,8 @@ Rails.application.routes.draw do
   end
 
   resources :users do
-    resources :private_client_notes, path: 'private_client_notes', as: 'private_client_notes', controller: 'notes'
-    resources :therapist_observations, path: 'therapist_observations', as: 'therapist_observations', controller: 'notes'
+    resources :private_client_notes, path: "private_client_notes", as: "private_client_notes", controller: "notes"
+    resources :therapist_observations, path: "therapist_observations", as: "therapist_observations", controller: "notes"
   end
 
 
