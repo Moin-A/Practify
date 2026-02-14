@@ -6,7 +6,7 @@
   <div class="flex justify-between items-center">
     <div>
       <h3 id="private-notes-title" class="text-xl font-bold text-slate-900">Private Client Notes</h3>
-      <p class="text-xs text-slate-400 mt-1">Only visible to clinical staff</p>
+      <p class="text-xs text-slate-400 my-3 py-2">Only visible to clinical staff</p>
     </div>
     <div class="relative" data-action="click->user-profile#toggleDropdown:stop">
       <button type="button" class="p-2 hover:bg-slate-50 rounded-full transition-colors">
@@ -19,16 +19,18 @@
       </div>
     </div>
   </div>
-  
-  <div data-user-profile-target="notes">
-    <div class="space-y-3">
-      <article class="p-4 my-4 rounded-2xl border border-slate-50 bg-slate-50/30 hover:border-slate-200 hover:bg-white transition-all">
-        <header class="flex justify-between items-start mb-1">
-          <time class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Yesterday • 4:30 PM</time>
-          <span class="px-2 py-0.5 rounded-md bg-amber-50 text-[10px] font-bold text-amber-600 uppercase">Follow-up</span>
-        </header>
-        <p class="text-sm text-slate-600 leading-snug">Need to check in regarding medication dosage.</p>
-      </article>
-    </div>
+  <div id="new_note_form">
+  <%= render 'notes/form', 
+             note: client.user.private_client_notes.new, 
+             notable: client.user, 
+             category: 'note', 
+             frame_id: "new_note_form",
+             show_cancel: false %>
   </div>
+   <div id="private_client_notes_list" class="space-y-6 relative before:bg-slate-100">
+   <%client.user.private_client_notes.reload.each do |note| %>  
+    <%= render 'notes/note', note: note %>
+   <% end %>
+  </div>
+  
 </section>

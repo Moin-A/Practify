@@ -23,6 +23,13 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :users do
+    resources :private_client_notes, path: 'private_client_notes', as: 'private_client_notes', controller: 'notes'
+    resources :therapist_observations, path: 'therapist_observations', as: 'therapist_observations', controller: 'notes'
+  end
+
+
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
