@@ -1,0 +1,37 @@
+<div class="space-y-4 hover:bg-white hover:shadow-sm transition-all border border-slate-100 rounded-2xl" id = <%= "private_client_notes_list_#{note.id}" %>>
+  <article class="p-5 bg-slate-50/50 rounded-2xl border border-slate-100 group-hover:bg-white group-hover:shadow-md transition-all">
+    
+    <header class="flex justify-between items-start mb-3">
+      <div class="flex flex-col gap-1">
+        <time class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+          <%= time_ago_in_words(note.created_at) %> ago
+        </time>
+      </div>
+
+      <div class="flex items-center gap-1 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+      
+        <%= button_to edit_user_private_client_note_path(note.notable.id, note), 
+            method: :get,
+            data: { turbo_frame: "new_note_form" },
+            class: "p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors",
+            title: "Edit Note" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+        <% end %>
+        <%= button_to user_private_client_note_path(note.notable.id, note), 
+            method: :delete, 
+            data: { confirm: 'Are you sure?', turbo_frame: "private_client_notes_list" },
+            class: "p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors",
+            title: "Delete Note" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c0 1 1 2 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+        <% end %>
+      </div>
+    </header>
+
+    <div class="relative">
+      <p class="text-sm text-slate-700 leading-relaxed font-medium">
+        <%= note.body %>
+      </p>
+    </div>
+    
+  </article>
+</div>

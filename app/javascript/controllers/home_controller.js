@@ -1,37 +1,45 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  
-  static targets = [ "homeIcon", "calendarIcon", "clientsIcon", "billingIcon", "settingsIcon" ]
-  
+
+  static targets = ["navLink"]
+
   // Light emerald shade for selected icon
   activeStyles = ["bg-emerald-50", "text-emerald-700", "font-medium"]
   inactiveStyles = ["text-slate-500"]
   selectedSlot = ""
-  
+
   connect() {
-    // Set initial active icon
-    if (this.hasHomeIconTarget) {
-      this.activeIcon = this.homeIconTarget
-      this.activateIcon(this.activeIcon)
-    }
+    this.highlightActiveLink()
+  }
+
+  highlightActiveLink() {
+    const currentPath = window.location.pathname
+    this.navLinkTargets.forEach(link => {
+      if (link.pathname === currentPath) {
+        this.activateIcon(link)
+        this.activeIcon = link
+      } else {
+        this.deactivateIcon(link)
+      }
+    })
   }
 
   // This function is triggered by data-action="click->home#switch" in your HTML
-  switch(event) { 
-    // Get the clicked link element (not the SVG or text inside)
+  switch(event) {
+    // Get the clicked link element
     const clickedIcon = event.currentTarget
-    
+
     // Don't do anything if clicking the already active icon
     if (clickedIcon === this.activeIcon) {
       return
     }
-    
+
     // Remove active styles from previous icon
     if (this.activeIcon) {
       this.deactivateIcon(this.activeIcon)
     }
-    
+
     // Add active styles to clicked icon
     this.activateIcon(clickedIcon)
     this.activeIcon = clickedIcon
