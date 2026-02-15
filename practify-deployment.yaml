@@ -56,11 +56,23 @@ metadata:
 spec:
   tls:
   - hosts:
-    - practify.co.in
-    - rpi02.taila27a53.ts.net
+    - rpi02.taila27a53.ts.net    
     secretName: practify-tls-cert
+  - hosts:
+    - practify.co.in    
+    secretName: practify-letsencrypt-cert
   rules:
   - host: rpi02.taila27a53.ts.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: practify-service
+            port:
+              number: 80
+  - host: practify.co.in
     http:
       paths:
       - path: /
