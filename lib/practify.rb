@@ -8,6 +8,8 @@ module Practify
 
     def bus   
       @bus ||= Omnes::Bus.new
+      yield @bus if block_given?
+      @bus
     end
   end
 end

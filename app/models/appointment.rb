@@ -19,6 +19,12 @@ class Appointment < ApplicationRecord
     end
   end
 
+  def save_and_notify
+    if save
+      Practify.bus.publish(:appointment_created, appointment: self)
+    end
+  end
+
   def publisher_or_subscriber_joined?
     publisher_joined? || subscriber_joined?
   end

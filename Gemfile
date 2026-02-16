@@ -85,6 +85,7 @@ group :test do
 end
 
 gem "omnes", "~> 0.2.2"
+gem "noticed", "~> 2.0"
 
 gem "vonage"
 
