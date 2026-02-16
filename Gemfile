@@ -94,3 +94,5 @@ gem "rails-controller-testing", "~> 1.0"
 gem "solid_queue", "~> 1.3"
 
 gem "mission_control-jobs", "~> 1.1"
+
+gem "aws-sdk-ses"
