@@ -54,7 +54,7 @@ RSpec.describe Appointment, type: :model do
   describe 'save_and_notify' do
     it 'saves the appointment and notifies the user' do
       appointment = build(:appointment, user: user, slot: slot)
-      expect(Practify.bus).to receive(:publish).with(:appointment_created, appointment: appointment)  
+      expect(Practify.bus).to receive(:publish).with(:appointment_created, appointment: appointment)
       appointment.save_and_notify
     end
   end

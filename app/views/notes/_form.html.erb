@@ -2,13 +2,37 @@
   <% note = local_assigns[:note] || @note %>
   <% notable = local_assigns[:notable] || @notable %>
   <% category = local_assigns[:category] || @category %>
-  <% url_for_form = note.new_record? ? (category == 'note' ? user_private_client_notes_path(notable) : user_therapist_observations_path(notable)) : (category == 'note' ? user_private_client_note_path(notable, note) : user_therapist_observation_path(notable, note)) %>
-  
-  <div class="mb-10 bg-slate-50 p-6 rounded-2xl border border-dashed border-slate-200">
+  <% url_for_form =
+    (
+      if note.new_record?
+        (
+          if category == "note"
+            user_private_client_notes_path(notable)
+          else
+            user_therapist_observations_path(notable)
+          end
+        )
+      else
+        (
+          if category == "note"
+            user_private_client_note_path(notable, note)
+          else
+            user_therapist_observation_path(notable, note)
+          end
+        )
+      end
+    ) %>
+
+  <div
+    class="
+      mb-10 bg-slate-50 p-6 rounded-2xl border border-dashed border-slate-200
+    "
+  >
     <%= form_with(model: [ notable, note ], url: url_for_form, class: "w-full", data: local_assigns[:data]) do |form| %>
       <% if note.errors.any? %>
         <div class="bg-red-50 text-red-700 p-4 rounded-md mb-4">
-          <h2 class="font-medium"><%= pluralize(note.errors.count, "error") %> prohibited this note from being saved:</h2>
+          <h2 class="font-medium"><%= pluralize(note.errors.count, "error") %>
+            prohibited this note from being saved:</h2>
           <ul class="list-disc list-inside mt-2">
             <% note.errors.each do |error| %>
               <li><%= error.full_message %></li>
@@ -17,17 +41,29 @@
         </div>
       <% end %>
 
-      <%= form.text_area :body, rows: 3, 
-          class: "w-full bg-transparent border-none focus:ring-0 text-sm text-slate-700 placeholder:text-slate-400 resize-none", 
-          placeholder: "Click here to type a new clinical observation..." %>
-      
+      <%= form.text_area :body,
+                     rows: 3,
+                     class:
+                       "w-full bg-transparent border-none focus:ring-0 text-sm text-slate-700 placeholder:text-slate-400 resize-none",
+                     placeholder: "Click here to type a new clinical observation..." %>
+
       <div class="flex justify-end mt-4 gap-3">
         <% if local_assigns.fetch(:show_cancel, false) %>
-          <button type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-black border border-gray-300 rounded-xl shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" data-action="click->modal#close">
+          <button
+            type="button"
+            class="
+              px-4 py-2 text-sm font-medium text-gray-700 bg-black border border-gray-300
+              rounded-xl shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2
+              focus:ring-offset-2 focus:ring-indigo-500
+            "
+            data-action="click->modal#close"
+          >
             Cancel
           </button>
         <% end %>
-        <%= form.submit "Post Note", class: "text-slate-900 px-5 py-2 rounded-xl text-xs font-bold shadow-sm border border-slate-200 hover:bg-slate-50 transition-colors cursor-pointer" %>
+        <%= form.submit "Post Note",
+                    class:
+                      "text-slate-900 px-5 py-2 rounded-xl text-xs font-bold shadow-sm border border-slate-200 hover:bg-slate-50 transition-colors cursor-pointer" %>
       </div>
     <% end %>
   </div>

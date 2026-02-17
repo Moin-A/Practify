@@ -1,48 +1,86 @@
-<div class="bg-white rounded-[1rem] border border-slate-300 shadow-xl shadow-slate-200/30 overflow-hidden">
-  
-  <div class="flex items-center justify-between p-4 border-b border-slate-300 bg-white">
+<div
+  class="
+    bg-white rounded-[1rem] border border-slate-300 shadow-xl shadow-slate-200/30
+    overflow-hidden
+  "
+>
+
+  <div
+    class="
+      flex items-center justify-between p-4 border-b border-slate-300 bg-white
+    "
+  >
     <h2 class="text-lg font-bold text-slate-900 tracking-tight">
-      <%= t("date.month_names")[start_date.month] %> <span class="text-slate-400 font-medium"><%= start_date.year %></span>
+      <%= t("date.month_names")[start_date.month] %>
+      <span class="text-slate-400 font-medium"><%= start_date.year %></span>
     </h2>
 
-    <nav class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+    <nav
+      class="
+        flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200
+      "
+    >
       <%= link_to calendar.url_for_previous_view, class: "p-1.5 hover:bg-white rounded-lg text-slate-500 transition-all" do %>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          /></svg>
       <% end %>
 
-      <%= link_to "Today", calendar.url_for_today_view, class: "px-3 py-1 text-[10px] font-bold text-slate-700 bg-white shadow-sm border border-slate-200 rounded-lg hover:bg-slate-50 transition-all" %>
+      <%= link_to "Today",
+      calendar.url_for_today_view,
+      class:
+        "px-3 py-1 text-[10px] font-bold text-slate-700 bg-white shadow-sm border border-slate-200 rounded-lg hover:bg-slate-50 transition-all" %>
 
       <%= link_to calendar.url_for_next_view, class: "p-1.5 hover:bg-white rounded-lg text-slate-500 transition-all" do %>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"
+          /></svg>
       <% end %>
     </nav>
   </div>
 
   <div class="grid grid-cols-7 bg-slate-50 border-b border-slate-300">
     <% date_range.slice(0, 7).each do |day| %>
-      <div class="py-2 text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest border-r border-slate-200 last:border-0">
+      <div
+        class="
+          py-2 text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest
+          border-r border-slate-200 last:border-0
+        "
+      >
         <%= t("date.abbr_day_names")[day.wday] %>
       </div>
     <% end %>
   </div>
 
-  <div class="grid grid-cols-7 auto-rows-[85px]"> 
+  <div class="grid grid-cols-7 auto-rows-[85px]">
     <% date_range.each do |day| %>
-      <% 
-        is_today = (day == Date.today)
-        is_current_month = (day.month == start_date.month)
-        # Check if this specific day is the one currently selected in the URL
-        is_selected = (params[:start_date].to_s == day.to_s)
-      %>
-      
-      <div class="relative border-r border-b border-slate-300 transition-all 
-        <%= is_selected ? 'bg-emerald-50 ring-2 ring-inset ring-emerald-500 z-10' : (is_current_month ? 'bg-white' : 'bg-slate-50/50 text-slate-400') %>">
-        
+      <% is_today = (day == Date.today)
+      is_current_month = (day.month == start_date.month)
+      # Check if this specific day is the one currently selected in the URL
+      is_selected = (params[:start_date].to_s == day.to_s) %>
+
+      <div
+        class="
+          relative border-r border-b border-slate-300 transition-all
+          <%= is_selected ? 'bg-emerald-50 ring-2 ring-inset ring-emerald-500 z-10' : (is_current_month ? 'bg-white' : 'bg-slate-50/50 text-slate-400') %>
+        "
+      >
+
         <%= link_to calendar.url_for_checked_date(day), class: "block h-full w-full p-2 group hover:bg-slate-50 transition-colors" do %>
-          
+
           <div class="flex justify-between items-start mb-1">
-            <span class="text-xs font-bold transition-transform group-hover:scale-110 
-              <%= is_today ? 'bg-emerald-600 text-white w-5 h-5 flex items-center justify-center rounded-md' : (is_selected ? 'text-emerald-700' : 'text-slate-900') %>">
+            <span
+              class="
+                text-xs font-bold transition-transform group-hover:scale-110
+                <%= is_today ? 'bg-emerald-600 text-white w-5 h-5 flex items-center justify-center rounded-md' : (is_selected ? 'text-emerald-700' : 'text-slate-900') %>
+              "
+            >
               <%= day.day %>
             </span>
           </div>
