@@ -4,6 +4,7 @@ module Appointments
     include Omnes::Subscriber
 
     handle :appointment_created, with: :send_notifications
+    handle :notes_added, with: :send_notifications
 
     def send_notifications(event)
       appointment = event.payload[:appointment]

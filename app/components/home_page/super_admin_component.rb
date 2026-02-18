@@ -2,7 +2,7 @@ module HomePage
   class SuperAdminComponent < ApplicationComponent
     include SlotsHelper
     include DateParsing
-    attr_accessor :current_user
+    attr_accessor :current_user, :todays_appointment_list
     def initialize(current_user: nil)
       @current_user = current_user
       @calendar = current_user.calendar
@@ -20,10 +20,17 @@ module HomePage
             .where("slots.start_at >= ?", next_day.beginning_of_day)
             .order("slots.start_at ASC")
             .first
-    end
-
-    def component
-    end
+      @todays_appointment_list = Appointment
+                                .joins(:slot)
+                                .includes(:slot, user: :user_profile)
+                                .active
+                                .where(
+                                  "slots.start_at >= ? AND slots.end_at <= ? AND publisher_id = ?",
+                                  Time.current.beginning_of_day,
+                                  Time.current.end_of_day,
+                                  current_user.id
+                                ).order("slots.start_at")
+end
 
     def render?
       @current_user.present?

@@ -10,8 +10,8 @@ class AppointmentCreator
   def create
     return false unless valid?
     @appointment = slot.build_appointment(appointment_params.merge(publisher: slot.user, subscriber: current_user))
-    if @appointment.save_and_notify
-      true
+    if @appointment.save
+      Practify.bus.publish(:appointment_created, appointment: @appointment)
     else
       errors << @appointment.errors.full_messages.to_sentence(words_connector: ", ", two_words_connector: ", ", last_word_connector: ", ")
       false

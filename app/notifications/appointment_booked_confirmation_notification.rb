@@ -1,5 +1,5 @@
 class AppointmentBookedConfirmationNotification < ApplicationNotification
-  deliver_by :email, mailer: "AppointmentConfirmationMailer", method: :booked_confirmation
+  deliver_by :email, mailer: "AppointmentMailer", method: :booked_confirmation
 
   # Optional: Store in database too
   deliver_by :database

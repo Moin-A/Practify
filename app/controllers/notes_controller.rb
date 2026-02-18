@@ -20,6 +20,7 @@ class NotesController < ApplicationController
 
     respond_to do |format|
       if @note.save
+        Practify.bus.publish(:notes_added, record: @note) if @category == "note"
         if @note.category == "observation"
 
         format.turbo_stream do

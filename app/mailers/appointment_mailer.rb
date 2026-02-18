@@ -1,4 +1,4 @@
-class AppointmentConfirmationMailer < ApplicationMailer
+class AppointmentMailer < ApplicationMailer
   def booked_confirmation
     @notification = params[:notification]
     @appointment = params[:appointment]
