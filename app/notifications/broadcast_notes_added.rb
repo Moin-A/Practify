@@ -1,0 +1,2 @@
+class BroadcastNotesAdded < ApplicationNotification
+end

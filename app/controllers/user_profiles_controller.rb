@@ -40,6 +40,7 @@ class UserProfilesController < ApplicationController
     end
   end
 
+
   def destroy
     @user_profile.destroy
     redirect_to user_profiles_url, notice: "User profile was successfully destroyed."
@@ -54,5 +55,9 @@ class UserProfilesController < ApplicationController
 
   def user_profile_params
     params.require(:user_profile).permit(:first_name, :last_name, :age, :gender, :profile_picture, :bio, :location, :avatar, professional_info: {})
+  end
+
+  def notifications
+    user.notifications.where(type: "BroadcastNotesAdded::Notification")
   end
 end

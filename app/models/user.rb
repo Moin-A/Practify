@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_many :notifications, class_name: "Noticed::Notification", as: :recipient, dependent: :destroy
   has_secure_password
   has_many :sessions, dependent: :destroy
   has_many :role_users, dependent: :destroy
