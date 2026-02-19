@@ -4,7 +4,7 @@ module Permissions
         can :create, Calendar, user_id: user.id
         can :read, Calendar, user_id: user.id
         can [ :read, :create, :update ], Appointment, user_id: user.id
-        can [ :read, :create, :update, :destroy ], Notes, notable_type: "User"
+        can [ :read, :create, :update, :destroy ], Note, notable_type: "User"
       end
     end
 end

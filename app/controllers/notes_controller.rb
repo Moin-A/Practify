@@ -1,11 +1,14 @@
 class NotesController < ApplicationController
   before_action :set_notable
-  before_action :set_note, only: [ :edit, :update, :destroy ]
+  before_action :set_note, only: [ :show, :edit, :update, :destroy ]
   before_action :set_category
-  load_and_authorize_resource except: [ :index, :new, :create ] # Authorize resource except creation actions which depend on @notable
+  load_and_authorize_resource # Authorize resource except creation actions which depend on @notable
 
   def index
     @notes = @notable.send(@category_association)
+  end
+
+  def show
   end
 
   def new
@@ -115,6 +118,6 @@ class NotesController < ApplicationController
   end
 
   def note_params
-    params.require(:notes).permit(:body)
+    params.require(:note).permit(:body)
   end
 end

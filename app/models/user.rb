@@ -7,9 +7,9 @@ class User < ApplicationRecord
   has_one :user_profile, dependent: :destroy
   has_one :calendar, dependent: :destroy, inverse_of: :user
   has_many :appointments, dependent: :destroy
-  has_many :notes, as: :notable, dependent: :destroy, class_name: "Notes"
-  has_many :private_client_notes, -> { where(category: "note") }, as: :notable, class_name: "Notes"
-  has_many :therapist_observations, -> { where(category: "observation") }, as: :notable, class_name: "Notes"
+  has_many :notes, as: :notable, dependent: :destroy, class_name: "Note"
+  has_many :private_client_notes, -> { where(category: "note") }, as: :notable, class_name: "Note"
+  has_many :therapist_observations, -> { where(category: "observation") }, as: :notable, class_name: "Note"
   validates :email_address, presence: true, uniqueness: true
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 

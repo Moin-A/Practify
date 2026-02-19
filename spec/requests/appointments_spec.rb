@@ -241,4 +241,14 @@ RSpec.describe "Appointments", type: :request do
       expect(response).to redirect_to(new_session_path)
     end
   end
+
+  describe 'POST #create' do
+  it 'publishes a note_created event' do
+    expect(Practify.bus).to receive(:publish).with(
+      :appointment_created, hash_including(appointment: instance_of(Appointment))
+    )
+    post appointments_path, params:  { appointment: { slot_id: slot.id }
+    }, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+  end
+end
 end
