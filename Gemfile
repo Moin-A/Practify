@@ -60,11 +60,13 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   gem "pry"
+  gem "dotenv-rails"
 end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+  gem "letter_opener"
 
   # Highlight the fine-grained location where an error occurred [https://github.com/ruby/error_highlight]
   gem "error_highlight", ">= 0.4.0", platforms: [ :ruby ]
@@ -85,6 +87,7 @@ group :test do
 end
 
 gem "omnes", "~> 0.2.2"
+gem "noticed", "~> 2.0"
 
 gem "vonage"
 
@@ -93,3 +96,5 @@ gem "rails-controller-testing", "~> 1.0"
 gem "solid_queue", "~> 1.3"
 
 gem "mission_control-jobs", "~> 1.1"
+
+gem "aws-sdk-ses"

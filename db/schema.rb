@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_12_180404) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_16_182027) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -53,6 +53,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_12_180404) do
     t.boolean "publisher_joined", default: false
     t.boolean "subscriber_joined", default: false
     t.integer "status", default: 0
+    t.datetime "reminder_sent_at"
     t.index ["publisher_id"], name: "index_appointments_on_publisher_id"
     t.index ["slot_id"], name: "index_appointments_on_slot_id"
     t.index ["subscriber_id"], name: "index_appointments_on_subscriber_id"
@@ -86,6 +87,30 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_12_180404) do
     t.datetime "updated_at", null: false
     t.string "category"
     t.index ["notable_type", "notable_id"], name: "index_notes_on_notable"
+  end
+
+  create_table "noticed_events", force: :cascade do |t|
+    t.string "type"
+    t.string "record_type"
+    t.bigint "record_id"
+    t.jsonb "params"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "notifications_count"
+    t.index ["record_type", "record_id"], name: "index_noticed_events_on_record"
+  end
+
+  create_table "noticed_notifications", force: :cascade do |t|
+    t.string "type"
+    t.bigint "event_id", null: false
+    t.string "recipient_type", null: false
+    t.bigint "recipient_id", null: false
+    t.datetime "read_at", precision: nil
+    t.datetime "seen_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_noticed_notifications_on_event_id"
+    t.index ["recipient_type", "recipient_id"], name: "index_noticed_notifications_on_recipient"
   end
 
   create_table "payment_methods", force: :cascade do |t|

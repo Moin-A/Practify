@@ -7,6 +7,7 @@ class Appointment < ApplicationRecord
   delegate :start_at, :end_at, to: :slot
 
   scope :pending_or_in_progress_or_completed_or_booked, -> { where(status: [ :pending, :in_progress, :completed, :booked ]) }
+  scope :active, -> { where(status: [ "booked", "in_progress", "pending" ]) }
   enum :status, { pending: 0, noshow: 1, cancelled: 2, completed: 3, expired: 4, in_progress: 5, booked: 6 }
 
   validates :user_id, presence: true

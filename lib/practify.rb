@@ -5,5 +5,11 @@ module Practify
       yield @config if block_given?
       @config
     end
+
+    def bus
+      @bus ||= Omnes::Bus.new
+      yield @bus if block_given?
+      @bus
+    end
   end
 end

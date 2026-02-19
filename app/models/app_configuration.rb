@@ -1,7 +1,17 @@
   class AppConfiguration < Practify::Configuration
     preference :some_setting, :string, default: "default_value"
 
+    preference :toggle_notification, :boolean, default: false
+
     preference :sidebar_menu_items, :array, default: [
+      { name: "Home", icon: "home", path: :root_path },
+      { name: "Calendar", icon: "calendar", path: :calendar_schedule_path },
+      { name: "Billing", icon: "billing", path: :edit_user_profile_path },
+      { name: "Settings", icon: "settings", path: :edit_user_profile_path },
+      { name: "Profile", icon: "User", path: :edit_user_profile_path }
+    ]
+
+    preference :super_admin_sidebar_menu_items, :array, default: [
       { name: "Home", icon: "home", path: :root_path },
       { name: "Calendar", icon: "calendar", path: :calendar_schedule_path },
       { name: "Clients", icon: "clients", path: :user_profiles_path },

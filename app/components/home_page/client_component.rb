@@ -20,6 +20,7 @@ module HomePage
                                 .where("slots.start_at >= ?", next_day.beginning_of_day)
                                 .order("slots.start_at ASC")
                                 .first
+  @notifications = current_user.notifications.unread.where(type: "BroadcastNotesAdded::Notification")
   end
 
   def render?

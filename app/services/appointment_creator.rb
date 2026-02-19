@@ -11,8 +11,7 @@ class AppointmentCreator
     return false unless valid?
     @appointment = slot.build_appointment(appointment_params.merge(publisher: slot.user, subscriber: current_user))
     if @appointment.save
-      @appointment.booked!
-      true
+      Practify.bus.publish(:appointment_created, appointment: @appointment)
     else
       errors << @appointment.errors.full_messages.to_sentence(words_connector: ", ", two_words_connector: ", ", last_word_connector: ", ")
       false
