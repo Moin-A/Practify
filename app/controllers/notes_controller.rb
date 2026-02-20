@@ -1,3 +1,4 @@
+require "pry"
 class NotesController < ApplicationController
   before_action :set_notable
   before_action :set_note, only: [ :show, :edit, :update, :destroy ]
@@ -61,6 +62,11 @@ class NotesController < ApplicationController
         show_cancel: true
       }
     )
+  end
+
+  def mark_as_read
+    Noticed::Notification.find(params[:notification_id]).update(read_at: Time.current, seen_at: Time.current)
+    render turbo_stream: turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Note was successfully marked as read!", type: :notice })
   end
 
   def update

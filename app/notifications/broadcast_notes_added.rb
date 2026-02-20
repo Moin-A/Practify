@@ -7,6 +7,10 @@ class BroadcastNotesAdded < ApplicationNotification
     "Your therapist has added new notes from your latest session."
   end
 
+  def note_id
+    params[:note].id
+  end
+
   def url
     user_private_client_note_path(params[:note].notable, params[:note])
   end
