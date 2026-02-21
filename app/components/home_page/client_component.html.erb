@@ -34,7 +34,7 @@
                   <div class="max-h-[320px] overflow-y-auto scrollbar-hide">
                     <% if @notifications.any? %>
                       <% @notifications.each do |n| %>                             
-                       <%= link_to n.event.url, data: { action: 'click->client-component#mark_as_read', 'client-component-notification-id-value': n.id, 'client-component-note-id-value': n.event.note_id, 'client-component-current-user-id-value': @current_user_id } do %>
+                       <%= link_to n.event.url, data: { action: 'click->client-component#mark_as_read', 'client-component-notification-id-value': n.id, 'client-component-note-id-value': n.event.note_id, 'client-component-current-user-id-value': @current_user.id } do %>
                         <div class="p-6 hover:bg-slate-50 transition-all duration-200 border-b border-gray-50 last:border-0 group/item cursor-pointer">
                           <div class="flex justify-between items-start gap-4">
                             <div class="flex-1">
