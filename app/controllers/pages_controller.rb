@@ -1,6 +1,6 @@
 
 class PagesController < ApplicationController
-  allow_unauthenticated_access only: [:privacy, :terms]
+  allow_unauthenticated_access only: [ :privacy, :terms ]
 
   def about
   end
