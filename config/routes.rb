@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   get "/login", to: "sessions#new"
   resources :passwords, param: :token
   get "about", to: "pages#about"
+  get "privacy", to: "pages#privacy"
+  get "terms", to: "pages#terms"
   resources :user_profiles, only: [ :edit, :update, :index, :show ]
   resources :calendars do
     resources :slots do
