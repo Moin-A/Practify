@@ -38,7 +38,7 @@ class NavComponent < ApplicationComponent
 
     def svg_attributes
         {
-          class: "w-5 h-5 size-6",
+          class: "w-4 h-4",
           xmlns: "http://www.w3.org/2000/svg",
           fill: "none",
           viewBox: "0 0 24 24",
