@@ -8,6 +8,12 @@ export default class extends Controller {
 
   connect() {
     this.highlightActiveLink()
+    this._turboLoadHandler = () => this.highlightActiveLink()
+    document.addEventListener("turbo:load", this._turboLoadHandler)
+  }
+
+  disconnect() {
+    document.removeEventListener("turbo:load", this._turboLoadHandler)
   }
 
   // Purely for the sidebar/nav navigation logic
