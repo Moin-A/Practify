@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: practify-hosts-config
+  namespace: practify
+data:
+  zz_hosts.rb: |
+    Rails.application.config.hosts << "practify.co.in"
+    Rails.application.config.hosts << "www.practify.co.in"
+    Rails.application.config.hosts << "rpi02.taila27a53.ts.net"
+    Rails.application.config.assume_ssl = true
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -41,8 +53,16 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: ses-credentials
-                  key: SMTP_PASSWORD      
-
+                  key: SMTP_PASSWORD
+          volumeMounts:
+            - name: hosts-config
+              mountPath: /rails/config/initializers/zz_hosts.rb
+              subPath: zz_hosts.rb
+              readOnly: true
+      volumes:
+        - name: hosts-config
+          configMap:
+            name: practify-hosts-config
 ---
 apiVersion: v1
 kind: Service
@@ -56,7 +76,6 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 3000
-
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -64,36 +83,26 @@ metadata:
   name: practify-ingress
   namespace: practify
   annotations:
-    # Forces Traefik to use the websecure (HTTPS) entrypoint
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    # Tells Traefik that this specific route REQUIRES TLS
-    traefik.ingress.kubernetes.io/router.tls: "true"
+    kubernetes.io/ingress.class: traefik
 spec:
-  tls:
-  - hosts:
-    - rpi02.taila27a53.ts.net    
-    secretName: practify-tls-cert
-  - hosts:
-    - practify.co.in    
-    secretName: practify-letsencrypt-cert
   rules:
-  - host: rpi02.taila27a53.ts.net
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: practify-service
-            port:
-              number: 80
-  - host: practify.co.in
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: practify-service
-            port:
-              number: 80
+    - host: practify.co.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: practify-service
+                port:
+                  number: 80
+    - host: www.practify.co.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: practify-service
+                port:
+                  number: 80
