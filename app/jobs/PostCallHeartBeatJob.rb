@@ -13,9 +13,11 @@ class PostCallHeartBeatJob < ApplicationJob
 
   def updated_appointment_status(appointment)
     return if appointment.slot.nil? ||  Time.now < appointment.start_at
-    if appointment.booked? &&  Time.now  > appointment.end_at
+    if appointment.in_progress? && Time.now > appointment.end_at
       appointment.update(status: :completed)
-    elsif in_progress?(appointment) && appointment.publisher_or_subscriber_joined?
+    elsif appointment.booked? &&  Time.now  > appointment.end_at
+      appointment.update(status: :completed)
+    elsif meeting_in_progress?(appointment) && appointment.publisher_or_subscriber_joined?
       appointment.update(status: :in_progress)
     elsif both_joined?(appointment)
       appointment.update(status: :completed)
