@@ -64,11 +64,11 @@
       </span>
     </div>
     <div class="space-y-4">
-      <% [["J. Doe", "Oct 24"], ["A. Smith", "Oct 24"]].each do |name, date| %>
-        <div class="flex justify-between items-center group cursor-pointer">
+      <% @users_with_pending_notes.each do |user| %>
+        <%=link_to user_profile_path(user), class: "flex justify-between items-center group cursor-pointer" do %>
           <span class="text-slate-600"><span class="text-slate-400 mr-2">-</span>
-            <strong><%= name %></strong>
-            <span class="text-slate-400 ml-1">(<%= date %>)</span></span>
+            <strong><%= user.user_profile.full_name %></strong>
+            <span class="text-slate-400 ml-1">(<%= user.appointments.first.slot.start_at.strftime("%b %d") %>)</span></span>
           <div
             class="
               w-5 h-5 border-2 border-slate-300 rounded-full group-hover:border-emerald-500
@@ -79,9 +79,9 @@
               class="
                 w-2 h-2 bg-emerald-500 rounded-full opacity-0 group-hover:opacity-100
               "
-            ></div>
-          </div>
+            ></div>          
         </div>
+        <% end %>        
       <% end %>
     </div>
   </div>

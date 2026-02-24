@@ -30,6 +30,7 @@ module HomePage
                                   Time.current.end_of_day,
                                   current_user.id
                                 ).order("slots.start_at")
+     @users_with_pending_notes = User.joins(:appointments).where(appointments: { status: "completed" }).where.missing(:private_client_notes)
 end
 
     def render?
