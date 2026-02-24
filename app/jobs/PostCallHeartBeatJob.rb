@@ -21,7 +21,9 @@ class PostCallHeartBeatJob < ApplicationJob
       appointment.update(status: :completed)
     elsif neither_joined?(appointment) && Time.now > appointment.end_at
       appointment.update(status: :noshow)
-    end
+    elsif appointment.in_progress? && Time.now > appointment.end_at
+      appointment.update(status: :completed)
+    end  
   end
 
 
