@@ -23,7 +23,7 @@ class PostCallHeartBeatJob < ApplicationJob
       appointment.update(status: :noshow)
     elsif appointment.in_progress? && Time.now > appointment.end_at
       appointment.update(status: :completed)
-    end  
+    end
   end
 
 

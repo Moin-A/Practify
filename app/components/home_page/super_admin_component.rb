@@ -30,8 +30,13 @@ module HomePage
                                   Time.current.end_of_day,
                                   current_user.id
                                 ).order("slots.start_at")
-     @users_with_pending_notes = User.joins(:appointments).where(appointments: { status: "completed" }).where.missing(:private_client_notes)
-end
+
+      @users_with_pending_notes = User.joins(:appointments)
+                                      .joins("INNER JOIN notes ON notes.notable_id = appointments.id AND notes.notable_type = 'User' AND notes.category = 'note'")
+                                      .where(appointments: { status: "completed" })
+                                      .group("users.id")
+                                      .having("MAX(appointments.created_at) > MAX(notes.created_at)")
+    end
 
     def render?
       @current_user.present?
