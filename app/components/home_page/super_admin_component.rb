@@ -32,7 +32,7 @@ module HomePage
                                 ).order("slots.start_at")
 
       @users_with_pending_notes = User.joins(:appointments)
-                                      .joins("INNER JOIN notes ON notes.notable_id = appointments.id AND notes.notable_type = 'User' AND notes.category = 'note'")
+                                      .joins("INNER JOIN notes ON notes.notable_id = users.id AND notes.notable_type = 'User' AND notes.category = 'note'")
                                       .where(appointments: { status: "completed" })
                                       .group("users.id")
                                       .having("MAX(appointments.created_at) > MAX(notes.created_at)")
