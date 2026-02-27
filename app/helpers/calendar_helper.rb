@@ -14,4 +14,9 @@
         raise "week_calendar requires a block" unless block
         render SimpleCalendar::WeekCalendar.new(self, options), &block
       end
+
+      def reshedule_month_calendar(options = {}, &block)
+        raise "reshedule_month_calendar requires a block" unless block
+        render Calendars::ResheduleMonthCalendar.new(self, options), &block
+      end
     end

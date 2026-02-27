@@ -1,0 +1,141 @@
+<div
+  data-home-target="modal"
+  class="
+    fixed z-50 inset-0 flex items-center justify-center bg-slate-900/50
+    backdrop-blur-sm hidden
+  "
+  aria-labelledby="modal-title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div
+    class="
+      relative transform overflow-hidden rounded-xl bg-white text-left shadow-2xl
+      transition-all sm:my-8 sm:w-full sm:max-w-md
+    "
+  >
+
+    <div class="bg-white px-4 pt-5 pb-2 sm:px-6">
+      <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Select a Date</h3>
+    </div>
+
+    <%= turbo_frame_tag "reschedule_calendar" do %>
+
+      <div class="bg-white px-4 pb-4 pt-2 sm:p-6">
+
+        <%# Calendar Navigation Header %>
+        <div class="flex items-center justify-between mb-4">
+          <%= link_to calendar.url_for_previous_view, data: { turbo_frame: "reschedule_calendar" }, class: "p-2 hover:bg-slate-100 rounded-full transition-colors group" do %>
+            <svg
+              class="w-5 h-5 text-slate-500 group-hover:text-slate-900"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            ><path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              ></path></svg>
+          <% end %>
+
+          <h4 class="text-sm font-semibold text-slate-900">
+            <%= t("date.month_names")[start_date.month] %>
+            <%= start_date.year %>
+          </h4>
+
+          <%= link_to calendar.url_for_next_view, data: { turbo_frame: "reschedule_calendar" }, class: "p-2 hover:bg-slate-100 rounded-full transition-colors group" do %>
+            <svg
+              class="w-5 h-5 text-slate-500 group-hover:text-slate-900"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            ><path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              ></path></svg>
+          <% end %>
+        </div>
+
+        <div
+          class="
+            grid grid-cols-7 border border-slate-200 rounded-sm overflow-hidden
+          "
+        >
+
+          <%# Optional: Add Day Headers %>
+          <% %w[S M T W T F S].each do |day_name| %>
+            <div
+              class="
+                bg-slate-50 border-r border-b border-slate-200 py-2 text-center text-[10px]
+                font-bold text-slate-500 uppercase tracking-wider
+              "
+            >
+              <%= day_name %>
+            </div>
+          <% end %>
+
+          <% date_range.each do |day| %>
+            <% is_today = (day == Date.today)
+            is_current_month = (day.month == start_date.month)
+            is_selected = (params[:start_date].to_s == day.to_s) %>
+            <%= link_to calendar.url_for_checked_date(day),  data: { turbo_frame: "reschedule_calendar" }, class: "block h-full w-full p-2 group hover:bg-slate-50 transition-colors" do %>
+
+              <div class="flex justify-between items-start mb-1">
+                <span
+                  class="
+                    text-xs font-bold transition-transform group-hover:scale-110
+                    <%= is_today ? 'bg-emerald-600 text-white w-5 h-5 flex items-center justify-center rounded-md' : (is_selected ? 'text-emerald-700' : 'text-slate-900') %>
+                  "
+                >
+                  <%= day.day %>
+                </span>
+              </div>            
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      <div class="space-y-0.5">
+        <% instance_exec(start_date, [], &passed_block) %>
+      </div>
+    <% end %>
+
+    <%# Ensure you adjust the `url:` to whatever your actual reschedule route is! %>
+    
+    <%= form_with url: reshedule_appointment_path(calendar.view_context.instance_variable_get(:@appointment)), method: :post,  data: { turbo_frame: "reschedule_calendar" }, class: "bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6" do |f| %>
+      
+      <%# This hidden field stores the time clicked by the Javascript! %>
+      <%= f.hidden_field :reschedule_selected_time, id: "reschedule_selected_time" %>
+      
+      <%# You might also want to persist the date so the backend knows what day they chose %>
+      <%= f.hidden_field :reschedule_selected_date, value: params[:start_date] || Date.today.iso8601 %>
+
+      <button
+        type="submit"
+        class="
+          inline-flex w-full justify-center rounded-lg bg-emerald-600 px-4 py-2 text-sm
+          font-semibold text-white shadow-sm hover:bg-emerald-500 transition-colors
+          sm:ml-3 sm:w-auto
+        "
+      >
+        Confirm
+      </button>
+      <button
+        data-action="click->home#toggleModal"
+        type="button"
+        class="
+          mt-3 inline-flex w-full justify-center rounded-lg bg-white px-4 py-2 text-sm
+          font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300
+          hover:bg-gray-50 transition-colors sm:mt-0 sm:w-auto
+        "
+      >
+        Cancel
+      </button>
+    <% end %>
+  </div>
+  
+</div>

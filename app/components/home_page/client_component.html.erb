@@ -145,7 +145,7 @@
             <%= link_to new_appointment_call_room_path(@appointment), class: "mx-auto justify-center flex w-2/3 flex-1 px-6 py-3 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow" do %>
               Join Session
             <% end %>
-            <button class="px-6 py-3 bg-white text-gray-700 font-semibold text-sm rounded-xl border border-gray-200 shadow-sm transition-all duration-200 hover:border-gray-300 hover:bg-gray-50">
+            <button data-action="click->home#toggleModal" class="px-6 py-3 bg-white text-gray-700 font-semibold text-sm rounded-xl border border-gray-200 shadow-sm transition-all duration-200 hover:border-gray-300 hover:bg-gray-50">
               Reschedule
             </button>
           <% end %>
@@ -311,7 +311,37 @@
     <div id="flash_messages" class="mb-6">
       <%= helpers.turbo_frame_tag "flash_messages" %>
     </div>
-  </div>
+  </div> 
+
+  <%= reshedule_month_calendar do |day, events| %>
+    <% slots = next_day_available_slots(day) %>
+    
+    <% if slots.any? && params[:start_date] == day.to_s %>
+      <div class="absolute left-0 right-0 bottom-16 bg-slate-50 border-t border-slate-200 px-6 py-4 max-h-48 overflow-y-auto rounded-b-xl shadow-inner z-10 w-full">
+        <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+          Available Times for <%= day.strftime("%b %d") %>
+        </h4>
+        
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <% slots.each do |slot| %>
+            <button 
+              type="button"
+              data-action="click->home#selectTimeSlot"
+              data-home-time-param="<%= slot[:time] %>"
+              class="
+                text-xs font-medium py-2 px-3 rounded-lg bg-white 
+                text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 
+                transition-all border border-slate-200 hover:border-emerald-300
+                focus:ring-2 focus:ring-emerald-500 focus:outline-none shadow-sm
+              "
+            >
+              <%= slot[:time] %>
+            </button>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
 </div>
 
 <style>

@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     resources :call_rooms, only: [ :new, :create, :show ]
     member do
       post "has_joined", to: "appointments#has_joined"
+      post "reshedule", to: "appointments#reshedule"
     end
   end
 

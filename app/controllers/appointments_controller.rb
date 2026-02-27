@@ -70,6 +70,12 @@ class AppointmentsController < ApplicationController
     redirect_to appointments_url, notice: "Appointment was successfully destroyed."
   end
 
+
+  def reshedule
+    binding.pry
+    # AppointmentResheduleService.new(@appointment).call
+  end
+
   private
 
 

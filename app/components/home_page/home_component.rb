@@ -3,6 +3,7 @@ class HomeComponent < ApplicationComponent
   def initialize(current_user: nil, selected_slot_id: nil)
     @current_user = current_user
     @selected_slot_id = selected_slot_id
+    @calendar = current_user.calendar
   end
 
   def component
