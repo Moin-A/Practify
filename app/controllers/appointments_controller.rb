@@ -72,9 +72,35 @@ class AppointmentsController < ApplicationController
 
 
   def reshedule
-    binding.pry
-    # AppointmentResheduleService.new(@appointment).call
+  new_slot = Slot.find_by(id: appointment_params[:reschedule_selected_slot_id])
+  reshedule_service = AppointmentResheduleService.new(
+    appointment: @appointment,
+    slot: @appointment.slot,
+    new_slot: new_slot,
+    appointment_params: appointment_params
+  )
+
+  respond_to do |format|
+    format.turbo_stream do
+      if reshedule_service.call
+        render turbo_stream: [
+          turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Appointment was successfully rescheduled.", type: :notice })
+        ]
+      else
+        render turbo_stream: [
+          turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: reshedule_service.errors.join(", "), type: :alert })
+        ], status: :unprocessable_entity
+      end
+    end
+    format.html do
+      if reshedule_service.call
+        redirect_to @appointment, notice: "Appointment was successfully rescheduled."
+      else
+        redirect_to @appointment, alert: reshedule_service.errors.join(", ")
+      end
+    end
   end
+end
 
   private
 
@@ -88,7 +114,7 @@ class AppointmentsController < ApplicationController
   end
 
   def appointment_params
-    params.require(:appointment).permit(:slot_id)
+    params.require(:appointment).permit(:slot_id, :reschedule_selected_slot_id)
   end
 
   def record_not_found
