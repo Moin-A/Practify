@@ -1,6 +1,6 @@
 module HomePage
  class ClientComponent < ApplicationComponent
-  include SlotsHelper
+  include SlotsHelper, CalendarHelper
   attr_reader :current_user, :selected_slot_id
   def initialize(current_user: nil, selected_slot_id: nil)
     @current_user = current_user
