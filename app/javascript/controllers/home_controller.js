@@ -47,12 +47,12 @@ export default class extends Controller {
   // --- Reschedule Calendar Logic ---
 
   selectTimeSlot(event) {
-    const selectedTime = event.currentTarget.dataset.homeTimeParam
-    const hiddenInput = document.getElementById("reschedule_selected_time")
+    const selectedSlotId = event.currentTarget.dataset.homeSlotIdParam
+    const hiddenInput = document.getElementById("reschedule_selected_slot_id")
 
     // 1. Persist the state in the hidden input
     if (hiddenInput) {
-      hiddenInput.value = selectedTime
+      hiddenInput.value = selectedSlotId
     }
 
     // 2. Update visual styling

@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class AppointmentResheduleServiceTest < ActiveSupport::TestCase
   def setup
@@ -9,7 +9,7 @@ class AppointmentResheduleServiceTest < ActiveSupport::TestCase
     @appointment.update!(slot: @slot)
   end
 
-  test 'successful reschedule with available slot' do
+  test "successful reschedule with available slot" do
     service = AppointmentResheduleService.new(
       appointment: @appointment,
       slot: @slot,
@@ -21,7 +21,7 @@ class AppointmentResheduleServiceTest < ActiveSupport::TestCase
     assert_empty service.errors
   end
 
-  test 'fails when no slot selected' do
+  test "fails when no slot selected" do
     service = AppointmentResheduleService.new(
       appointment: @appointment,
       slot: @slot,
@@ -29,10 +29,10 @@ class AppointmentResheduleServiceTest < ActiveSupport::TestCase
       appointment_params: {}
     )
     refute service.call
-    assert_includes service.errors, 'No slot selected for reschedule'
+    assert_includes service.errors, "No slot selected for reschedule"
   end
 
-  test 'fails when selected slot is unavailable' do
+  test "fails when selected slot is unavailable" do
     unavailable_slot = slots(:unavailable_one)
     service = AppointmentResheduleService.new(
       appointment: @appointment,
@@ -41,6 +41,6 @@ class AppointmentResheduleServiceTest < ActiveSupport::TestCase
       appointment_params: { reschedule_selected_slot_id: unavailable_slot.id }
     )
     refute service.call
-    assert_includes service.errors, 'Selected slot is not available'
+    assert_includes service.errors, "Selected slot is not available"
   end
 end
