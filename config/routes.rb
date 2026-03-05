@@ -54,5 +54,10 @@ Rails.application.routes.draw do
   Rails.application.routes.draw do
     mount MissionControl::Jobs::Engine => "/jobs"
   end
+  # Checkout / payment
+  resource :checkout, only: [:new] do
+    post :verify, on: :collection
+  end
+
   root "home#show"
 end
