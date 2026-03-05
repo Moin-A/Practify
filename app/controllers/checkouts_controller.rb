@@ -2,13 +2,17 @@ class CheckoutsController < ApplicationController
   before_action :set_appointment
 
   def new
-    @amount = (params[:amount] || 10_000).to_i  # paise — default ₹100
-    @order  = ::Razorpay::Order.create(
+    key    = Rails.application.credentials.dig(:razorpay, :access_key_id)
+    secret = Rails.application.credentials.dig(:razorpay, :secret_access_key)
+    ::Razorpay.setup(key, secret)
+
+    @razorpay_key = key
+    @amount       = (params[:amount] || 10_000).to_i  # paise — default ₹100
+    @order        = ::Razorpay::Order.create(
       amount:   @amount,
       currency: "INR",
       receipt:  "rcpt_#{SecureRandom.hex(8)}"
     )
-    @razorpay_key = Rails.application.credentials.dig(:razorpay, :access_key_id)
   rescue StandardError => e
     Rails.logger.error "Razorpay order creation failed: #{e.message}"
     @order = nil
