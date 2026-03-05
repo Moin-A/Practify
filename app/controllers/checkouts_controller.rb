@@ -1,18 +1,20 @@
 class CheckoutsController < ApplicationController
   before_action :set_appointment
+  before_action :initialize_service, only: :new
+  attr_reader :appointment, :service
 
   def new
-    key    = Rails.application.credentials.dig(:razorpay, :access_key_id)
-    secret = Rails.application.credentials.dig(:razorpay, :secret_access_key)
-    ::Razorpay.setup(key, secret)
+   result = service.create(gateway: :razorpay, amount: (params[:amount] || 10_000).to_i)
 
-    @razorpay_key = key
-    @amount       = (params[:amount] || 10_000).to_i  # paise — default ₹100
-    @order        = ::Razorpay::Order.create(
-      amount:   @amount,
-      currency: "INR",
-      receipt:  "rcpt_#{SecureRandom.hex(8)}"
-    )
+   if result.is_a?(Hash)
+    @order        = result[:order]
+    @razorpay_key = result[:key]
+    @amount       = @order.amount
+   else
+    @order = nil
+    flash.now[:alert] = result.join(", ")
+   end
+    
   rescue StandardError => e
     Rails.logger.error "Razorpay order creation failed: #{e.message}"
     @order = nil
@@ -40,6 +42,10 @@ class CheckoutsController < ApplicationController
 
   def set_appointment
     @appointment = Appointment.find(params[:appointment_id])
+  end
+
+  def initialize_service
+    @service = PaymentCheckoutService.new(appointment: appointment, current_user: current_user)
   end
 end
 
