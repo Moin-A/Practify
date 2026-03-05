@@ -1,7 +1,7 @@
 class CheckoutsController < ApplicationController
-  def new
-    gateway = ActiveMerchant::Billing::Razorpay.new(test: Rails.env.development?)
+  before_action :set_appointment
 
+  def new
     @amount = (params[:amount] || 10_000).to_i  # paise — default ₹100
     @order  = ::Razorpay::Order.create(
       amount:   @amount,
@@ -23,13 +23,19 @@ class CheckoutsController < ApplicationController
     gateway = ActiveMerchant::Billing::Razorpay.new(test: Rails.env.development?)
 
     if gateway.verify_signature(order_id, payment_id, signature)
-      # Signature is valid — payment is genuine
       redirect_to root_path, notice: "Payment successful! Payment ID: #{payment_id}"
     else
-      redirect_to new_checkout_path, alert: "Payment verification failed — signature mismatch."
+      redirect_to new_appointment_checkout_path(@appointment), alert: "Payment verification failed."
     end
   rescue StandardError => e
     Rails.logger.error "Checkout verify error: #{e.message}"
-    redirect_to new_checkout_path, alert: "Payment error: #{e.message}"
+    redirect_to new_appointment_checkout_path(@appointment), alert: "Payment error: #{e.message}"
+  end
+
+  private
+
+  def set_appointment
+    @appointment = Appointment.find(params[:appointment_id])
   end
 end
+

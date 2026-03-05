@@ -35,7 +35,7 @@
             // Build hidden form and POST to verify
             var form = document.createElement("form");
             form.method = "POST";
-            form.action = "<%= verify_checkouts_path %>";
+            form.action = "<%= verify_appointment_checkouts_path(@appointment) %>";
 
             var fields = {
               authenticity_token:  document.querySelector('meta[name="csrf-token"]').content,
@@ -84,6 +84,6 @@
 <% else %>
   <div class="max-w-md mx-auto mt-16 text-center text-red-600">
     <p class="font-semibold">Unable to create order.</p>
-    <%= link_to "Try again", new_checkout_path, class: "underline" %>
+    <%= link_to "Try again", @appointment ? new_appointment_checkout_path(@appointment) : root_path, class: "underline" %>
   </div>
 <% end %>

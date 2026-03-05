@@ -24,6 +24,9 @@ Rails.application.routes.draw do
       post "has_joined", to: "appointments#has_joined"
       post "reshedule", to: "appointments#reshedule"
     end
+    resource :checkout, only: [:new] do
+      post :verify, on: :collection
+    end
   end
 
   resources :users do
@@ -55,9 +58,6 @@ Rails.application.routes.draw do
     mount MissionControl::Jobs::Engine => "/jobs"
   end
   # Checkout / payment
-  resource :checkout, only: [:new] do
-    post :verify, on: :collection
-  end
 
   root "home#show"
 end
