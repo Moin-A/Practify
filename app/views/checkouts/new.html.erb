@@ -1,17 +1,54 @@
 <% if flash[:alert] %>
-  <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6">
+  <div
+    class="
+      bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6
+    "
+  >
     <%= flash[:alert] %>
   </div>
 <% end %>
 
 <% if @order && @razorpay_key %>
-  <div class="max-w-md mx-auto mt-16 text-center">
+  <div class="relative w-full">
+    <button
+      data-action="click->home#togglePaymentModal"
+      type="button"
+      class="
+        absolute top-0 right-2 mt-4 inline-flex items-center justify-center p-2
+        text-gray-400 hover:bg-gray-50 hover:text-gray-500 transition-colors
+      "
+      aria-label="Cancel"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="size-12"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      </svg>
+    </button>
+  </div>
+  <div id="modal" class="max-w-md mx-auto mt-16 text-center mb-12">
     <h1 class="text-2xl font-bold mb-2">Complete Payment</h1>
-    <p class="text-slate-500 mb-2">Order: <code class="text-sm"><%= @order.id %></code></p>
-    <p class="text-slate-500 mb-6">Amount: <strong>₹<%= number_with_precision(@amount / 100.0, precision: 2) %></strong></p>
+    <p class="text-slate-500 mb-2">Order:
+      <code class="text-sm"><%= @order.id %></code></p>
+    <p class="text-slate-500 mb-6">Amount:
+      <strong>₹<%= number_with_precision(@amount / 100.0, precision: 2) %></strong></p>
 
-    <button id="pay-btn"
-            class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors">
+    <button
+      id="pay-btn"
+      class="
+        px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl
+        transition-colors
+      "
+    >
       Pay ₹<%= number_with_precision(@amount / 100.0, precision: 2) %>
     </button>
   </div>
@@ -35,7 +72,7 @@
             // Build hidden form and POST to verify
             var form = document.createElement("form");
             form.method = "POST";
-            form.action = "<%= verify_appointment_checkout_path(@appointment) %>";
+            form.action = "<%= verify_calendar_slot_checkout_path(@calendar, @slot) %>";
 
             var fields = {
               authenticity_token:  document.querySelector('meta[name="csrf-token"]').content,
@@ -84,6 +121,8 @@
 <% else %>
   <div class="max-w-md mx-auto mt-16 text-center text-red-600">
     <p class="font-semibold">Unable to create order.</p>
-    <%= link_to "Try again", @appointment ? new_appointment_checkout_path(@appointment) : root_path, class: "underline" %>
+    <%= link_to "Try again",
+    @appointment ? new_appointment_checkout_path(@appointment) : root_path,
+    class: "underline" %>
   </div>
 <% end %>

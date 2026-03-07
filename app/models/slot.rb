@@ -1,6 +1,7 @@
 class Slot < ApplicationRecord
   belongs_to :calendar
   has_one :appointment, dependent: :destroy
+  has_one :slot_credit, dependent: :destroy
   has_one :user, through: :calendar
 
 

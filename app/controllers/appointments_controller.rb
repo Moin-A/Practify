@@ -2,10 +2,12 @@ class AppointmentsController < ApplicationController
 rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 load_and_authorize_resource
 include DateParsing
-attr_reader :slot
+attr_reader :slot, :calendar
 
 before_action :set_appointment, only: [ :show, :update, :destroy, :has_joined ]
 before_action :set_slot, only: [ :new, :create ]
+before_action :set_calendar, only: [ :show, :create, :new ]
+before_action :require_payment, only: [ :create ]
 
 
 def index
@@ -15,7 +17,6 @@ end
 
 def show
   @date = parse_date_param
-  @calendar = current_user.calendar
   @slots = @calendar.slots_for_date(@date)
   @selected_slot_id = params[:selected_slot_id] || nil
 end
@@ -88,7 +89,22 @@ def reshedule
   end
 end
 
+
+
 private
+
+def require_payment
+  if @slot.available? && @slot.slot_credit.present?
+    redirect_to new_calendar_slot_checkout_path(@calendar, @slot)
+  else
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace("slots_list", partial: "slot_credits/packages", locals: { slot: @slot, calendar: @calendar, appointment: @slot.build_appointment })
+      end
+      format.html { redirect_to new_slot_credit_path(slot_id: @slot.id), alert: "Payment is required before booking an appointment." }
+    end
+  end
+end
 
 
 def set_slot
@@ -101,6 +117,10 @@ end
 
 def appointment_params
   params.require(:appointment).permit(:slot_id, :reschedule_selected_slot_id)
+end
+
+def set_calendar
+   @calendar ||= current_user.calendar
 end
 
 def record_not_found

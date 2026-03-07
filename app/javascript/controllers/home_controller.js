@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["navLink", "notificationMenu", "modal"]
+  static targets = ["navLink", "notificationMenu", "modal", "paymentModal"]
 
   activeStyles = ["bg-emerald-50", "text-emerald-700", "font-medium"]
   inactiveStyles = ["text-slate-500"]
@@ -42,6 +42,10 @@ export default class extends Controller {
   }
   toggleModal() {
     this.modalTarget.classList.toggle('hidden')
+  }
+
+  togglePaymentModal() {
+    this.paymentModalTarget.classList.toggle('hidden')
   }
 
   // --- Reschedule Calendar Logic ---

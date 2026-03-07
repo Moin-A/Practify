@@ -6,7 +6,7 @@ class PaymentCheckoutService
     @errors = []
   end
 
-  def create(options={})
+  def create(options = {})
     @options = options
     return errors unless valid?(options)
     key    = fetch_secret_keys(options[:gateway], :access_key_id)
@@ -15,22 +15,22 @@ class PaymentCheckoutService
     amount = options[:amount] || 10_000
     order = create_order(amount)
     { order: order, key: key }
-  end 
-    
+  end
+
    def valid?(options)
     validate_options
     validate_option_keys
     errors.empty?
-   end 
-   
+   end
+
    def validate_options
     errors << "Gateway is required" if options[:gateway].blank?
    end
 
    def validate_option_keys
-    options.assert_valid_keys(:gateway, :amount)  
-    rescue => error 
-      errors << "Invalid option key: #{error.message}"  
+    options.assert_valid_keys(:gateway, :amount)
+    rescue => error
+      errors << "Invalid option key: #{error.message}"
    end
 
    def fetch_secret_keys(service_name, secret_key_name)
@@ -43,6 +43,5 @@ class PaymentCheckoutService
     currency: "INR",
     receipt:  "rcpt_#{SecureRandom.hex(8)}"
   )
-   end  
-    
+   end
 end

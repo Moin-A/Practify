@@ -1,20 +1,41 @@
 class CheckoutsController < ApplicationController
-  before_action :set_appointment
-  before_action :initialize_service, only: :new
-  attr_reader :appointment, :service
+  before_action :set_slot
+  before_action :initialize_service, only: [ :create, :new ]
+  attr_reader :slot, :service, :appointment, :calendar
 
   def new
-   result = service.create(gateway: :razorpay, amount: (params[:amount] || 10_000).to_i)
+    result = service.create(gateway: :razorpay, amount: (params[:amount] || 15_000).to_i)
 
-   if result.is_a?(Hash)
-    @order        = result[:order]
-    @razorpay_key = result[:key]
-    @amount       = @order.amount
-   else
-    @order = nil
-    flash.now[:alert] = result.join(", ")
-   end
-    
+    if result.is_a?(Hash)
+      @order        = result[:order]
+      @razorpay_key = result[:key]
+      @amount       = @order.amount
+    else
+      @order = nil
+      flash.now[:alert] = result.is_a?(Array) ? result.join(", ") : "Error creating order"
+    end
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace("payment_modal", template: "checkouts/new", layout: false)
+      end
+      format.html
+    end
+  end
+
+  def create
+    # Left intact if needed for explicit POSTs
+    result = service.create(gateway: :razorpay, amount: (params[:amount] || 15_000).to_i)
+
+    if result.is_a?(Hash)
+      @order        = result[:order]
+      @razorpay_key = result[:key]
+      @amount       = @order.amount
+    else
+      @order = nil
+      flash.now[:alert] = result.join(", ")
+    end
+
   rescue StandardError => e
     Rails.logger.error "Razorpay order creation failed: #{e.message}"
     @order = nil
@@ -40,12 +61,13 @@ class CheckoutsController < ApplicationController
 
   private
 
-  def set_appointment
-    @appointment = Appointment.find(params[:appointment_id])
+  def set_slot
+    @slot = Slot.find(params[:slot_id])
+    @appointment = @slot.appointment
+    @calendar = current_user.calendar
   end
 
   def initialize_service
     @service = PaymentCheckoutService.new(appointment: appointment, current_user: current_user)
   end
 end
-

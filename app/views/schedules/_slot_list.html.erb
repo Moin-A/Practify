@@ -1,3 +1,4 @@
+
   <div class="grid grid-cols-3 gap-2 overflow-visible" id="slots_list">
     <% if slots&.any? %>
       <% slots.each do |slot| %>
@@ -16,7 +17,7 @@
       params: { appointment: { slot_id: selected_slot_id } }, 
       class: "w-full px-6 py-3 mt-4 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow",
       data: { turbo_method: :post } do %>
-    Confirm Slot
+    Confirm Slots
   <% end %>
 <% else %>
   <button disabled class="w-full mt-4 px-6 py-3 bg-gray-100 text-gray-400 font-semibold text-sm rounded-xl cursor-not-allowed">

@@ -25,10 +25,10 @@
 module ActiveMerchant
   module Billing
     class Razorpay < Gateway
-      self.supported_countries = ['IN']
-      self.default_currency    = 'INR'
-      self.homepage_url        = 'https://razorpay.com'
-      self.display_name        = 'Razorpay'
+      self.supported_countries = [ "IN" ]
+      self.default_currency    = "INR"
+      self.homepage_url        = "https://razorpay.com"
+      self.display_name        = "Razorpay"
 
       # ---------------------------------------------------------------
       # Initialise the gateway and configure the Razorpay SDK.
@@ -63,17 +63,17 @@ module ActiveMerchant
       # ---------------------------------------------------------------
       def purchase(money, source, options = {})
         payment_id = payment_id_from(source)
-        return error_response('No payment ID provided') if payment_id.blank?
+        return error_response("No payment ID provided") if payment_id.blank?
 
         begin
           payment = ::Razorpay::Payment.fetch(payment_id)
 
           # Auto-capture if not already captured
-          if payment.status == 'authorized'
+          if payment.status == "authorized"
             payment = payment.capture(amount: money)
           end
 
-          success = payment.status == 'captured'
+          success = payment.status == "captured"
           ActiveMerchant::Billing::Response.new(
             success,
             payment.status,
@@ -102,7 +102,7 @@ module ActiveMerchant
 
           ActiveMerchant::Billing::Response.new(
             true,
-            'Order created – awaiting capture',
+            "Order created – awaiting capture",
             order.respond_to?(:to_hash) ? order.to_hash : {},
             authorization: order.id,
             test: @test
@@ -122,7 +122,7 @@ module ActiveMerchant
           captured = payment.capture(amount: money)
 
           ActiveMerchant::Billing::Response.new(
-            captured.status == 'captured',
+            captured.status == "captured",
             captured.status,
             captured.respond_to?(:to_hash) ? captured.to_hash : {},
             authorization: captured.id,
@@ -185,7 +185,7 @@ module ActiveMerchant
       def verify_signature(order_id, payment_id, provided_signature)
         data     = "#{order_id}|#{payment_id}"
         expected = OpenSSL::HMAC.hexdigest(
-          OpenSSL::Digest.new('sha256'),
+          OpenSSL::Digest.new("sha256"),
           @secret_access_key,
           data
         )

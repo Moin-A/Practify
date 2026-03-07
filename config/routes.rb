@@ -11,8 +11,12 @@ Rails.application.routes.draw do
   resources :user_profiles, only: [ :edit, :update, :index, :show ]
   resources :calendars do
     resources :slots do
+      resources :slot_credits, as: :credits
       member do
         post "confirm", to: "slots#confirm"
+      end
+      resource :checkout, only: [ :new ] do
+        post :verify, on: :collection
       end
     end
     resource :schedule, only: [ :show ]
@@ -23,9 +27,7 @@ Rails.application.routes.draw do
     member do
       post "has_joined", to: "appointments#has_joined"
       post "reshedule", to: "appointments#reshedule"
-    end
-    resource :checkout, only: [:new] do
-      post :verify, on: :collection
+      post "reset_modal", to: "appointments#reset_modal"
     end
   end
 

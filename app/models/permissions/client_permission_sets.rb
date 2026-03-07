@@ -5,7 +5,7 @@ module Permissions
         can :read, Calendar, user_id: user.id
         can :manage, UserProfile, user_id: user.id
         can [ :read, :create, :update ], Appointment, user_id: user.id
-        can [ :has_joined, :reshedule ], Appointment do |appointment|
+        can [ :has_joined, :reshedule, :reset_modal ], Appointment do |appointment|
           appointment.publisher_id == user.id || appointment.subscriber_id == user.id
         end
         can :read, Slot, calendar: { user_id: user.id }

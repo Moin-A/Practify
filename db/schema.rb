@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_25_081322) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_06_044831) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -169,6 +169,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_25_081322) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
+  create_table "slot_credits", force: :cascade do |t|
+    t.bigint "slot_id", null: false
+    t.integer "slot_remaining", default: 0
+    t.string "payment_order_id"
+    t.integer "payment_status", default: 0
+    t.integer "amount", default: 0
+    t.integer "package", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slot_id"], name: "index_slot_credits_on_slot_id"
   end
 
   create_table "slots", force: :cascade do |t|
@@ -341,6 +353,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_25_081322) do
   add_foreign_key "role_users", "roles"
   add_foreign_key "role_users", "users"
   add_foreign_key "sessions", "users"
+  add_foreign_key "slot_credits", "slots"
   add_foreign_key "slots", "calendars"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

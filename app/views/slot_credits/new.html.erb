@@ -1,0 +1,93 @@
+<% content_for :title, "Choose Your Session Package" %>
+
+<div class="max-w-4xl mx-auto py-12 px-4">
+  <% if flash[:alert] %>
+    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 text-sm">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+
+  <div class="text-center mb-10">
+    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Choose Your Plan</h1>
+    <p class="text-slate-500 mt-2 text-sm">Select a session package to continue booking your appointment</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <%# ─── 1 Slot (default / first) ─── %>
+    <div class="relative bg-white border-2 border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-lg hover:border-emerald-400 transition-all duration-200 flex flex-col justify-between">
+      <div>
+        <p class="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1">Starter</p>
+        <h2 class="text-4xl font-extrabold text-slate-900">₹1,500</h2>
+        <p class="text-slate-400 text-sm mt-1">1 session</p>
+        <hr class="my-5 border-slate-100">
+        <ul class="space-y-2 text-sm text-slate-600">
+          <li class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            1 appointment slot
+          </li>
+          <li class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Try before you commit
+          </li>
+        </ul>
+      </div>
+      <%= link_to "Select", new_calendar_slot_checkout_path(@calendar, @slot, slot_count: 1),
+            class: "mt-6 block text-center px-6 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-slate-800 transition-colors" %>
+    </div>
+
+    <%# ─── 3 Slots (popular) ─── %>
+    <div class="relative bg-white border-2 border-emerald-500 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-200 flex flex-col justify-between ring-1 ring-emerald-500/20">
+      <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-0.5 rounded-full">Most Popular</span>
+      <div>
+        <p class="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1">Standard</p>
+        <h2 class="text-4xl font-extrabold text-slate-900">₹3,999</h2>
+        <p class="text-slate-400 text-sm mt-1">3 sessions <span class="text-emerald-600 font-semibold">· Save 11%</span></p>
+        <hr class="my-5 border-slate-100">
+        <ul class="space-y-2 text-sm text-slate-600">
+          <li class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            3 appointment slots
+          </li>
+          <li class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Best value per session
+          </li>
+          <li class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Priority support
+          </li>
+        </ul>
+      </div>
+      <%= link_to "Select", new_calendar_slot_checkout_path(@calendar, @slot, slot_count: 3),
+            class: "mt-6 block text-center px-6 py-2.5 bg-emerald-500 text-white text-sm font-bold rounded-xl hover:bg-emerald-600 transition-colors shadow-md shadow-emerald-200" %>
+    </div>
+
+    <%# ─── 5 Slots (bundle) ─── %>
+    <div class="relative bg-white border-2 border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-lg hover:border-emerald-400 transition-all duration-200 flex flex-col justify-between">
+      <div>
+        <p class="text-xs font-bold text-violet-600 uppercase tracking-widest mb-1">Bundle</p>
+        <h2 class="text-4xl font-extrabold text-slate-900">₹5,999</h2>
+        <p class="text-slate-400 text-sm mt-1">5 sessions <span class="text-violet-600 font-semibold">· Save 20%</span></p>
+        <hr class="my-5 border-slate-100">
+        <ul class="space-y-2 text-sm text-slate-600">
+          <li class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            5 appointment slots
+          </li>
+          <li class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Maximum savings
+          </li>
+          <li class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Priority support
+          </li>
+        </ul>
+      </div>
+      <%= link_to "Select", new_calendar_slot_checkout_path(@calendar, @slot, slot_count: 5),
+            class: "mt-6 block text-center px-6 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-slate-800 transition-colors" %>
+    </div>
+
+  </div>
+</div>

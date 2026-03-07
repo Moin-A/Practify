@@ -4,6 +4,7 @@ class Appointment < ApplicationRecord
   belongs_to :publisher, class_name: "User"
   belongs_to :subscriber, class_name: "User"
   has_one :call_room, dependent: :destroy
+  has_one :slot_credit, through: :slot
   delegate :start_at, :end_at, to: :slot
 
   scope :pending_or_in_progress_or_completed_or_booked, -> { where(status: [ :pending, :in_progress, :completed, :booked ]) }
