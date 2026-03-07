@@ -48,9 +48,9 @@
   </div>
 
   <div class="p-6">
+  <%= turbo_frame_tag "new_slot_form", class: "block transition-all" %>
     <% if slots.any? %>
       <div class="space-y-4">
-        <%= turbo_frame_tag "new_slot_form", class: "block transition-all" %>
         <%= render "schedules/slot_list",
         slots: slots,
         calendar: calendar,

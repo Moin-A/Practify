@@ -207,14 +207,13 @@
                 <% end %>
               <% end %>
             <% end %>
-          </div>
-
+          </div>                 
           <% if selected_slot.present? %>
             <%= button_to appointments_path,
                 method: :post,
                 params: { appointment: { slot_id: selected_slot.id } },
                 class: "w-full px-6 py-3 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow",
-                data: { turbo_method: :post, action: "click->home#togglePaymentModal" } do %>
+                data: { turbo_method: :post, action: @selected_slot&.slot_credit.present? ? "click->home#togglePaymentModal" :  "" } do %>
               Confirm Slot
             <% end %>
           <% else %>
