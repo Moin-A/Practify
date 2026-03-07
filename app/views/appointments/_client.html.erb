@@ -48,14 +48,15 @@
   </div>
 
   <div class="p-6">
-  <%= turbo_frame_tag "new_slot_form", class: "block transition-all" %>
     <% if slots.any? %>
       <div class="space-y-4">
-        <%= render "schedules/slot_list",
-        slots: slots,
-        calendar: calendar,
-        date: date,
-        selected_slot_id: selected_slot_id %>
+        <%= turbo_frame_tag "new_slot_form", class: "block transition-all" do %>
+          <%= render "schedules/slot_list",
+          slots: slots,
+          calendar: calendar,
+          date: date,
+          selected_slot_id: selected_slot_id %>
+        <% end %>
       </div>
     <% else %>
       <div class="py-12 text-center">
