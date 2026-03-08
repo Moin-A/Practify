@@ -87,76 +87,158 @@
     </header>
 
     <!-- Dashboard Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_1fr_340px] gap-6 mb-10">
+    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_1fr_380px] gap-6 mb-10">
       <!-- Next Appointment - Hero Card -->
       <div class="lg:col-span-2 xl:col-span-2 bg-white/70 backdrop-blur-sm rounded-xl p-8 border border-gray-200/50 shadow-sm transition-all duration-200 hover:border-emerald-200 hover:shadow-md group">
-        <div class="flex justify-between items-start mb-8">
-          <h2 class="font-['DM_Sans'] text-lg font-semibold text-emerald-600 tracking-tight">
-            Next Appointment
-          </h2>
-          <span class="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-50 border border-emerald-200 rounded-full text-xs font-medium text-emerald-700 uppercase tracking-wide">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-            </svg>
-            Video Call
-          </span>
-        </div>
-        <% if @appointment.present? && doctor_name.present? %>
-          <div class="flex items-center gap-5 mb-6 flex-wrap">
-            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center font-['DM_Sans'] text-base font-semibold text-white shadow-sm">
-              <%= doctor_initials || "DR" %>
+        <div class="xl:h-[220px]">
+            <div class="flex justify-between items-start mb-8">
+              <h2 class="font-['DM_Sans'] text-lg font-semibold text-emerald-600 tracking-tight">
+                Next Appointment
+              </h2>
+              <span class="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-50 border border-emerald-200 rounded-full text-xs font-medium text-emerald-700 uppercase tracking-wide">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                Video Call
+              </span>
             </div>
-            <div>
-              <h3 class="text-base font-semibold text-[#2C2C2C] mb-0.5"><%= doctor_name %></h3>
-              <p class="text-sm text-gray-500"><%= doctor_title || "Licensed Therapist" %></p>
-            </div>
-            <div class="flex gap-8 ml-auto flex-wrap">
-              <% if appointment_date.present? %>
-                <div class="flex items-center gap-2 text-sm text-gray-600 font-medium">
-                  <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                    <line x1="16" y1="2" x2="16" y2="6"/>
-                    <line x1="8" y1="2" x2="8" y2="6"/>
-                    <line x1="3" y1="10" x2="21" y2="10"/>
-                  </svg>
-                  <%= appointment_date %>
+            <% if @appointment.present? && doctor_name.present? %>
+              <div class="flex items-center gap-5 mb-6 flex-wrap">
+                <div class="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center font-['DM_Sans'] text-base font-semibold text-white shadow-sm">
+                  <%= doctor_initials || "DR" %>
                 </div>
-              <% end %>
-              <% if appointment_time.present? %>
-                <div class="flex items-center gap-2 text-sm text-gray-600 font-medium">
-                  <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10"/>
-                    <polyline points="12 6 12 12 16 14"/>
-                  </svg>
-                  <%= appointment_time %>
+                <div>
+                  <h3 class="text-base font-semibold text-[#2C2C2C] mb-0.5"><%= doctor_name %></h3>
+                  <p class="text-sm text-gray-500"><%= doctor_title || "Licensed Therapist" %></p>
                 </div>
-              <% end %>
-            </div>
-          </div>
-        <% elsif @upcoming_appointment.present? %>
-          <%= render partial: "home_page/upcomming_appointment", locals: { appointment: @upcoming_appointment } %>
-        <% else %>
-          <div class="flex items-center justify-center py-8 text-gray-400">
-            <p class="text-sm">No upcoming appointments scheduled</p>
-          </div>
-        <% end %>
-        <div class="flex gap-3">
-          <% if @appointment.present? %>
-            <%= link_to new_appointment_call_room_path(@appointment), class: "mx-auto justify-center flex w-2/3 flex-1 px-6 py-3 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow" do %>
-              Join Session
+                <div class="flex gap-8 ml-auto flex-wrap">
+                  <% if appointment_date.present? %>
+                    <div class="flex items-center gap-2 text-sm text-gray-600 font-medium">
+                      <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                      </svg>
+                      <%= appointment_date %>
+                    </div>
+                  <% end %>
+                  <% if appointment_time.present? %>
+                    <div class="flex items-center gap-2 text-sm text-gray-600 font-medium">
+                      <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                      </svg>
+                      <%= appointment_time %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% elsif @upcoming_appointment.present? %>
+              <%= render partial: "home_page/upcomming_appointment", locals: { appointment: @upcoming_appointment } %>
+            <% else %>
+              <div class="flex items-center justify-center py-8 text-gray-400">
+                <p class="text-sm">No upcoming appointments scheduled</p>
+              </div>
             <% end %>
-            <button type="button"
-                  data-action="click->home#toggleModal" 
-                  class="px-6 py-3 flex items-center justify-center bg-white text-gray-700 font-semibold text-sm rounded-xl border border-gray-200 shadow-sm transition-all duration-200 hover:border-gray-300 hover:bg-gray-50">
-            Reschedule
+            <div class="flex gap-3">
+              <% if @appointment.present? %>
+                <%= link_to new_appointment_call_room_path(@appointment), class: "mx-auto justify-center flex w-2/3 flex-1 px-6 py-3 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow" do %>
+                  Join Session
+                <% end %>
+                <button type="button"
+                      data-action="click->home#toggleModal" 
+                      class="px-6 py-3 flex items-center justify-center bg-white text-gray-700 font-semibold text-sm rounded-xl border border-gray-200 shadow-sm transition-all duration-200 hover:border-gray-300 hover:bg-gray-50">
+                Reschedule
+                </button>
+              <% end %>
+            </div>
+        </div>  
+        <div class="flex gap-6">
+              <!-- Progress Card -->
+          <div  class="flex-1 bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50 shadow-sm transition-all duration-200 hover:border-emerald-200 hover:shadow-md">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-['DM_Sans'] text-lg font-semibold text-emerald-600 tracking-tight flex items-center gap-2">
+                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+                Your Progress
+              </h3>
+            </div>
+
+            <div class="flex flex-col gap-5">
+              <% [["Sessions Completed", 85], ["Goals Progress", 60], ["Mood Tracking", 72], ["Mindfulness", 45]].each do |label, value| %>
+                <div>
+                  <div class="flex justify-between items-baseline mb-2.5">
+                    <span class="text-sm font-medium text-gray-600"><%= label %></span>
+                    <span class="font-['DM_Sans'] text-base font-semibold text-emerald-600"><%= value %>%</span>
+                  </div>
+                  <div class="h-2 bg-emerald-50 rounded-full overflow-hidden">
+                    <div class="h-full bg-emerald-500 rounded-full transition-all duration-700 shadow-sm" style="width: <%= value %>%;"></div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Resources Card -->
+          <div class="flex-1 bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50 shadow-sm transition-all duration-200 hover:border-emerald-200 hover:shadow-md">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-['DM_Sans'] text-lg font-semibold text-emerald-600 tracking-tight flex items-center gap-2">
+                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
+                Recommended for You
+              </h3>
+            </div>
+
+            <div class="flex flex-col gap-2.5">
+              <% [
+                { title: "Managing Stress in Daily Life", meta: "Article · 5 min read", icon: "file" },
+                { title: "Guided Breathing Exercise", meta: "Video · 10 min", icon: "play" },
+                { title: "Weekly Mood Journal", meta: "Worksheet", icon: "book" }
+              ].each do |item| %>
+                <%= link_to "#", class: "flex items-center gap-3 p-3.5 bg-white/80 rounded-lg shadow-sm border border-transparent transition-all duration-200 hover:border-emerald-100 hover:shadow group/item" do %>
+                  <div class="w-10 h-10 min-w-[40px] bg-emerald-50 rounded-lg flex items-center justify-center border border-emerald-100">
+                    <% if item[:icon] == "file" %>
+                      <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                      </svg>
+                    <% elsif item[:icon] == "play" %>
+                      <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                    <% else %>
+                      <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                      </svg>
+                    <% end %>
+                  </div>
+
+                  <div class="flex-1">
+                    <div class="text-sm font-semibold text-gray-900"><%= item[:title] %></div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide"><%= item[:meta] %></div>
+                  </div>
+
+                  <svg class="w-4 h-4 text-gray-300 transition-all duration-200 group-hover/item:text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  </svg>
+                <% end %>
+              <% end %>
+            </div>
+
+            <button class="w-full mt-5 px-5 py-2.5 bg-white border border-gray-200 rounded-lg text-gray-600 font-semibold text-sm uppercase tracking-wide shadow-sm transition-all duration-200 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700">
+              View All Resources
             </button>
-          <% end %>
-        </div>
+          </div>
+         </div> 
       </div>
 
       <!-- Quick Book Card -->
       <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50 shadow-sm transition-all duration-200 hover:border-emerald-200 hover:shadow-md">
-        <div class="flex justify-between items-center mb-6">
+      <div class="flex justify-between items-center mb-6">
           <h3 class="font-['DM_Sans'] text-lg font-semibold text-emerald-600 tracking-tight flex items-center gap-2">
             <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -171,141 +253,28 @@
             </svg>
           <% end %>
         </div>
+        
 
         <p class="text-xs text-gray-500 uppercase tracking-wide font-medium mb-5">
           Available Tomorrow
         </p>
-
-        <%= helpers.turbo_frame_tag "quick_book" do %>
-          <div class="grid grid-cols-3 gap-2.5 mb-5">
-            <% if next_day_available_slots(next_day).empty? %>
-              <p class="text-center text-sm text-gray-400 font-medium col-span-3">
-                No slots available for tomorrow
-              </p>
-            <% else %>
-              <% next_day_available_slots(next_day).each do |slot| %>
-                <% is_booked = appointment_created?(slot[:id]) %>
-                <% is_selected = slot_selected?(slot[:id], selected_slot_id) %>
-
-                <%= link_to root_path(selected_slot_id: slot[:id]),
-                    data: { turbo_frame: "quick_book" },
-                    class: "relative py-3 px-3 bg-white border rounded-lg text-center font-semibold text-sm shadow-sm transition-all duration-200 #{is_booked ? 'bg-emerald-600 border-emerald-600 text-white' : is_selected ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-gray-200 text-gray-700 hover:border-emerald-300 hover:shadow'}" do %>
-                  <% if is_booked %>
-                    <% if appointment_created_by_current_user?(slot[:id]) %>
-                      <div class="absolute top-[-6px] right-[-6px] flex flex-col items-end gap-0.5">
-                        <span class="text-[10px] font-medium text-emerald-600 bg-white px-1.5 py-0.5 rounded border-emerald-200 whitespace-nowrap">
-                          <%= @appointment.status %>
-                        </span>
-                      </div>
-                    <% else %>
-                      <div class="absolute text-[10px] top-[-6px] right-[-6px] bg-white rounded-full px-1.5 py-0.5 flex items-center justify-center rounded-sm text-orange-600 border-orange-200">
-                        unavailable
-                      </div>
-                    <% end %>
-                  <% end %>
-                  <span class="relative text-[#666] z-[1]"><%= slot[:time] %></span>
-                <% end %>
-              <% end %>
-            <% end %>
-          </div>                 
-          <% if selected_slot.present? %>
-            <%= button_to appointments_path,
-                method: :post,
-                params: { appointment: { slot_id: selected_slot.id } },
-                class: "w-full px-6 py-3 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow",
-                data: { turbo_method: :post, action: @selected_slot&.slot_credit.present? ? "click->home#togglePaymentModal" :  "" } do %>
-              Confirm Slot
-            <% end %>
-          <% else %>
-            <button disabled class="w-full px-6 py-3 bg-gray-100 text-gray-400 font-semibold text-sm rounded-xl cursor-not-allowed">
-              Select a Slot
-            </button>
+        <%= helpers.turbo_frame_tag "quick_book", class: "block transition-all relative mt-2" do %>
+          <%= helpers.turbo_frame_tag "new_slot_form", class: "block transition-all relative" do %>     
+            <%= render partial: "home_page/quick_book_body", locals: { 
+                next_day: next_day, 
+                selected_slot_id: selected_slot_id, 
+                selected_slot: selected_slot, 
+                appointment: @appointment 
+              } %>
+            <% end %> 
           <% end %>
-        <% end %>
 
         <p class="text-center text-[11px] text-gray-400 font-normal mt-4 leading-relaxed">
           Sessions are 50 minutes · All times in your local timezone
         </p>
       </div>
 
-      <!-- Progress Card -->
-      <div  class="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50 shadow-sm transition-all duration-200 hover:border-emerald-200 hover:shadow-md">
-        <div class="flex justify-between items-center mb-6">
-          <h3 class="font-['DM_Sans'] text-lg font-semibold text-emerald-600 tracking-tight flex items-center gap-2">
-            <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-            </svg>
-            Your Progress
-          </h3>
-        </div>
-
-        <div class="flex flex-col gap-5">
-          <% [["Sessions Completed", 85], ["Goals Progress", 60], ["Mood Tracking", 72], ["Mindfulness", 45]].each do |label, value| %>
-            <div>
-              <div class="flex justify-between items-baseline mb-2.5">
-                <span class="text-sm font-medium text-gray-600"><%= label %></span>
-                <span class="font-['DM_Sans'] text-base font-semibold text-emerald-600"><%= value %>%</span>
-              </div>
-              <div class="h-2 bg-emerald-50 rounded-full overflow-hidden">
-                <div class="h-full bg-emerald-500 rounded-full transition-all duration-700 shadow-sm" style="width: <%= value %>%;"></div>
-              </div>
-            </div>
-          <% end %>
-        </div>
-      </div>
-
-      <!-- Resources Card -->
-      <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50 shadow-sm transition-all duration-200 hover:border-emerald-200 hover:shadow-md">
-        <div class="flex justify-between items-center mb-6">
-          <h3 class="font-['DM_Sans'] text-lg font-semibold text-emerald-600 tracking-tight flex items-center gap-2">
-            <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-            </svg>
-            Recommended for You
-          </h3>
-        </div>
-
-        <div class="flex flex-col gap-2.5">
-          <% [
-            { title: "Managing Stress in Daily Life", meta: "Article · 5 min read", icon: "file" },
-            { title: "Guided Breathing Exercise", meta: "Video · 10 min", icon: "play" },
-            { title: "Weekly Mood Journal", meta: "Worksheet", icon: "book" }
-          ].each do |item| %>
-            <%= link_to "#", class: "flex items-center gap-3 p-3.5 bg-white/80 rounded-lg shadow-sm border border-transparent transition-all duration-200 hover:border-emerald-100 hover:shadow group/item" do %>
-              <div class="w-10 h-10 min-w-[40px] bg-emerald-50 rounded-lg flex items-center justify-center border border-emerald-100">
-                <% if item[:icon] == "file" %>
-                  <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                  </svg>
-                <% elsif item[:icon] == "play" %>
-                  <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                <% else %>
-                  <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                  </svg>
-                <% end %>
-              </div>
-
-              <div class="flex-1">
-                <div class="text-sm font-semibold text-gray-900"><%= item[:title] %></div>
-                <div class="text-xs text-gray-500 uppercase tracking-wide"><%= item[:meta] %></div>
-              </div>
-
-              <svg class="w-4 h-4 text-gray-300 transition-all duration-200 group-hover/item:text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-              </svg>
-            <% end %>
-          <% end %>
-        </div>
-
-        <button class="w-full mt-5 px-5 py-2.5 bg-white border border-gray-200 rounded-lg text-gray-600 font-semibold text-sm uppercase tracking-wide shadow-sm transition-all duration-200 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700">
-          View All Resources
-        </button>
-      </div>
+    
     </div>
 
     <!-- Flash Messages -->

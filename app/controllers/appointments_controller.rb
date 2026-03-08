@@ -94,18 +94,13 @@ end
 private
 
 def require_payment
-  if @slot.slot_credit.present?
-    redirect_to new_calendar_slot_checkout_path(@calendar, @slot)
-  else
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
-          turbo_stream.replace("new_slot_form", partial: "slot_credits/packages", locals: { slot: @slot, calendar: @calendar, appointment: @slot.build_appointment })          
+          turbo_stream.replace("new_slot_form", partial: "slot_credits/packages", locals: { slot: @slot, calendar: @calendar, appointment: @slot.build_appointment })
         ]
       end
-      format.html { redirect_to new_slot_credit_path(slot_id: @slot.id), alert: "Payment is required before booking an appointment." }
     end
-  end
 end
 
 

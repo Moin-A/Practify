@@ -45,6 +45,7 @@ export default class extends Controller {
   }
 
   togglePaymentModal() {
+    debugger;
     this.paymentModalTarget.classList.toggle('hidden')
   }
 

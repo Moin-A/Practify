@@ -14,7 +14,7 @@ class CheckoutsController < ApplicationController
       @order = nil
       flash.now[:alert] = result.is_a?(Array) ? result.join(", ") : "Error creating order"
     end
-
+    binding.pry
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace("payment_modal", template: "checkouts/new", layout: false)

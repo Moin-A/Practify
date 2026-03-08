@@ -5,7 +5,7 @@ class SlotCreditsController < ApplicationController
 
   # GET /slot_credits or /slot_credits.json
   def index
-    @slot_credits = @slot.slot_credit ? [@slot.slot_credit] : SlotCredit.all
+    @slot_credits = @slot.slot_credit ? [ @slot.slot_credit ] : SlotCredit.all
   end
 
   # GET /slot_credits/1 or /slot_credits/1.json
