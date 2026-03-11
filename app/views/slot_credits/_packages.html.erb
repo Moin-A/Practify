@@ -5,58 +5,121 @@
     <p class="text-slate-500 mt-1 text-sm my-4">Choose a session package to book this appointment</p>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <div>
     <% current_package = slot.slot_credit&.package %>
-    <%# ─── 1 Slot ─── %>
-    <div class="<%= current_package == 'starter' ? 'bg-emerald-50 border-2 border-emerald-500' : 'bg-white border-2 border-slate-200 hover:border-emerald-400 hover:shadow-md' %> rounded-2xl p-4 transition-all duration-200 flex h-[300px] flex-col justify-between ">
-      <div>
-        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-1">Starter</p>
-        <h3 class="text-xl font-extrabold text-slate-900">₹1,500 <span class="text-xs font-normal text-slate-400">/session</span></h3>
-        <span class="block mt-2 text-[12px] text-slate-500 leading-snug">Book a single session now.<br>You can always buy more later!</span>
-      </div>
-        <% if current_package == 'starter' %>
-        <%= image_tag "/check.svg", class: "m-auto w-6 h-6 m-2 text-violet-600 inline" %>
-      <% end %>
-      <%= link_to current_package == 'starter' ? "Selected" : "Select",
-            calendar_slot_credits_path(calendar, slot, slot_credit:{package: "starter"}), method: :post, data: {turbo_method: :post},
-            class: "mt-4 block w-full text-center px-1 py-1 text-white text-xs font-bold rounded-lg transition-colors #{current_package == 'starter' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-slate-900 hover:bg-slate-800'}" %>
-    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <% Practify.config.slot_credit_packages.each do |pkg| %>
+        <% key = pkg[:key].to_s %>
+        <% selected = (current_package == key) %>
+        <% theme = (pkg[:theme].presence || "slate") %>
+        <% popular = !!pkg[:popular] %>
+        <% sessions = pkg[:sessions].to_i %>
+        <% amount = pkg[:amount].to_i %>
+        <% per_session = sessions.positive? ? (amount.to_f / sessions) : amount.to_f %>
 
-    <%# ─── 3 Slots (popular) ─── %>
-    <div class="relative <%= current_package == 'standard' ? 'bg-emerald-50 border-2 border-emerald-600 shadow-sm' : 'bg-white border-2 border-emerald-400 hover:border-emerald-500 hover:shadow-md' %> rounded-2xl p-4 transition-all duration-200 flex flex-col justify-between h-[300px]">
-      <span class="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[8px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full">Popular</span>
-      <div>
-        <p class="text-[12px] font-bold text-emerald-600 uppercase tracking-widest mb-1">Standard</p>
-        <h3 class="text-xl font-extrabold text-slate-900">₹3,999 <span class="text-xs font-normal text-slate-400">/ ₹1,333 per session</span></h3>
-        <p class="text-slate-400 text-xs mt-1">3 sessions <span class="text-emerald-600 font-semibold">· Save 11%</span></p>
-      </div>
-      <% if current_package == 'standard' %>
-        <%= image_tag "/check.svg", class: "m-auto w-6 h-6 m-2 text-violet-600 inline" %>
-      <% end %>
-      <%= link_to current_package == 'standard' ? "Selected" : "Select",
-            calendar_slot_credits_path(calendar, slot, slot_credit: {package: "standard"}), method: :post, data: {turbo_method: :post},
-            class: "mt-4 block w-full text-center px-1 py-1 text-white text-xs font-bold rounded-lg transition-colors #{current_package == 'standard' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-emerald-500 hover:bg-emerald-600'}" %>
-    </div>
+        <% label_class =
+          case theme
+          when "emerald" then "text-emerald-600"
+          when "violet"  then "text-violet-600"
+          else                "text-slate-600"
+          end
+        %>
 
-    <%# ─── 5 Slots ─── %>
-    <div class="<%= current_package == 'bundle' ? 'bg-violet-50 border-2 border-violet-500' : 'bg-white border-2 border-slate-200 hover:border-violet-400 hover:shadow-md' %> rounded-2xl p-4 transition-all duration-200 flex flex-col justify-between h-[300px]">
-      <div>
-        <p class="text-[12px] font-bold text-violet-600 uppercase tracking-widest mb-1">Bundle</p>
-        <h3 class="text-xl font-extrabold text-slate-900">₹5,999 <span class="text-xs font-normal text-slate-400">/ ₹1,199 per session</span></h3>
-        <p class="text-slate-400 text-xs mt-1">5 sessions <span class="text-violet-600 font-semibold">· Save 20%</span></p>
-      </div>
-      <% if current_package == 'bundle' %>
-        <%= image_tag "/check.svg", class: "m-auto w-6 h-6 m-2 text-violet-600 inline" %>
-      <% end %>
-      <%= link_to current_package == 'bundle' ? "Selected" : "Select",
-           calendar_slot_credits_path(calendar, slot, slot_credit: {package: "bundle"}), method: :post, data: {turbo_method: :post},
-            class: "mt-4 block w-full text-center px-1 py-1 text-white text-xs font-bold rounded-lg transition-colors #{current_package == 'bundle' ? 'bg-violet-600 hover:bg-violet-700' : 'bg-slate-900 hover:bg-slate-800'}" %>
-    </div>
+        <% badge_class =
+          case theme
+          when "emerald" then "bg-emerald-500"
+          when "violet"  then "bg-violet-500"
+          else                "bg-slate-700"
+          end
+        %>
 
+        <% card_class =
+          if selected
+            case theme
+            when "emerald" then "bg-emerald-50 border-2 border-emerald-600"
+            when "violet"  then "bg-violet-50 border-2 border-violet-500"
+            else                "bg-slate-50 border-2 border-slate-400"
+            end
+          else
+            hover_border =
+              case theme
+              when "emerald" then (popular ? "hover:border-emerald-500" : "hover:border-emerald-400")
+              when "violet"  then "hover:border-violet-400"
+              else                "hover:border-slate-400"
+              end
+            base_border =
+              case theme
+              when "emerald" then (popular ? "border-emerald-400" : "border-slate-200")
+              else                "border-slate-200"
+              end
+            "bg-white border-2 #{base_border} #{hover_border} hover:shadow-md"
+          end
+        %>
+
+        <% button_class =
+          if selected
+            case theme
+            when "emerald" then "bg-emerald-600 hover:bg-emerald-700"
+            when "violet"  then "bg-violet-600 hover:bg-violet-700"
+            else                "bg-slate-900 hover:bg-slate-800"
+            end
+          else
+            case theme
+            when "emerald" then (popular ? "bg-emerald-500 hover:bg-emerald-600" : "bg-slate-900 hover:bg-slate-800")
+            when "violet"  then "bg-slate-900 hover:bg-slate-800"
+            else                "bg-slate-900 hover:bg-slate-800"
+            end
+          end
+        %>
+
+        <div class="<%= popular ? "relative " : "" %><%= card_class %> rounded-2xl p-4 transition-all duration-200 flex flex-col justify-between h-[300px]">
+          <% if popular %>
+            <span class="absolute -top-2.5 left-1/2 -translate-x-1/2 <%= badge_class %> text-white text-[8px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full">Popular</span>
+          <% end %>
+
+          <div>
+            <p class="text-[12px] font-bold <%= label_class %> uppercase tracking-widest mb-1"><%= pkg[:name] %></p>
+
+            <% if sessions <= 1 %>
+              <h3 class="text-xl font-extrabold text-slate-900">
+                ₹<%= number_with_delimiter(amount) %>
+                <span class="text-xs font-normal text-slate-400">/session</span>
+              </h3>
+              <% if pkg[:description].present? %>
+                <span class="block mt-2 text-[12px] text-slate-500 leading-snug"><%= sanitize(pkg[:description], tags: %w[br], attributes: []) %></span>
+              <% end %>
+            <% else %>
+              <h3 class="text-xl font-extrabold text-slate-900">
+                ₹<%= number_with_delimiter(amount) %>
+                <span class="text-xs font-normal text-slate-400">/ ₹<%= number_with_delimiter(per_session.round) %> per session</span>
+              </h3>
+              <p class="text-slate-400 text-xs mt-1">
+                <%= sessions %> sessions
+                <% if pkg[:savings_label].present? %>
+                  <span class="<%= label_class %> font-semibold">· <%= pkg[:savings_label] %></span>
+                <% end %>
+              </p>
+            <% end %>
+          </div>
+
+          <% if selected %>
+            <%= image_tag "/check.svg", class: "m-auto w-6 h-6 m-2 text-violet-600 inline" %>
+          <% end %>
+
+          <%= link_to selected ? "Selected" : "Select",
+                calendar_slot_credits_path(calendar, slot, slot_credit: { package: key, slot_remaining: sessions, amount: amount }),
+                method: :post,
+                data: { turbo_method: :post },
+                class: "mt-4 block w-full text-center px-1 py-1 text-white text-xs font-bold rounded-lg transition-colors #{button_class}" %>
+        </div>
+      <% end %>
+     <%= link_to "Book Appointment",
+      new_calendar_slot_checkout_path(calendar, slot),
+      data: {
+        turbo_frame: "payment_modal",
+        action: "click->home#togglePaymentModal"
+      },
+      class: "w-full my-2 col-span-3 m-auto text-center  px-6 py-3 mt-4 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow" %>
+    </div>    
   </div>
-   <%= button_to "Book Appointment", appointments_path, 
-      method: :post, 
-      class: "w-full px-6 py-3 mt-4 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow",
-      data: { turbo_method: :post } %>
-</div>
-<%end%>
+<% end %>

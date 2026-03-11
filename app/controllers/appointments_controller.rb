@@ -5,9 +5,8 @@ include DateParsing
 attr_reader :slot, :calendar
 
 before_action :set_appointment, only: [ :show, :update, :destroy, :has_joined ]
-before_action :set_slot, only: [ :new, :create ]
-before_action :set_calendar, only: [ :show, :create, :new ]
-before_action :require_payment, only: [ :create ]
+before_action :set_slot, only: [ :new, :create, :require_payment ]
+before_action :set_calendar, only: [ :show, :create, :new, :require_payment ]
 
 
 def index
@@ -31,6 +30,7 @@ def create
     appointment_params: appointment_params.merge(user: current_user),
     current_user: current_user
   )
+
   respond_to do |format|
     format.turbo_stream do
       if creator.create
@@ -89,20 +89,25 @@ def reshedule
   end
 end
 
-
-
-private
-
 def require_payment
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.replace("new_slot_form", partial: "slot_credits/packages", locals: { slot: @slot, calendar: @calendar, appointment: @slot.build_appointment })
-        ]
+        if @slot.appointment.present?
+          render turbo_stream: [
+            turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Appointment already exists for this slot", type: :alert })
+          ]
+        else
+          render turbo_stream: [
+            turbo_stream.replace("new_slot_form", partial: "slot_credits/packages", locals: { slot: @slot, calendar: @calendar, appointment: @slot.build_appointment })
+          ]
+        end
       end
     end
 end
 
+
+
+private
 
 def set_slot
   @slot = Slot.find(appointment_params[:slot_id])

@@ -1,5 +1,5 @@
 class PaymentCheckoutService
-  attr_reader :appointment, :current_user, :errors, :options
+  attr_reader :appointment, :current_user, :errors, :options, :amount
   def initialize(appointment:, current_user:)
     @appointment = appointment
     @current_user = current_user

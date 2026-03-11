@@ -25,6 +25,8 @@ class SlotCreditsController < ApplicationController
   def create
    @slot_credit = SlotCredit.find_or_initialize_by(slot_id: @slot.id)
    @slot_credit.package = slot_credit_params[:package]
+   @slot_credit.slot_remaining = slot_credit_params[:slot_remaining]
+   @slot_credit.amount = slot_credit_params[:amount]
     respond_to do |format|
       if @slot_credit.save
         format.turbo_stream {
@@ -74,7 +76,7 @@ class SlotCreditsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def slot_credit_params
-      params.expect(slot_credit: [ :package ])
+      params.expect(slot_credit: [ :package, :slot_remaining, :amount ])
     end
 
     def set_slot

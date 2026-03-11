@@ -6,11 +6,22 @@
 >
 
   <div class="p-6 border-b border-slate-100 bg-slate-50/50">
-      <%= link_to calendar_schedule_path(calendar, start_date: params[:start_date] || date), data: { turbo_frame: "_top" }, class: "px-2 my-4 group flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-500 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm" do%>
-       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-         <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-       </svg>
-      <%end%>
+    <%= link_to calendar_schedule_path(calendar, start_date: params[:start_date] || date), data: { turbo_frame: "_top" }, class: "px-2 my-2 group flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-500 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm" do %>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="size-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+        />
+      </svg>
+    <% end %>
     <div class="flex items-center gap-4">
       <div
         class="
@@ -29,13 +40,10 @@
       </div>
 
       <div>
-      
 
         <h2 class="text-xl font-bold text-slate-800 tracking-tight">Interview Slots</h2>
         <div class="flex items-center gap-2 mt-0.5">
-         
-         
-      
+
           <span class="relative flex h-2 w-2">
             <span
               class="

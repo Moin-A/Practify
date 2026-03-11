@@ -3,6 +3,45 @@
 
     preference :toggle_notification, :boolean, default: false
 
+    # Slot credit packages shown on the booking flow.
+    # Each entry should include:
+    # - key: internal identifier stored in SlotCredit#package
+    # - name: label shown in UI
+    # - sessions: number of sessions granted (SlotCredit#slot_remaining)
+    # - amount: total amount in INR (stored in SlotCredit#amount)
+    # Optional:
+    # - popular: boolean (adds a "Popular" badge)
+    # - theme: "emerald" | "violet" | "slate" (controls accent styling)
+    preference :slot_credit_packages, :array, default: [
+      {
+        key: "starter",
+        name: "Starter",
+        sessions: 1,
+        amount: 5,
+        popular: false,
+        theme: "emerald",
+        description: "Book a single session now.<br>You can always buy more later!"
+      },
+      {
+        key: "standard",
+        name: "Standard",
+        sessions: 3,
+        amount: 5,
+        popular: true,
+        theme: "emerald",
+        savings_label: "Save 11%"
+      },
+      {
+        key: "bundle",
+        name: "Bundle",
+        sessions: 5,
+        amount: 5,
+        popular: false,
+        theme: "violet",
+        savings_label: "Save 20%"
+      }
+    ]
+
     preference :sidebar_menu_items, :array, default: [
       { name: "Home", icon: "home", path: :root_path },
       { name: "Calendar", icon: "calendar", path: :calendar_schedule_path },

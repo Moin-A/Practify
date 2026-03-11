@@ -29,6 +29,9 @@ Rails.application.routes.draw do
       post "reshedule", to: "appointments#reshedule"
       post "reset_modal", to: "appointments#reset_modal"
     end
+    collection do
+       post "require_payment"
+    end
   end
 
   resources :users do
