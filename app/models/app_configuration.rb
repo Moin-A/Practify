@@ -17,7 +17,7 @@
         key: "starter",
         name: "Starter",
         sessions: 1,
-        amount: 5,
+        amount: 1,
         popular: false,
         theme: "emerald",
         description: "Book a single session now.<br>You can always buy more later!"
@@ -26,7 +26,7 @@
         key: "standard",
         name: "Standard",
         sessions: 3,
-        amount: 5,
+        amount: 1,
         popular: true,
         theme: "emerald",
         savings_label: "Save 11%"
