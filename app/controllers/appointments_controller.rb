@@ -129,7 +129,7 @@ end
 def with_slot_mutex
   SlotMutex.with_lock!(slot) { yield }
 rescue SlotMutex::LockFailed => e
-  retry if (attempt ||= 0) < 1 && (attempt += 1) 
+  retry if (attempt ||= 0) < 1 && (attempt += 1)
   render turbo_stream: [
     turbo_stream.remove("payment_modal_wrapper"),
     turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Slot is already booked by another user.", type: :alert })
