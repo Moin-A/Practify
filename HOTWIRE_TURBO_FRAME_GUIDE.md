@@ -523,6 +523,44 @@ This breaks out of all frames and navigates the entire page.
 <% end %>
 ```
 
+### Pattern 5: Closing/Removing a Modal via Turbo Stream
+
+When you need to close a modal from the server (e.g., on error), add an `id` to the modal's wrapper `<div>` and use `turbo_stream.remove` to remove it from the DOM entirely.
+
+**Step 1:** Add an `id` to the modal wrapper:
+
+```erb
+<div
+  id="payment_modal_wrapper"
+  data-home-target="paymentModal"
+  class="fixed z-50 inset-0 ... hidden"
+>
+  <div class="...">
+    <%= turbo_frame_tag "payment_modal" do %>
+      <!-- modal content -->
+    <% end %>
+  </div>
+</div>
+```
+
+**Step 2:** Use `turbo_stream.remove` in the controller:
+
+```ruby
+render turbo_stream: [
+  turbo_stream.remove("payment_modal_wrapper"),
+  turbo_stream.update("flash_messages", partial: "shared/alert",
+    locals: { message: "Slot is already booked.", type: :alert })
+]
+```
+
+**Why this works:**
+- `turbo_stream.remove` deletes the element with the given `id` from the DOM
+- The modal disappears instantly — no JS or Stimulus callback needed
+- You can combine multiple turbo stream actions (remove modal + show flash) in one response
+- Works regardless of request format (HTML or turbo_stream)
+
+**When to use:** Dismiss a modal, overlay, or any element from server-side code — especially in error/rescue flows where Stimulus actions won't fire.
+
 ---
 
 ## Troubleshooting

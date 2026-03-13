@@ -7,6 +7,7 @@ attr_reader :slot, :calendar
 before_action :set_appointment, only: [ :show, :update, :destroy, :has_joined ]
 before_action :set_slot, only: [ :new, :create, :require_payment ]
 before_action :set_calendar, only: [ :show, :create, :new, :require_payment ]
+around_action :with_slot_mutex, only: [ :require_payment ]
 
 
 def index
@@ -123,6 +124,16 @@ end
 
 def set_calendar
    @calendar ||= current_user.calendar
+end
+
+def with_slot_mutex
+  SlotMutex.with_lock!(slot) { yield }
+rescue SlotMutex::LockFailed => e
+  retry if (attempt ||= 0) < 1 && (attempt += 1) 
+  render turbo_stream: [
+    turbo_stream.remove("payment_modal_wrapper"),
+    turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Slot is already booked by another user.", type: :alert })
+  ]
 end
 
 def record_not_found

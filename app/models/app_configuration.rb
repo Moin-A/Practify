@@ -58,6 +58,7 @@
       { name: "Settings", icon: "settings", path: :edit_user_profile_path },
       { name: "Profile", icon: "User", path: :edit_user_profile_path }
     ]
+    preference :order_mutex_max_age, :integer, default: 5.minute
 
 
     def roles
