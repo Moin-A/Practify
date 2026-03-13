@@ -6,6 +6,22 @@
 >
 
   <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+    <%= link_to calendar_schedule_path(calendar, start_date: params[:start_date] || date), data: { turbo_frame: "_top" }, class: "px-2 my-2 group flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-500 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm" do %>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="size-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+        />
+      </svg>
+    <% end %>
     <div class="flex items-center gap-4">
       <div
         class="
@@ -24,8 +40,10 @@
       </div>
 
       <div>
+
         <h2 class="text-xl font-bold text-slate-800 tracking-tight">Interview Slots</h2>
         <div class="flex items-center gap-2 mt-0.5">
+
           <span class="relative flex h-2 w-2">
             <span
               class="
@@ -48,38 +66,40 @@
   </div>
 
   <div class="p-6">
-    <% if slots.any? %>
-      <div class="space-y-4">
-        <%= render "schedules/slot_list",
-        slots: slots,
-        calendar: calendar,
-        date: date,
-        selected_slot_id: selected_slot_id %>
-      </div>
-    <% else %>
-      <div class="py-12 text-center">
-        <div
-          class="
-            inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 mb-4
-          "
-        >
-          <svg
-            class="w-8 h-8 text-slate-300"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
+    <%= turbo_frame_tag "new_slot_form", class: "block transition-all" do %>
+      <% if slots.any? %>
+        <div class="space-y-4">
+          <%= render "schedules/slot_list",
+          slots: slots,
+          calendar: calendar,
+          date: date,
+          selected_slot_id: selected_slot_id %>
         </div>
-        <p class="text-slate-500 font-medium">No slots available for this date</p>
-        <p class="text-slate-400 text-xs mt-1">Please select another day from the calendar.</p>
-      </div>
+      <% else %>
+        <div class="py-12 text-center">
+          <div
+            class="
+              inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 mb-4
+            "
+          >
+            <svg
+              class="w-8 h-8 text-slate-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+          </div>
+          <p class="text-slate-500 font-medium">No slots available for this date</p>
+          <p class="text-slate-400 text-xs mt-1">Please select another day from the calendar.</p>
+        </div>
+      <% end %>
     <% end %>
   </div>
 </div>

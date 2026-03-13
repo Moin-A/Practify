@@ -11,8 +11,12 @@ Rails.application.routes.draw do
   resources :user_profiles, only: [ :edit, :update, :index, :show ]
   resources :calendars do
     resources :slots do
+      resources :slot_credits, as: :credits
       member do
         post "confirm", to: "slots#confirm"
+      end
+      resource :checkout, only: [ :new ] do
+        post :verify, on: :collection
       end
     end
     resource :schedule, only: [ :show ]
@@ -23,6 +27,10 @@ Rails.application.routes.draw do
     member do
       post "has_joined", to: "appointments#has_joined"
       post "reshedule", to: "appointments#reshedule"
+      post "reset_modal", to: "appointments#reset_modal"
+    end
+    collection do
+       post "require_payment"
     end
   end
 
@@ -54,5 +62,7 @@ Rails.application.routes.draw do
   Rails.application.routes.draw do
     mount MissionControl::Jobs::Engine => "/jobs"
   end
+  # Checkout / payment
+
   root "home#show"
 end

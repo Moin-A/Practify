@@ -99,3 +99,7 @@ gem "solid_queue", "~> 1.3"
 gem "mission_control-jobs", "~> 1.1"
 
 gem "aws-sdk-ses"
+
+gem "razorpay", "~> 3.2"
+
+gem "activemerchant", "~> 1.12"

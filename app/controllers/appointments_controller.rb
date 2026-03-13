@@ -2,10 +2,12 @@ class AppointmentsController < ApplicationController
 rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 load_and_authorize_resource
 include DateParsing
-attr_reader :slot
+attr_reader :slot, :calendar
 
 before_action :set_appointment, only: [ :show, :update, :destroy, :has_joined ]
-before_action :set_slot, only: [ :new, :create ]
+before_action :set_slot, only: [ :new, :create, :require_payment ]
+before_action :set_calendar, only: [ :show, :create, :new, :require_payment ]
+around_action :with_slot_mutex, only: [ :require_payment ]
 
 
 def index
@@ -15,7 +17,6 @@ end
 
 def show
   @date = parse_date_param
-  @calendar = current_user.calendar
   @slots = @calendar.slots_for_date(@date)
   @selected_slot_id = params[:selected_slot_id] || nil
 end
@@ -30,6 +31,7 @@ def create
     appointment_params: appointment_params.merge(user: current_user),
     current_user: current_user
   )
+
   respond_to do |format|
     format.turbo_stream do
       if creator.create
@@ -88,8 +90,25 @@ def reshedule
   end
 end
 
-private
+def require_payment
+    respond_to do |format|
+      format.turbo_stream do
+        if @slot.appointment.present?
+          render turbo_stream: [
+            turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Appointment already exists for this slot", type: :alert })
+          ]
+        else
+          render turbo_stream: [
+            turbo_stream.replace("new_slot_form", partial: "slot_credits/packages", locals: { slot: @slot, calendar: @calendar, appointment: @slot.build_appointment })
+          ]
+        end
+      end
+    end
+end
 
+
+
+private
 
 def set_slot
   @slot = Slot.find(appointment_params[:slot_id])
@@ -101,6 +120,20 @@ end
 
 def appointment_params
   params.require(:appointment).permit(:slot_id, :reschedule_selected_slot_id)
+end
+
+def set_calendar
+   @calendar ||= current_user.calendar
+end
+
+def with_slot_mutex
+  SlotMutex.with_lock!(slot) { yield }
+rescue SlotMutex::LockFailed => e
+  retry if (attempt ||= 0) < 1 && (attempt += 1)
+  render turbo_stream: [
+    turbo_stream.remove("payment_modal_wrapper"),
+    turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Slot is already booked by another user.", type: :alert })
+  ]
 end
 
 def record_not_found

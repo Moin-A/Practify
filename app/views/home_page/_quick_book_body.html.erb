@@ -1,0 +1,61 @@
+<div class="grid grid-cols-3 gap-2.5 mt-5 mb-5">
+  <% if next_day_available_slots(next_day).empty? %>
+    <p class="text-center text-sm text-gray-400 font-medium col-span-3">
+      No slots available for tomorrow
+    </p>
+  <% else %>
+    <% next_day_available_slots(next_day).each do |slot| %>
+      <% is_booked = appointment_created?(slot[:id]) %>
+      <% is_selected = slot_selected?(slot[:id], selected_slot_id) %>
+
+      <%= link_to root_path(selected_slot_id: slot[:id]),
+          data: { turbo_frame: "quick_book" },
+          class: "relative py-3 px-3 bg-white border rounded-lg text-center font-semibold text-sm shadow-sm transition-all duration-200 #{is_booked ? 'bg-emerald-600 border-emerald-600 text-white' : is_selected ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-gray-200 text-gray-700 hover:border-emerald-300 hover:shadow'}" do %>
+        <% if is_booked %>
+          <% if appointment_created_by_current_user?(slot[:id]) %>
+            <div class="absolute top-[-6px] right-[-6px] flex flex-col items-end gap-0.5">
+              <span
+                class="
+                  text-[10px] font-medium text-emerald-600 bg-white px-1.5 py-0.5 rounded
+                  border-emerald-200 whitespace-nowrap
+                "
+              >
+                <%= appointment.status %>
+              </span>
+            </div>
+          <% else %>
+            <div
+              class="
+                absolute text-[10px] top-[-6px] right-[-6px] bg-white rounded-full px-1.5 py-0.5
+                flex items-center justify-center rounded-sm text-orange-600 border-orange-200
+              "
+            >
+              unavailable
+            </div>
+          <% end %>
+        <% end %>
+        <span class="relative text-[#666] z-[1]"><%= slot[:time] %></span>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+<% if selected_slot.present? %>
+
+  <%= button_to  require_payment_appointments_path, 
+        method: :post, 
+        params: { appointment: { slot_id: selected_slot_id } }, 
+        class: "w-full px-6 py-3 mt-4 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow",
+        data: { turbo_method: :post } do %>
+    Confirm Slot
+  <% end %>
+<% else %>
+  <button
+    disabled
+    class="
+      w-full px-6 py-3 bg-gray-100 text-gray-400 font-semibold text-sm rounded-xl
+      cursor-not-allowed
+    "
+  >
+    Select a Slot
+  </button>
+<% end %>

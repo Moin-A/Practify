@@ -50,6 +50,11 @@ RSpec.describe "Appointments", type: :request do
 
   describe "POST /appointments" do
     let(:appointment) { create(:appointment, user: user, slot: slot) }
+
+    before do
+      allow_any_instance_of(AppointmentsController).to receive(:require_payment)
+    end
+
     context "with valid parameters" do
       let(:valid_attributes) do
         {
@@ -243,12 +248,14 @@ RSpec.describe "Appointments", type: :request do
   end
 
   describe 'POST #create' do
-  it 'publishes a note_created event' do
-    expect(Practify.bus).to receive(:publish).with(
-      :appointment_created, hash_including(appointment: instance_of(Appointment))
-    )
-    post appointments_path, params:  { appointment: { slot_id: slot.id }
-    }, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    it 'publishes a note_created event' do
+      allow_any_instance_of(AppointmentsController).to receive(:require_payment)
+
+      expect(Practify.bus).to receive(:publish).with(
+        :appointment_created, hash_including(appointment: instance_of(Appointment))
+      )
+      post appointments_path, params:  { appointment: { slot_id: slot.id }
+      }, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    end
   end
-end
 end

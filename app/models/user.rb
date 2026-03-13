@@ -3,6 +3,7 @@ class User < ApplicationRecord
   has_secure_password
   has_many :sessions, dependent: :destroy
   has_many :role_users, dependent: :destroy
+  has_many :slot_mutexes, dependent: :destroy, inverse_of: :held_by_user
   has_many :roles, through: :role_users
   has_one :user_profile, dependent: :destroy
   has_one :calendar, dependent: :destroy, inverse_of: :user
