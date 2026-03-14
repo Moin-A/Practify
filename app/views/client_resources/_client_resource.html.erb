@@ -1,0 +1,83 @@
+<div
+  class="
+    hover:bg-white hover:shadow-md transition-all border border-slate-100
+    rounded-2xl bg-white/50 backdrop-blur-sm overflow-hidden
+  "
+  id="<%= dom_id(client_resource) %>"
+>
+  <article class="p-6">
+    <header class="flex justify-between items-start mb-4">
+      <div class="flex items-center gap-3">
+        <div
+          class="
+            w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center
+            text-emerald-600
+          "
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-slate-800"><%= client_resource.body %></h3>
+          <time class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            <%= time_ago_in_words(client_resource.created_at) %>
+            ago
+          </time>
+        </div>
+      </div>
+
+      <div
+        class="
+          flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity
+        "
+      >
+        <%= link_to edit_user_shared_resource_path(client_resource.notable, client_resource), 
+            data: { turbo_frame: "modal" },
+            class: "p-2 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors" do %>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+        <% end %>
+
+        <%= button_to user_shared_resource_path(client_resource.notable, client_resource), 
+            method: :delete, 
+            data: { confirm: 'Are you sure?' },
+            class: "p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors" do %>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c0 1 1 2 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+        <% end %>
+      </div>
+    </header>
+
+    <div
+      class="
+        prose prose-emerald prose-sm max-w-none text-slate-600 leading-relaxed
+      "
+    >
+      <%= client_resource.content %>
+    </div>
+  </article>
+</div>

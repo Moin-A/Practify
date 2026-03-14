@@ -4,6 +4,8 @@
   },
   "dependencies": {
     "@opentok/client": "^2.32.1",
-    "@rails/request.js": "^0.0.13"
+    "@rails/actiontext": "^8.1.200",
+    "@rails/request.js": "^0.0.13",
+    "trix": "^2.1.17"
   }
 }

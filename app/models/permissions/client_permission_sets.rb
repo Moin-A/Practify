@@ -9,9 +9,9 @@ module Permissions
           appointment.publisher_id == user.id || appointment.subscriber_id == user.id
         end
         can :read, Slot, calendar: { user_id: user.id }
-        can [ :read ], Note, notable_type: "User", notable_id: user.id
+        can [ :read ], [ Note, ClientResource ], notable_type: "User", notable_id: user.id
         can :confirm, Slot
-        can :mark_as_read, Note, notable_type: "User", notable_id: user.id
+        can :mark_as_read, [ Note, ClientResource ], notable_type: "User", notable_id: user.id
       end
     end
 end

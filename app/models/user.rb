@@ -11,6 +11,7 @@ class User < ApplicationRecord
   has_many :notes, as: :notable, dependent: :destroy, class_name: "Note"
   has_many :private_client_notes, -> { where(category: "note") }, as: :notable, class_name: "Note"
   has_many :therapist_observations, -> { where(category: "observation") }, as: :notable, class_name: "Note"
+  has_many :shared_resources, as: :notable, class_name: "ClientResource"
   validates :email_address, presence: true, uniqueness: true
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
