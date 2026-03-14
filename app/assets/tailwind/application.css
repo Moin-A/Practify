@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "trix/dist/trix.css";
+@import "trix";
 
 /* Fix Tailwind 4 preflight overriding Trix toolbar */
 
