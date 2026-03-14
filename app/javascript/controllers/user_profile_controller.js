@@ -1,16 +1,19 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["notes", "observation", "dropdown", "notesContent", "observationContent", "observation"]
+  static targets = ["notes", "observation", "sharedResource", "dropdown", "notesContent", "observationContent", "sharedResourceContent"]
   static classes = ["hidden", "visible"]
 
   connect() {
-    // Set initial state: notes open, observation closed
+    // Set initial state: notes open, others closed
     this.activeSection = "notes"
 
     // Apply initial CSS classes
     this.notesTarget.classList.add("section-visible")
     this.observationTarget.classList.add("section-hidden")
+    if (this.hasSharedResourceTarget) {
+      this.sharedResourceTarget.classList.add("section-hidden")
+    }
   }
 
   toggle(event) {
@@ -32,20 +35,31 @@ export default class extends Controller {
   }
 
   toggleNotes(event) {
-    this.openSection(this.notesContentTarget, this.observationContentTarget)
+    this.openSection(this.notesContentTarget)
   }
 
   toggleObservation(event) {
-    this.openSection(this.observationContentTarget, this.notesContentTarget)
+    this.openSection(this.observationContentTarget)
+  }
+
+  toggleSharedResource(event) {
+    this.openSection(this.sharedResourceContentTarget)
   }
 
   // Private helper
-  openSection(toOpen, toClose) {
-    // Open target
-    toOpen.style.maxHeight = toOpen.scrollHeight + "px"
+  openSection(toOpen) {
+    const contents = [this.notesContentTarget, this.observationContentTarget]
+    if (this.hasSharedResourceContentTarget) {
+      contents.push(this.sharedResourceContentTarget)
+    }
 
-    // Close the other
-    toClose.style.maxHeight = "0px"
+    contents.forEach(content => {
+      if (content === toOpen) {
+        content.style.maxHeight = content.scrollHeight + "px"
+      } else {
+        content.style.maxHeight = "0px"
+      }
+    })
   }
 
   show(element) {

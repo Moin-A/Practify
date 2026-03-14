@@ -1,4 +1,5 @@
 class ClientResourcesController < NotesController
+  helper_method :dom_id
   def index
     @notes = @notable.shared_resources
     @client_resources = @notes
@@ -71,6 +72,10 @@ class ClientResourcesController < NotesController
       end
       format.html { redirect_to user_shared_resources_path(@notable), notice: "Resource was successfully destroyed." }
     end
+  end
+
+  def dom_id(note)
+    "client_resource_#{note.id}"
   end
 
   private

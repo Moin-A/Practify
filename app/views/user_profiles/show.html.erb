@@ -40,6 +40,7 @@
       <main class="lg:col-span-8 space-y-8">
         <%= render partial: "user_profiles/client/notes", locals: { client: @client } %>
         <%= render partial: "user_profiles/practitioner/observation", locals: { client: @client } %>
+        <%= render partial: "user_profiles/client/shared_resource", locals: { client: @client } %>
       </main>
     </div>
   </div>
