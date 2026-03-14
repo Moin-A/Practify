@@ -4,7 +4,7 @@ class PaymentCheckoutService
     @appointment = appointment
     @current_user = current_user
     @errors = []
-    @slot = slot  
+    @slot = slot
   end
 
   def create(options = {})
