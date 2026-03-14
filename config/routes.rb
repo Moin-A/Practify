@@ -41,6 +41,7 @@ Rails.application.routes.draw do
       end
     end
     resources :therapist_observations, path: "therapist_observations", as: "therapist_observations", controller: "notes"
+    resources :shared_resources, path: "shared_resources", as: "shared_resources", controller: "client_resources"
   end
 
 

@@ -194,32 +194,17 @@
             </div>
 
             <div class="flex flex-col gap-2.5">
-              <% [
-                { title: "Managing Stress in Daily Life", meta: "Article · 5 min read", icon: "file" },
-                { title: "Guided Breathing Exercise", meta: "Video · 10 min", icon: "play" },
-                { title: "Weekly Mood Journal", meta: "Worksheet", icon: "book" }
-              ].each do |item| %>
-                <%= link_to "#", class: "flex items-center gap-3 p-3.5 bg-white/80 rounded-lg shadow-sm border border-transparent transition-all duration-200 hover:border-emerald-100 hover:shadow group/item" do %>
+              <% @current_user.shared_resources.limit(3).each do |resource| %>
+                <%= link_to user_shared_resource_path(@current_user, resource), class: "flex items-center gap-3 p-3.5 bg-white/80 rounded-lg shadow-sm border border-transparent transition-all duration-200 hover:border-emerald-100 hover:shadow group/item" do %>
                   <div class="w-10 h-10 min-w-[40px] bg-emerald-50 rounded-lg flex items-center justify-center border border-emerald-100">
-                    <% if item[:icon] == "file" %>
-                      <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                      </svg>
-                    <% elsif item[:icon] == "play" %>
-                      <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                    <% else %>
-                      <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                      </svg>
-                    <% end %>
+                    <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
                   </div>
 
                   <div class="flex-1">
-                    <div class="text-sm font-semibold text-gray-900"><%= item[:title] %></div>
-                    <div class="text-xs text-gray-500 uppercase tracking-wide"><%= item[:meta] %></div>
+                    <div class="text-sm font-semibold text-gray-900"><%= resource.body %></div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide">Shared <%= time_ago_in_words(resource.created_at) %> ago</div>
                   </div>
 
                   <svg class="w-4 h-4 text-gray-300 transition-all duration-200 group-hover/item:text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -227,11 +212,15 @@
                   </svg>
                 <% end %>
               <% end %>
+              
+              <% if @current_user.shared_resources.empty? %>
+                <p class="text-xs text-center py-4 text-gray-400">No resources shared yet.</p>
+              <% end %>
             </div>
 
-            <button class="w-full mt-5 px-5 py-2.5 bg-white border border-gray-200 rounded-lg text-gray-600 font-semibold text-sm uppercase tracking-wide shadow-sm transition-all duration-200 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700">
+            <%= link_to user_shared_resources_path(@current_user), class: "w-full block mt-5 px-5 py-2.5 bg-white border border-gray-200 rounded-lg text-gray-600 font-semibold text-sm uppercase tracking-wide shadow-sm transition-all duration-200 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700 text-center" do %>
               View All Resources
-            </button>
+            <% end %>
           </div>
          </div> 
       </div>

@@ -1,10 +1,14 @@
 @import "tailwindcss";
+@import "trix/dist/trix.css";
+
+/* Fix Tailwind 4 preflight overriding Trix toolbar */
+
 
 @theme {
   /* Brand Colors */
   --color-brand: #26BA9B;
   --color-brand-hover: #1f9b81;
-  
+
   /* Cursor-style Neutral Palette */
   --color-cursor-bg: #0B0C0D;
   --color-cursor-text-muted: #888888;
@@ -29,7 +33,7 @@
   --tracking-tightest: -0.03em;
 
   /* Custom Font Sizes */
-  --font-size-base: 0.925rem; 
+  --font-size-base: 0.925rem;
   --font-size-sm: 0.75rem;
   --line-height-base: 1.25rem;
 
@@ -46,90 +50,92 @@
 }
 
 
-  @layer components {
-    .simple-calendar {
-      @apply rounded-lg border border-slate-200 bg-white shadow-sm;
-    }
-  
-    .calendar-heading {
-      @apply flex items-center justify-between border-b border-slate-200 px-4 py-3;
-    }
-  
-    .calendar-title {
-      @apply text-lg font-semibold text-slate-900;
-    }
-  
-    .simple-calendar table {
-      @apply w-full border-collapse;
-    }
-  
-    .simple-calendar th {
-      @apply bg-slate-50 px-2 py-2 text-xs font-semibold uppercase tracking-wide text-slate-600;
-    }
-  
-    .simple-calendar td {
-      @apply h-24 align-top border-r border-slate-200 p-2 text-sm;
-    }
-  
-    .simple-calendar .day {
-      @apply text-slate-800;
-    }
-  
-    .simple-calendar .today {
-      @apply bg-indigo-50 font-semibold text-indigo-700;
-    }
-  
-    .simple-calendar .past {
-      @apply text-slate-400;
-    }
-  
-    .simple-calendar .future {
-      @apply text-slate-700;
-    }
-  
-    .simple-calendar .prev-month,
-    .simple-calendar .next-month {
-      @apply text-slate-300;
-    }
-  
-    .simple-calendar .current-month {
-      @apply text-slate-900;
-    }
-  
-    .simple-calendar .has-events {
-      @apply ring-1 ring-indigo-200;
-    }
-  
-    .simple-calendar .week {
-      @apply border-t border-slate-200;
-    }
-  
-    .simple-calendar .current-week {
-      @apply bg-slate-50;
-    }
-
-    .checked-date {
-      @apply bg-emerald-50;
-      @apply ring-1 ring-emerald-200;
-    }
-
-    .slot-selected {
-      border-color: #10b981 !important;
-      color: #10b981 !important;
-    }
-
-    .col-start-2 {
-      grid-column-start: 2;
-    }
+@layer components {
+  .simple-calendar {
+    @apply rounded-lg border border-slate-200 bg-white shadow-sm;
   }
 
+  .calendar-heading {
+    @apply flex items-center justify-between border-b border-slate-200 px-4 py-3;
+  }
+
+  .calendar-title {
+    @apply text-lg font-semibold text-slate-900;
+  }
+
+  .simple-calendar table {
+    @apply w-full border-collapse;
+  }
+
+  .simple-calendar th {
+    @apply bg-slate-50 px-2 py-2 text-xs font-semibold uppercase tracking-wide text-slate-600;
+  }
+
+  .simple-calendar td {
+    @apply h-24 align-top border-r border-slate-200 p-2 text-sm;
+  }
+
+  .simple-calendar .day {
+    @apply text-slate-800;
+  }
+
+  .simple-calendar .today {
+    @apply bg-indigo-50 font-semibold text-indigo-700;
+  }
+
+  .simple-calendar .past {
+    @apply text-slate-400;
+  }
+
+  .simple-calendar .future {
+    @apply text-slate-700;
+  }
+
+  .simple-calendar .prev-month,
+  .simple-calendar .next-month {
+    @apply text-slate-300;
+  }
+
+  .simple-calendar .current-month {
+    @apply text-slate-900;
+  }
+
+  .simple-calendar .has-events {
+    @apply ring-1 ring-indigo-200;
+  }
+
+  .simple-calendar .week {
+    @apply border-t border-slate-200;
+  }
+
+  .simple-calendar .current-week {
+    @apply bg-slate-50;
+  }
+
+  .checked-date {
+    @apply bg-emerald-50;
+    @apply ring-1 ring-emerald-200;
+  }
+
+  .slot-selected {
+    border-color: #10b981 !important;
+    color: #10b981 !important;
+  }
+
+  .col-start-2 {
+    grid-column-start: 2;
+  }
+}
+
 @layer utilities {
+
   /* Custom Animations */
   @keyframes fadeSlideDown {
     from {
       opacity: 0;
       transform: translateY(-20px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -141,6 +147,7 @@
       opacity: 0;
       transform: translateY(30px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -151,37 +158,75 @@
     0% {
       transform: translateX(-100%);
     }
+
     100% {
       transform: translateX(100%);
     }
   }
 
   @keyframes grain {
-    0%, 100% { transform: translate(0, 0); }
-    10% { transform: translate(-5%, -10%); }
-    20% { transform: translate(-15%, 5%); }
-    30% { transform: translate(7%, -25%); }
-    40% { transform: translate(-5%, 25%); }
-    50% { transform: translate(-15%, 10%); }
-    60% { transform: translate(15%, 0%); }
-    70% { transform: translate(0%, 15%); }
-    80% { transform: translate(3%, 35%); }
-    90% { transform: translate(-10%, 10%); }
+
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+
+    10% {
+      transform: translate(-5%, -10%);
+    }
+
+    20% {
+      transform: translate(-15%, 5%);
+    }
+
+    30% {
+      transform: translate(7%, -25%);
+    }
+
+    40% {
+      transform: translate(-5%, 25%);
+    }
+
+    50% {
+      transform: translate(-15%, 10%);
+    }
+
+    60% {
+      transform: translate(15%, 0%);
+    }
+
+    70% {
+      transform: translate(0%, 15%);
+    }
+
+    80% {
+      transform: translate(3%, 35%);
+    }
+
+    90% {
+      transform: translate(-10%, 10%);
+    }
   }
 
   @keyframes heartbeat {
-    0%, 100% {
+
+    0%,
+    100% {
       transform: scale(1);
     }
+
     10% {
       transform: scale(1.1);
     }
+
     20% {
       transform: scale(1);
     }
+
     30% {
       transform: scale(1.15);
     }
+
     40% {
       transform: scale(1);
     }
@@ -205,6 +250,55 @@
 
   .animate-heartbeat {
     animation: heartbeat 1.5s ease-in-out infinite;
+  }
+}
+
+trix-toolbar {
+  .trix-button-row {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .trix-button-group {
+    display: flex;
+    margin-bottom: 0;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    margin-right: 4px;
+  }
+
+  .trix-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.6em;
+    height: 2.6em;
+    padding: 0;
+    border: none;
+    border-right: 1px solid #bbb;
+    background: transparent;
+    cursor: pointer;
+    font-size: inherit;
+
+    &:hover {
+      background: #f0f0f0;
+    }
+
+    &.trix-active {
+      background: #e0e0e0;
+    }
+
+    &--icon::before {
+      display: inline-block;
+      content: "";
+      width: 1.3em;
+      height: 1.3em;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0.7;
+    }
   }
 }
 
