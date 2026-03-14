@@ -38,7 +38,8 @@
             flex items-center gap-1 transition-opacity
           "
         >
-        <%= link_to edit_user_shared_resource_path(client_resource.notable, client_resource), 
+        <%= button_to edit_user_shared_resource_path(client_resource.notable, client_resource), 
+            method: :get,
             data: { turbo_frame: "modal" },
             class: "p-2 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors" do %>
           <svg
