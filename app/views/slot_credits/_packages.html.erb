@@ -105,11 +105,11 @@
           <% if selected %>
             <%= image_tag "/check.svg", class: "m-auto w-6 h-6 m-2 text-violet-600 inline" %>
           <% end %>
-
-          <%= link_to selected ? "Selected" : "Select",
-                calendar_slot_credits_path(calendar, slot, slot_credit: { package: key, slot_remaining: sessions, amount: amount }),
+          <%= button_to selected ? "Selected" : "Select",
+                calendar_slot_credits_path(calendar, slot),
+                params: { slot_credit: { package: key, slot_remaining: sessions, amount: amount } },
                 method: :post,
-                data: { turbo_method: :post },
+                disabled: selected,
                 class: "mt-4 block w-full text-center px-1 py-1 text-white text-xs font-bold rounded-lg transition-colors #{button_class}" %>
         </div>
       <% end %>

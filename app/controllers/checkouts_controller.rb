@@ -4,7 +4,7 @@ class CheckoutsController < ApplicationController
   attr_reader :slot, :service, :appointment, :calendar
 
   def new
-    result = service.create(gateway: :razorpay, amount: (params[:amount] || 15_000).to_i)
+    result = service.create(gateway: :razorpay)
 
     if result.is_a?(Hash)
       @order        = result[:order]
@@ -33,7 +33,6 @@ class CheckoutsController < ApplicationController
   def create
     # Left intact if needed for explicit POSTs
     result = service.create(gateway: :razorpay, amount: (params[:amount] || 15_000).to_i)
-
     if result.is_a?(Hash)
       @order        = result[:order]
       @razorpay_key = result[:key]
@@ -75,6 +74,6 @@ class CheckoutsController < ApplicationController
   end
 
   def initialize_service
-    @service = PaymentCheckoutService.new(appointment: appointment, current_user: current_user)
+    @service = PaymentCheckoutService.new(appointment: appointment, current_user: current_user, slot: slot)
   end
 end

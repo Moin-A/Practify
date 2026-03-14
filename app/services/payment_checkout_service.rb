@@ -1,9 +1,10 @@
 class PaymentCheckoutService
-  attr_reader :appointment, :current_user, :errors, :options, :amount
-  def initialize(appointment:, current_user:)
+  attr_reader :appointment, :current_user, :errors, :options, :amount, :slot
+  def initialize(appointment:, current_user:, slot:)
     @appointment = appointment
     @current_user = current_user
     @errors = []
+    @slot = slot  
   end
 
   def create(options = {})
@@ -12,8 +13,7 @@ class PaymentCheckoutService
     key    = fetch_secret_keys(options[:gateway], :access_key_id)
     secret = fetch_secret_keys(options[:gateway], :secret_access_key)
     ::Razorpay.setup(key, secret)
-    amount = options[:amount] || 10_000
-    order = create_order(amount)
+    order = create_order(rupee_to_paise(amount))
     { order: order, key: key }
   end
 
@@ -35,6 +35,14 @@ class PaymentCheckoutService
 
    def fetch_secret_keys(service_name, secret_key_name)
      key = Rails.application.credentials.dig(service_name, secret_key_name)
+   end
+
+   def amount
+      slot.slot_credit.amount
+   end
+
+   def rupee_to_paise(amount)
+    amount * 100
    end
 
    def create_order(amount)
