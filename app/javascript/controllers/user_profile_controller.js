@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["notes", "observation", "dropdown"]
+  static targets = ["notes", "observation", "dropdown", "notesContent", "observationContent", "observation"]
   static classes = ["hidden", "visible"]
 
   connect() {
@@ -29,6 +29,23 @@ export default class extends Controller {
       this.show(this.notesTarget)
       this.activeSection = "notes"
     }
+  }
+
+  toggleNotes(event) {
+    this.openSection(this.notesContentTarget, this.observationContentTarget)
+  }
+
+  toggleObservation(event) {
+    this.openSection(this.observationContentTarget, this.notesContentTarget)
+  }
+
+  // Private helper
+  openSection(toOpen, toClose) {
+    // Open target
+    toOpen.style.maxHeight = toOpen.scrollHeight + "px"
+
+    // Close the other
+    toClose.style.maxHeight = "0px"
   }
 
   show(element) {

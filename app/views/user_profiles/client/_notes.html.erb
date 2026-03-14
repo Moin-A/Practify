@@ -1,7 +1,9 @@
-<section 
-  data-action="click->user-profile#toggle"
+<div 
+  data-action="click->user-profile#toggleNotes"
   data-user-profile-type-param="notes"
-  class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm cursor-pointer transition-colors hover:border-slate-200"
+  data-user-profile-target="notes"
+
+  class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm cursor-pointer transition-colors overflow-hidden hover:border-slate-200"
 > 
   <div class="flex justify-between items-center">
     <div>
@@ -10,8 +12,9 @@
     </div>
     <div class="relative" data-action="click->user-profile#toggleDropdown:stop">
       <button type="button" class="p-2 hover:bg-slate-50 rounded-full transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+        <%# chevron icon — rotates when open %>
+        <svg data-user-profile-target="chevron" class="w-5 h-5 text-slate-400 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
       </button>
       <div data-user-profile-target="dropdown" class="absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-xl z-50 py-2 hidden opacity-0 origin-top-right transition-all duration-150">
@@ -19,18 +22,29 @@
       </div>
     </div>
   </div>
-  <div id="new_note_form">
-  <%= render 'notes/form', 
-             note: client.user.private_client_notes.new, 
-             notable: client.user, 
-             category: 'note', 
-             frame_id: "new_note_form",
-             show_cancel: false %>
-  </div>
-   <div id="private_client_notes_list" class="space-y-6 relative before:bg-slate-100">
-   <%client.user.private_client_notes.reload.each do |note| %>  
-    <%= render 'notes/note', note: note %>
-   <% end %>
-  </div>
-  
-</section>
+
+  <%# Collapsible wrapper %>
+<div data-user-profile-target="notesContent" 
+     class="overflow-hidden transition-[max-height] duration-500 ease-in-out"
+     style="max-height: 0">
+
+    <div 
+      class="max-h-screen transition-all duration-300 ease-in-out"
+    >
+      <div id="new_note_form">
+        <%= render 'notes/form', 
+                  note: client.user.private_client_notes.new, 
+                  notable: client.user, 
+                  category: 'note', 
+                  frame_id: "new_note_form",
+                  show_cancel: false %>
+      </div>
+
+      <div id="private_client_notes_list" class="space-y-6 relative before:bg-slate-100">
+        <% client.user.private_client_notes.reload.each do |note| %>  
+          <%= render 'notes/note', note: note %>
+        <% end %>
+      </div>
+    </div>
+  </div>        
+</div>

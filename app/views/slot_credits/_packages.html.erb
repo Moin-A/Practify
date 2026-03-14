@@ -113,13 +113,17 @@
                 class: "mt-4 block w-full text-center px-1 py-1 text-white text-xs font-bold rounded-lg transition-colors #{button_class}" %>
         </div>
       <% end %>
-     <%= link_to "Book Appointment",
+    <%= link_to "Book Appointment",
       new_calendar_slot_checkout_path(calendar, slot),
       data: {
         turbo_frame: "payment_modal",
-        action: "click->home#togglePaymentModal"
+        action: ("click->home#togglePaymentModal" if slot.slot_credit.present?)
       },
-      class: "w-full my-2 col-span-3 m-auto text-center  px-6 py-3 mt-4 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow" %>
+      class: "w-full my-2 col-span-3 m-auto text-center px-6 py-3 mt-4 font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 #{slot.slot_credit.present? ? 'bg-emerald-600 text-white hover:bg-emerald-700 hover:shadow cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60 disabled pointer-events-none'}",
+      aria: { disabled: slot.slot_credit.blank? } %>
+      <% if slot.slot_credit.blank? %>
+      <span class="text-red-500 text-sm">please select a slot package</span>
+      <%end%>
     </div>    
   </div>
 <% end %>

@@ -1,12 +1,14 @@
 <section 
-  data-controller="user-profile"
-  data-action="click->user-profile#toggle"
   data-user-profile-type-param="observation"
+  data-action="click->user-profile#toggleObservation"
   class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm cursor-pointer transition-colors hover:border-slate-200"
 >
-  <h3 id="observations-title" class="text-xl font-bold text-slate-900 py-4">Clinical Observations</h3>
+  <h3 id="observations-title" data-user-profile-target="observation" class="text-xl font-bold text-slate-900 py-4">Clinical Observations</h3>
   
-  <div data-user-profile-target="observation">
+  <div data-user-profile-target="observationContent" 
+     class="overflow-hidden transition-[max-height] duration-500 ease-in-out"
+     style="max-height: 0">
+
     <%= render 'notes/form', 
                note: client.user.therapist_observations.new, 
                notable: client.user, 
@@ -14,7 +16,7 @@
                frame_id: "new_observation_form",
                show_cancel: false %>
     
-   <div id="therapist_observations_list" class=" relative space-y-6 before:absolute before:left-4 before:top-4 before:bottom-4 before:w-px before:bg-slate-100 hover:before:bg-slate-300 transition-colors last:after:bg-white duration-300"
+   <div id="therapist_observations_list" class="transition-all duration-500 ease-in-out max-h-screen relative space-y-6 before:absolute before:left-4 before:top-4 before:bottom-4 before:w-px before:bg-slate-100 hover:before:bg-slate-300 transition-colors last:after:bg-white duration-300"
 >
       <% client.user.therapist_observations.reload.order(created_at: :desc).each do |observation| %>
         <%= render partial: 'notes/observation', locals: { observation: observation } %>

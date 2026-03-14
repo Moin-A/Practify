@@ -4,7 +4,7 @@ class CheckoutsController < ApplicationController
   attr_reader :slot, :service, :appointment, :calendar
 
   def new
-    result = service.create(gateway: :razorpay, amount: ((@slot.slot_credit.amount || 150) * 100).to_i)
+    result = service.create(gateway: :razorpay, amount: (params[:amount] || 15_000).to_i)
 
     if result.is_a?(Hash)
       @order        = result[:order]
@@ -16,17 +16,23 @@ class CheckoutsController < ApplicationController
     end
 
     respond_to do |format|
-      format.html do
-        # Turbo Frame navigation expects the response to include a matching <turbo-frame id="payment_modal">.
-        # For non-frame visits, keep the normal full-page render with layout.
-        render layout: !turbo_frame_request?
+      format.turbo_stream do
+        if @slot.slot_credit.nil?
+          render turbo_stream: [
+            turbo_stream.remove("payment_modal"),
+            turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Please Select a package to Book Appointment", type: :alert })
+          ]
+        else
+          render turbo_stream: turbo_stream.replace("payment_modal", template: "checkouts/new", layout: false)
+        end
       end
+      format.html
     end
   end
 
   def create
     # Left intact if needed for explicit POSTs
-    result = service.create(gateway: :razorpay, amount: ((@slot.slot_credit.amount || 150) * 100).to_i)
+    result = service.create(gateway: :razorpay, amount: (params[:amount] || 15_000).to_i)
 
     if result.is_a?(Hash)
       @order        = result[:order]
