@@ -53,15 +53,20 @@ class CheckoutsController < ApplicationController
     payment_id = params[:razorpay_payment_id]
     signature  = params[:razorpay_signature]
 
+    Rails.logger.info "[Razorpay] Verifying payment - Order: #{order_id}, Payment: #{payment_id}"
+
     gateway = ActiveMerchant::Billing::Razorpay.new(test: Rails.env.development?)
 
     if gateway.verify_signature(order_id, payment_id, signature)
+      Rails.logger.info "[Razorpay] Signature verification successful for Order: #{order_id}"
       redirect_to root_path, notice: "Payment successful! Payment ID: #{payment_id}"
     else
+      Rails.logger.error "[Razorpay] Signature verification failed for Order: #{order_id}"
       redirect_to new_appointment_checkout_path(@appointment), alert: "Payment verification failed."
     end
   rescue StandardError => e
-    Rails.logger.error "Checkout verify error: #{e.message}"
+    Rails.logger.error "[Razorpay] Checkout verify error: #{e.message}"
+    Rails.logger.error e.backtrace.first(10).join("\n")
     redirect_to new_appointment_checkout_path(@appointment), alert: "Payment error: #{e.message}"
   end
 
