@@ -98,11 +98,11 @@ class CheckoutsController < ApplicationController
   def complete_booking!(payment_id:, order_id:)
     @slot_credit.completed!
     @slot.booked!
-    @slot_credit.update!(payment_order_id: order_id)  
+    @slot_credit.update!(payment_order_id: order_id)
   end
 
   def create_appointment
-    @service ||= AppointmentCreator.new(slot: slot, appointment_params: {slot_id: slot.id}, current_user: current_user)
+    @service ||= AppointmentCreator.new(slot: slot, appointment_params: { slot_id: slot.id }, current_user: current_user)
     @service.create
   end
 
