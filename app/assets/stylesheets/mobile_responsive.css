@@ -1,0 +1,176 @@
+@media (max-width: 767px) {
+
+  /* ── Header ─────────────────────────────────────────────────────── */
+
+  /* Tighten bottom margin (overrides Tailwind mb-10) */
+  header.mb-10,
+  header.mb-6 {
+    margin-bottom: 1rem !important;
+  }
+
+  /* Keep icon buttons inline with title — no wrapping */
+  header > div {
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Let the title shrink instead of overflowing (removes min-w-[280px]) */
+  header > div > div:first-child {
+    min-width: 0 !important;
+    flex: 1 1 0%;
+  }
+
+  /* Scale down the page title */
+  header h1 {
+    font-size: 1.35rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0.2rem !important;
+  }
+
+  /* Subtitle: truncate instead of wrapping */
+  header p {
+    font-size: 0.75rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* Icon buttons: keep compact */
+  header > div > div:last-child {
+    flex-shrink: 0 !important;
+    gap: 0.4rem !important;
+  }
+
+  header button {
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+  }
+
+  /* ── Main layout ─────────────────────────────────────────────────── */
+
+  main {
+    padding: 0.75rem !important;
+    padding-top: 0.875rem !important;
+  }
+
+  /* Tighten gap and bottom margin of the dashboard grid */
+  main .grid {
+    gap: 0.75rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* ── Next Appointment hero card ──────────────────────────────────── */
+
+  /* Reduce outer card padding */
+  main .grid > div:first-child {
+    padding: 1rem !important;
+  }
+
+  /* Inner header row ("Next Appointment" + "Video Call" badge):
+     keep on one line, vertically centred */
+  main .grid > div:first-child .flex.justify-between.items-start {
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: 0.5rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* Shrink the Video Call badge so it fits on one line */
+  main .grid > div:first-child .flex.justify-between.items-start > span {
+    font-size: 0.65rem !important;
+    padding: 0.25rem 0.6rem !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* "No appointments" placeholder */
+  main .grid > div:first-child .flex.items-center.justify-center {
+    padding-top: 1.25rem !important;
+    padding-bottom: 1.25rem !important;
+    font-size: 0.875rem !important;
+  }
+
+  /* ── Progress + Recommended cards ───────────────────────────────── */
+
+  /* Stack vertically on mobile */
+  main .grid > div:first-child > div.flex.gap-6 {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Reduce padding on each inner card */
+  main .grid > div:first-child > div.flex.gap-6 > div {
+    padding: 1rem !important;
+  }
+
+  /* Card section headings */
+  main .grid > div:first-child > div.flex.gap-6 > div h3 {
+    font-size: 0.9rem !important;
+    margin-bottom: 0.75rem !important;
+    white-space: nowrap !important;
+  }
+
+  /* Recommended card: tighten header row */
+  main .grid > div:first-child > div.flex.gap-6 > div:nth-child(2) .flex.justify-between.items-center {
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* Resource item rows */
+  main .grid > div:first-child > div.flex.gap-6 > div:nth-child(2) a.flex.items-center {
+    padding: 0.5rem 0.75rem !important;
+  }
+
+  /* Resource item title: truncate overflow */
+  main .grid > div:first-child > div.flex.gap-6 > div:nth-child(2) a.flex .flex-1 > div:first-child {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Resource item date text */
+  main .grid > div:first-child > div.flex.gap-6 > div:nth-child(2) a.flex .flex-1 > div:last-child {
+    white-space: nowrap !important;
+    font-size: 0.65rem !important;
+  }
+
+  /* "View All Resources" button */
+  main .grid > div:first-child > div.flex.gap-6 > div:nth-child(2) > a.w-full {
+    margin-top: 0.75rem !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.7rem !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+
+  /* ── Quick Book card ─────────────────────────────────────────────── */
+
+  /* Reduce card padding */
+  main .grid > div:nth-child(2) {
+    padding: 1rem !important;
+  }
+
+  /* Keep "Quick Book" heading and "Full Calendar" link on one line */
+  main .grid > div:nth-child(2) .flex.justify-between.items-center {
+    flex-wrap: nowrap !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  main .grid > div:nth-child(2) h3 {
+    font-size: 0.95rem !important;
+    white-space: nowrap !important;
+  }
+
+  main .grid > div:nth-child(2) .flex.justify-between > a {
+    font-size: 0.75rem !important;
+    white-space: nowrap !important;
+  }
+
+  /* Back / reset button in Quick Book */
+  main .grid > div:nth-child(2) > a:first-child {
+    width: 2rem !important;
+    height: 2rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+}
