@@ -41,12 +41,10 @@ export default class extends Controller {
     element.classList.add(...this.inactiveStyles)
   }
   toggleModal() {
-    debugger;
     this.modalTarget.classList.toggle('hidden')
   }
 
   togglePaymentModal() {
-    debugger;
     this.paymentModalTarget.classList.toggle('hidden')
   }
 
