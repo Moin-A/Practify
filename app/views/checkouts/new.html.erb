@@ -43,6 +43,16 @@
       <p class="text-slate-500 mb-6">Amount:
         <strong>₹<%= number_with_precision(@amount / 100.0, precision: 2) %></strong></p>
 
+      <%= form_with url: verify_calendar_slot_checkout_path(@calendar, @slot), 
+                    method: :post, 
+                    id: "razorpay-verify-form", 
+                    style: "display: none;",
+                    data: { turbo: true } do |f| %>
+        <%= f.hidden_field :razorpay_order_id %>
+        <%= f.hidden_field :razorpay_payment_id %>
+        <%= f.hidden_field :razorpay_signature %>
+      <% end %>
+
       <button
         id="pay-btn"
         class="
@@ -58,6 +68,7 @@
     <script>
       (function () {
         var btn = document.getElementById("pay-btn");
+        var verifyForm = document.getElementById("razorpay-verify-form");
 
         function openRazorpay() {
           var options = {
@@ -70,21 +81,12 @@
               email: "<%= Current.user&.email_address %>"
             },
             handler: function (response) {
-              fetch("<%= verify_calendar_slot_checkout_path(@calendar, @slot) %>", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  "Accept": "text/vnd.turbo-stream.html, text/html, application/xhtml+xml",
-                  "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({
-                  razorpay_order_id:   response.razorpay_order_id,
-                  razorpay_payment_id: response.razorpay_payment_id,
-                  razorpay_signature:  response.razorpay_signature
-                })
-              })
-              .then(res => res.text())
-              .then(html => Turbo.renderStreamMessage(html));
+              if (verifyForm) {
+                document.getElementById("razorpay_order_id").value = response.razorpay_order_id;
+                document.getElementById("razorpay_payment_id").value = response.razorpay_payment_id;
+                document.getElementById("razorpay_signature").value = response.razorpay_signature;
+                verifyForm.requestSubmit();
+              }
             },
             modal: {
               ondismiss: function () { console.log("Payment cancelled"); }

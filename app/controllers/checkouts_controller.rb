@@ -19,7 +19,7 @@ class CheckoutsController < ApplicationController
       format.turbo_stream do
         if @slot.slot_credit.nil?
           render turbo_stream: [
-            turbo_stream.remove("payment_modal"),
+            turbo_stream.update("payment_modal", content_tag(:div, "Please select a package first.", class: "p-4 text-center text-red-600")),
             turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Please Select a package to Book Appointment", type: :alert })
           ]
         else
@@ -63,17 +63,16 @@ class CheckoutsController < ApplicationController
          format.turbo_stream do
            render turbo_stream: [
              turbo_stream.remove("payment_modal_wrapper"),
-             turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Payment successful! Payment ID: #{payment_id}", type: :notice })
+             turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Payment successful! Session booked.", type: :notice })
            ]
          end
-         format.html { redirect_to root_path, notice: "Payment successful! Payment ID: #{payment_id}" }
+         format.html { redirect_to root_path, notice: "Payment successful! Session booked." }
        end
     else
       Rails.logger.error "[Razorpay] Signature verification failed for Order: #{order_id}"
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.remove("payment_modal"),
             turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: @service&.errors&.join(", ") || "Payment verification failed", type: :alert })
           ]
         end
