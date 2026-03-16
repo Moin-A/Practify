@@ -41,11 +41,10 @@
 </div>
 <% if selected_slot.present? %>
 
-  <%= button_to  require_payment_appointments_path, 
-        method: :post, 
-        params: { appointment: { slot_id: selected_slot_id } }, 
-        class: "w-full px-6 py-3 mt-4 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow",
-        data: { turbo_method: :post } do %>
+  <%= button_to  require_payment_appointments_path,
+        method: :post,
+        params: { appointment: { slot_id: selected_slot_id } },
+        class: "w-full px-6 py-3 mt-4 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow" do %>
     Confirm Slot
   <% end %>
 <% else %>

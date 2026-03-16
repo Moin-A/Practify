@@ -13,11 +13,10 @@
   <%= turbo_frame_tag "new_slot_form", class: "block transition-all" do %>
   <%if current_user.client? %>
   <% if selected_slot_id.present? %>
-  <%= button_to "Confirm Slots",  require_payment_appointments_path, 
-      method: :post, 
-      params: { appointment: { slot_id: selected_slot_id } }, 
-      class: "w-full px-6 py-3 mt-4 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow",
-      data: { turbo_method: :post } %>
+  <%= button_to "Confirm Slots",  require_payment_appointments_path,
+      method: :post,
+      params: { appointment: { slot_id: selected_slot_id } },
+      class: "w-full px-6 py-3 mt-4 bg-emerald-600 text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow" %>
 <% else %>
   <button disabled class="w-full mt-4 px-6 py-3 bg-gray-100 text-gray-400 font-semibold text-sm rounded-xl cursor-not-allowed">
     Select a Slot
