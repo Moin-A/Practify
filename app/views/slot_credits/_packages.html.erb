@@ -1,11 +1,11 @@
 <%= turbo_frame_tag "slot_credit_package" do %>
  
-<div class="col-span-3">
+  <div class="col-span-3">
     <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Payment Required</h2>
     <p class="text-slate-500 mt-1 text-sm my-4">Choose a session package to book this appointment</p>
   </div>
 
-  <div>
+  <div class="grid">
     <% current_package = slot.slot_credit&.package %>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 overflow-visible">
       <% Practify.config.slot_credit_packages.each do |pkg| %>
@@ -120,7 +120,8 @@
           </div>
         </div>
       <% end %>
-    <%= link_to "Book Appointment",
+    </div>    
+     <%= link_to "Book Appointment",
       new_calendar_slot_checkout_path(calendar, slot),
       data: {
         turbo_frame: "payment_modal",
@@ -131,6 +132,5 @@
       <% if slot.slot_credit.blank? %>
       <span class="text-red-500 col-span-3 text-sm">please select a slot package</span>
        <%end%>
-    </div>    
   </div>
 <% end %>
