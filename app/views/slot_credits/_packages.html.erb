@@ -7,7 +7,7 @@
 
   <div>
     <% current_package = slot.slot_credit&.package %>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 overflow-visible">
       <% Practify.config.slot_credit_packages.each do |pkg| %>
         <% key = pkg[:key].to_s %>
         <% selected = (current_package == key) %>
@@ -72,45 +72,52 @@
           end
         %>
 
-        <div class="<%= popular ? "relative " : "" %><%= card_class %> rounded-2xl p-4 transition-all duration-200 flex flex-col justify-between h-[300px]">
+        <div class="<%= popular ? "relative mt-3 md:mt-0 " : "" %><%= card_class %> rounded-2xl transition-all duration-200
+          p-3 md:p-4
+          flex flex-row md:flex-col items-center md:items-stretch md:justify-between
+          gap-3 md:gap-0 md:h-[300px]">
           <% if popular %>
-            <span class="absolute -top-2.5 left-1/2 -translate-x-1/2 <%= badge_class %> text-white text-[8px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full">Popular</span>
+            <span class="absolute -top-3 left-4 md:left-1/2 md:-translate-x-1/2 <%= badge_class %> text-white text-[8px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full">Popular</span>
           <% end %>
 
-          <div>
-            <p class="text-[12px] font-bold <%= label_class %> uppercase tracking-widest mb-1"><%= pkg[:name] %></p>
+          <%# Left / top: name + price info %>
+          <div class="flex-1 min-w-0">
+            <p class="text-[11px] font-bold <%= label_class %> uppercase tracking-widest mb-0.5 md:mb-1"><%= pkg[:name] %></p>
 
             <% if sessions <= 1 %>
-              <h3 class="text-xl font-extrabold text-slate-900">
+              <h3 class="text-base md:text-xl font-extrabold text-slate-900 leading-tight">
                 ₹<%= number_with_delimiter(amount) %>
                 <span class="text-xs font-normal text-slate-400">/session</span>
               </h3>
               <% if pkg[:description].present? %>
-                <span class="block mt-2 text-[12px] text-slate-500 leading-snug"><%= sanitize(pkg[:description], tags: %w[br], attributes: []) %></span>
+                <span class="hidden md:block mt-2 text-[12px] text-slate-500 leading-snug"><%= sanitize(pkg[:description], tags: %w[br], attributes: []) %></span>
               <% end %>
             <% else %>
-              <h3 class="text-xl font-extrabold text-slate-900">
+              <h3 class="text-base md:text-xl font-extrabold text-slate-900 leading-tight">
                 ₹<%= number_with_delimiter(amount) %>
-                <span class="text-xs font-normal text-slate-400">/ ₹<%= number_with_delimiter(per_session.round) %> per session</span>
+                <span class="text-xs font-normal text-slate-400 hidden md:inline">/ ₹<%= number_with_delimiter(per_session.round) %> per session</span>
               </h3>
-              <p class="text-slate-400 text-xs mt-1">
+              <p class="text-slate-400 text-xs mt-0.5">
                 <%= sessions %> sessions
                 <% if pkg[:savings_label].present? %>
-                  <span class="<%= label_class %> font-semibold">· <%= pkg[:savings_label] %></span>
+                  <span class="<%= label_class %> font-semibold hidden md:inline">· <%= pkg[:savings_label] %></span>
                 <% end %>
               </p>
             <% end %>
           </div>
 
-          <% if selected %>
-            <%= image_tag "/check.svg", class: "m-auto w-6 h-6 m-2 text-violet-600 inline" %>
-          <% end %>
-          <%= button_to selected ? "Selected" : "Select",
-                calendar_slot_credits_path(calendar, slot),
-                params: { slot_credit: { package: key, slot_remaining: sessions, amount: amount } },
-                method: :post,
-                disabled: selected,
-                class: "mt-4 block w-full text-center px-1 py-1 text-white text-xs font-bold rounded-lg transition-colors #{button_class}" %>
+          <%# Right / bottom: select button or checkmark %>
+          <div class="flex-shrink-0 md:mt-4 md:w-full">
+            <% if selected %>
+              <%= image_tag "/check.svg", class: "w-5 h-5 md:w-6 md:h-6 md:m-auto text-violet-600 inline" %>
+            <% end %>
+            <%= button_to selected ? "Selected" : "Select",
+                  calendar_slot_credits_path(calendar, slot),
+                  params: { slot_credit: { package: key, slot_remaining: sessions, amount: amount } },
+                  method: :post,
+                  disabled: selected,
+                  class: "block text-center px-4 md:px-1 py-1.5 md:py-1 text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap #{button_class}" %>
+          </div>
         </div>
       <% end %>
     <%= link_to "Book Appointment",
