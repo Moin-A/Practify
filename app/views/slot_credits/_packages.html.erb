@@ -7,7 +7,7 @@
 
   <div class="grid">
     <% current_package = slot.slot_credit&.package %>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 overflow-visible">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 overflow-visible col-span-3">
       <% Practify.config.slot_credit_packages.each do |pkg| %>
         <% key = pkg[:key].to_s %>
         <% selected = (current_package == key) %>
