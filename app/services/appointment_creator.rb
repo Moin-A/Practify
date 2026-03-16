@@ -9,7 +9,7 @@ class AppointmentCreator
 
   def create
     return false unless valid?
-    @appointment = slot.build_appointment(appointment_params.merge(publisher: slot.user, subscriber: current_user))
+    @appointment = slot.build_appointment(appointment_params.merge(publisher: slot.user, subscriber: current_user, user: current_user))
     if @appointment.save
       Practify.bus.publish(:appointment_created, appointment: @appointment)
     else

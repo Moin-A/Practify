@@ -90,7 +90,7 @@ def reshedule
   end
 end
 
-def require_payment
+  def require_payment
     respond_to do |format|
       format.turbo_stream do
         if @slot.appointment.present?

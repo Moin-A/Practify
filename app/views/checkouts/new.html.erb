@@ -70,27 +70,21 @@
               email: "<%= Current.user&.email_address %>"
             },
             handler: function (response) {
-              var form = document.createElement("form");
-              form.method = "POST";
-              form.action = "<%= verify_calendar_slot_checkout_path(@calendar, @slot) %>";
-
-              var fields = {
-                authenticity_token:  document.querySelector('meta[name="csrf-token"]').content,
-                razorpay_order_id:   response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature:  response.razorpay_signature
-              };
-
-              Object.entries(fields).forEach(function ([name, value]) {
-                var input = document.createElement("input");
-                input.type  = "hidden";
-                input.name  = name;
-                input.value = value;
-                form.appendChild(input);
-              });
-
-              document.body.appendChild(form);
-              form.submit();
+              fetch("<%= verify_calendar_slot_checkout_path(@calendar, @slot) %>", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Accept": "text/vnd.turbo-stream.html, text/html, application/xhtml+xml",
+                  "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                  razorpay_order_id:   response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature:  response.razorpay_signature
+                })
+              })
+              .then(res => res.text())
+              .then(html => Turbo.renderStreamMessage(html));
             },
             modal: {
               ondismiss: function () { console.log("Payment cancelled"); }
