@@ -1,0 +1,62 @@
+/* ── Fonts ─────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+
+/* ── Global background — warm off-white ────────────────────────────────── */
+body,
+.bg-slate-50 {
+  background-color: #F8F7F4 !important;
+}
+
+/* ── Dashboard cards — gradient + generous shadow + top highlight ───────── */
+#dashboard_content .grid > div {
+  background: linear-gradient(135deg, #ffffff 0%, #f7faf9 100%) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+  border-top-color: rgba(255, 255, 255, 0.85) !important;
+}
+
+#dashboard_content .grid > div:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.10) !important;
+}
+
+/* Inner Progress + Resources cards */
+#dashboard_content .grid > div:first-child > div:last-child > div {
+  background: linear-gradient(135deg, #ffffff 0%, #f5faf8 100%) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* ── Progress bar — gradient fill + soft glow ───────────────────────────── */
+.progress-fill {
+  background: linear-gradient(90deg, #059669 0%, #34D399 100%) !important;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.35);
+}
+
+/* ── Sidebar — warm grey background, soft shadow instead of hard border ─── */
+#nav-sidebar {
+  background-color: #F9F8F6 !important;
+}
+
+@media (min-width: 768px) {
+  #nav-sidebar {
+    border-right: none !important;
+    box-shadow: 1px 0 16px rgba(0, 0, 0, 0.07);
+  }
+}
+
+/* Active nav link — left accent bar */
+#nav-sidebar nav a.bg-emerald-50 {
+  position: relative;
+  background-color: rgba(209, 250, 229, 0.5) !important;
+  padding-left: 1rem;
+}
+
+#nav-sidebar nav a.bg-emerald-50::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 55%;
+  background-color: #059669;
+  border-radius: 0 2px 2px 0;
+}
