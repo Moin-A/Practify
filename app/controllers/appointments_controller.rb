@@ -93,13 +93,26 @@ end
   def require_payment
     respond_to do |format|
       format.turbo_stream do
-        if @slot.appointment.present?
+        creator = AppointmentCreator.new(slot: @slot, current_user: current_user)
+        unless creator.valid?
           render turbo_stream: [
-            turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Appointment already exists for this slot", type: :alert })
+            turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: creator.errors.join(", "), type: :alert })
           ]
         else
+          if @slot.slot_credit.blank?
+            existing_credit = find_usable_slot_credit_for_user
+            if existing_credit
+              @slot.create_slot_credit!(
+                package: existing_credit.package,
+                slot_remaining: 0,
+                amount: 0,
+                payment_status: :completed
+              )
+              existing_credit.decrement!(:slot_remaining)
+            end
+          end
           render turbo_stream: [
-            turbo_stream.replace("new_slot_form", partial: "slot_credits/packages", locals: { slot: @slot, calendar: @calendar, appointment: @slot.build_appointment })
+            turbo_stream.replace("new_slot_form", partial: "slot_credits/packages", locals: { slot: @slot.reload, calendar: @calendar, appointment: @slot.build_appointment })
           ]
         end
       end
@@ -134,6 +147,16 @@ rescue SlotMutex::LockFailed => e
     turbo_stream.remove("payment_modal_wrapper"),
     turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Slot is already booked by another user.", type: :alert })
   ]
+end
+
+def find_usable_slot_credit_for_user
+  current_user.appointments
+    .joins(slot: :slot_credit)
+    .where(slot_credits: { payment_status: 1 })
+    .where("slot_credits.slot_remaining > 0")
+    .order("slot_credits.created_at DESC")
+    .first
+    &.slot_credit
 end
 
 def record_not_found
