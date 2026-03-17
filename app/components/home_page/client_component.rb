@@ -91,7 +91,7 @@ module HomePage
       .sum(:slot_remaining)
     total = completed + remaining
     return 0 if total.zero?
-    [(completed.to_f / total * 100).round, 100].min
+    [ (completed.to_f / total * 100).round, 100 ].min
   end
  end
 end
