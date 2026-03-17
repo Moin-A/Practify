@@ -81,5 +81,17 @@ module HomePage
     return nil unless @appointment&.slot&.start_at
     @appointment.slot.start_at.strftime("%I:%M %p")
   end
+
+  def sessions_completed_percentage
+    completed = current_user.appointments.completed.count
+    remaining = SlotCredit
+      .joins(slot: :appointment)
+      .where(appointments: { user_id: current_user.id })
+      .where(payment_status: :completed)
+      .sum(:slot_remaining)
+    total = completed + remaining
+    return 0 if total.zero?
+    [ (completed.to_f / total * 100).round, 100 ].min
+  end
  end
 end
