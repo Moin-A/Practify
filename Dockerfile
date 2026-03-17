@@ -13,7 +13,7 @@ WORKDIR /rails
 
 # Install base packages
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client nano nodejs npm && \
+    apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client nano && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -26,9 +26,11 @@ ENV RAILS_ENV="production" \
 # Throw-away build stage to reduce size of final image
 FROM base AS build
 
-# Install packages needed to build gems
+# Install packages needed to build gems and assets
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config libxml2-dev libxslt1-dev && \
+    apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config libxml2-dev libxslt1-dev curl && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install --no-install-recommends -y nodejs && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
