@@ -7,7 +7,6 @@ export default class extends Controller {
 
 
   connect() {
-    console.log(this.notesTarget)
     const button_style = ["rounded-md", "shadow-sm", "border", "border-[#EEE]", "text-[#111]", "bg-white"]
     this.signInTarget.addEventListener("click", (event) => {
 
