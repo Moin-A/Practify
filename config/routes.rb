@@ -60,9 +60,7 @@ Rails.application.routes.draw do
   # require "sidekiq/web"
   # mount Sidekiq::Web => "/sidekiq"
 
-  Rails.application.routes.draw do
-    mount MissionControl::Jobs::Engine => "/jobs"
-  end
+  mount MissionControl::Jobs::Engine => "/jobs"
   # Checkout / payment
 
   root "home#show"
