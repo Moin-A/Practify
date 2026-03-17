@@ -43,7 +43,7 @@ jobs:
           echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           
           echo "--- Building & Pushing ---"
-          sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/practify:latest .
+          sudo docker build --network=host -t ${{ secrets.DOCKER_USERNAME }}/practify:latest .
           sudo docker push ${{ secrets.DOCKER_USERNAME }}/practify:latest
 
           # 4. FIND MANIFESTS
