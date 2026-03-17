@@ -31,7 +31,6 @@ class ClientResourcesController < NotesController
 
     respond_to do |format|
       if @note.save
-        Practify.bus.publish(:notes_added, note: @note)
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Resource was successfully created!", type: :notice }),
@@ -80,6 +79,11 @@ class ClientResourcesController < NotesController
   end
 
   private
+
+  def set_note
+    @note = @notable.shared_resources.find_by_id(params[:id])
+    @client_resource = @note
+  end
 
   def set_category
     @category = "resource"

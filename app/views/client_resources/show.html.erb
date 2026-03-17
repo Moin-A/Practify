@@ -1,45 +1,46 @@
+<% back_label, back_path, page_title, edit_path, delete_path =
+  case @category
+  when "note"
+    [
+      "Private Client Notes",
+      user_private_client_notes_path(@notable),
+      "Private Client Note",
+      edit_user_private_client_note_path(@notable, @note),
+      user_private_client_note_path(@notable, @note)
+    ]
+  when "resource"
+    [
+      "Shared Resources",
+      user_shared_resources_path(@notable),
+      "Shared Resource",
+      edit_user_shared_resource_path(@notable, @note),
+      user_shared_resource_path(@notable, @note)
+    ]
+  else
+    [
+      "Therapist Observations",
+      user_therapist_observations_path(@notable),
+      "Therapist Observation",
+      edit_user_therapist_observation_path(@notable, @note),
+      user_therapist_observation_path(@notable, @note)
+    ]
+  end
+%>
+
 <div class="container mx-auto px-4 py-8">
   <div class="flex justify-between items-center mb-6">
     <div class="flex items-center gap-4">
-      <%= link_to "← Back to #{@category == "note" ? "Private Client Notes" : "Therapist Observations"}",
-      (
-        if @category == "note"
-          user_private_client_notes_path(@notable)
-        else
-          user_therapist_observations_path(@notable)
-        end
-      ),
-      class: "text-sm text-gray-600 hover:text-gray-900 transition-colors" %>
+      <%= link_to "← Back to #{back_label}", back_path,
+          class: "text-sm text-gray-600 hover:text-gray-900 transition-colors" %>
     </div>
     <div class="flex items-center gap-2">
-      <%= link_to "Edit",
-      (
-        if @category == "note"
-          edit_user_private_client_note_path(@notable, @note)
-        else
-          edit_user_therapist_observation_path(@notable, @note)
-        end
-      ),
-      class:
-        "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",
-      data: {
-        turbo_frame: "modal",
-      } %>
-      <%= button_to "Delete",
-      (
-        if @category == "note"
-          user_private_client_note_path(@notable, @note)
-        else
-          user_therapist_observation_path(@notable, @note)
-        end
-      ),
-      method: :delete,
-      data: {
-        confirm: "Are you sure?",
-        turbo_frame: "modal",
-      },
-      class:
-        "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" %>
+      <%= link_to "Edit", edit_path,
+          class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",
+          data: { turbo_frame: "modal" } %>
+      <%= button_to "Delete", delete_path,
+          method: :delete,
+          data: { confirm: "Are you sure?", turbo_frame: "modal" },
+          class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" %>
     </div>
   </div>
 
@@ -48,9 +49,7 @@
       <header class="mb-6 pb-6 border-b border-slate-200">
         <div class="flex items-center justify-between">
           <div class="flex flex-col gap-2">
-            <h1 class="text-2xl font-bold text-gray-900">
-              <%= @category == "note" ? "Private Client Note" : "Therapist Observation" %>
-            </h1>
+            <h1 class="text-2xl font-bold text-gray-900"><%= page_title %></h1>
             <div class="flex items-center gap-4 text-sm text-gray-500">
               <time class="font-medium">
                 Created
@@ -69,9 +68,20 @@
       </header>
 
       <div class="prose prose-slate max-w-none">
-        <div class="text-base text-slate-700 leading-relaxed whitespace-pre-wrap">
-          <%= @note.body %>
-        </div>
+        <% if @category == "resource" %>
+          <% if @note.body.present? %>
+            <h2 class="text-lg font-semibold text-slate-800 mb-4"><%= @note.body %></h2>
+          <% end %>
+          <% if @note.respond_to?(:content) && @note.content.present? %>
+            <div class="text-base text-slate-700 leading-relaxed">
+              <%= @note.content %>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="text-base text-slate-700 leading-relaxed whitespace-pre-wrap">
+            <%= @note.body %>
+          </div>
+        <% end %>
       </div>
     </article>
   </div>
