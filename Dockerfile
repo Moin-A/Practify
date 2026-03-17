@@ -6,7 +6,7 @@
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=3.2.0
-FROM docker.io/library/ruby:3.2-bookworm AS base
+FROM docker.io/library/ruby:3.2-bullseye AS base
 
 # Rails app lives here
 WORKDIR /rails
