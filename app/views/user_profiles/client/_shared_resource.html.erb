@@ -23,7 +23,7 @@
        class="overflow-hidden transition-[max-height] duration-500 ease-in-out"
        style="max-height: 0">
 
-    <div class="max-h-screen transition-all duration-300 ease-in-out">
+    <div class="max-h-[70vh] overflow-y-auto pr-1 transition-all duration-300 ease-in-out">
       <% if can?(:create, ClientResource) %>
         <div id="new_resource_form" class="mb-8">
           <%= render 'client_resources/form', 

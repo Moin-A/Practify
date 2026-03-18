@@ -14,11 +14,12 @@ class ClientResourcesController < NotesController
   def edit
     @client_resource = @note
     render turbo_stream: turbo_stream.replace(
-      "modal",
+      "new_resource_form",
       partial: "client_resources/form",
       locals: {
         client_resource: @client_resource,
         notable: @notable,
+        frame_id: "new_resource_form",
         show_cancel: true
       }
     )
@@ -51,7 +52,8 @@ class ClientResourcesController < NotesController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Resource was successfully updated!", type: :notice }),
-            turbo_stream.replace(dom_id(@note), partial: "client_resources/client_resource", locals: { client_resource: @note })
+            turbo_stream.replace(dom_id(@note), partial: "client_resources/client_resource", locals: { client_resource: @note }),
+            turbo_stream.replace("new_resource_form", partial: "client_resources/form", locals: { client_resource: @notable.shared_resources.new, notable: @notable, category: @category, frame_id: "new_resource_form", show_cancel: false })
           ]
         end
         format.html { redirect_to user_shared_resources_path(@notable), notice: "Resource was successfully updated." }

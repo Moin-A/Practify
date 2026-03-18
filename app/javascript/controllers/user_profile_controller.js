@@ -55,7 +55,7 @@ export default class extends Controller {
 
     contents.forEach(content => {
       if (content === toOpen) {
-        content.style.maxHeight = content.scrollHeight + "px"
+        content.style.maxHeight = "9999px"
       } else {
         content.style.maxHeight = "0px"
       }

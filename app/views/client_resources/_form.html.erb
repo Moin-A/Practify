@@ -2,7 +2,7 @@
   <% client_resource = local_assigns[:client_resource] || @note || @client_resource %>
   <% notable = local_assigns[:notable] || @notable %>
 
-  <div class="mb-10 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+  <div class="mb-10 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm" data-controller="trix-image-resize">
     <%= form_with(
           model: [notable, client_resource],
           url: client_resource.new_record? ? user_shared_resources_path(notable) : user_shared_resource_path(notable, client_resource),
@@ -45,12 +45,12 @@
 
         <div
           class="
-            trix-wrapper rounded-2xl border border-slate-200 overflow-hidden shadow-inner
+            trix-wrapper rounded-2xl border border-slate-200 shadow-inner
             bg-slate-50 focus-within:ring-2 focus-within:ring-emerald-500
             focus-within:border-emerald-500
           "
         >
-          <%= form.rich_text_area :content, class: "min-h-[300px] trix-content" %>
+          <%= form.rich_text_area :content, class: "min-h-[150px] trix-content" %>
         </div>
 
         <p class="mt-2 text-[10px] text-slate-400 font-medium italic">
@@ -62,16 +62,10 @@
       <%# Actions %>
       <div class="flex justify-end mt-6 gap-3">
         <% if local_assigns.fetch(:show_cancel, false) %>
-          <button
-            type="button"
-            class="
-              px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300
-              rounded-xl hover:bg-gray-50
-            "
-            data-action="click->modal#close"
-          >
-            Cancel
-          </button>
+          <%= link_to "Cancel",
+                new_user_shared_resource_path(notable),
+                data: { turbo_frame: "new_resource_form" },
+                class: "px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50" %>
         <% end %>
         <%= form.submit "Save Resource",
                     class:

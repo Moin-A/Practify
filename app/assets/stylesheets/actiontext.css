@@ -221,6 +221,11 @@ trix-editor .attachment {
   trix-editor .attachment:hover {
     cursor: default; }
 
+trix-editor .attachment--preview img {
+  max-height: 200px;
+  width: auto;
+  object-fit: contain; }
+
 trix-editor .attachment--preview .attachment__caption:hover {
   cursor: text; }
 
