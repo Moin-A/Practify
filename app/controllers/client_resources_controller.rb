@@ -32,6 +32,7 @@ class ClientResourcesController < NotesController
 
     respond_to do |format|
       if @note.save
+        Practify.bus.publish(:notes_added, note: @note)
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.update("flash_messages", partial: "shared/alert", locals: { message: "Resource was successfully created!", type: :notice }),
