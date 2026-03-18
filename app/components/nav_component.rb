@@ -29,6 +29,8 @@ class NavComponent < ApplicationComponent
             public_send("edit_user_profile_path", user_profile)
         elsif path.to_sym === :user_profiles_path
             public_send("user_profiles_path")
+        elsif path.to_sym === :invoices_path
+            public_send("invoices_path")
         elsif path.to_sym === :calendar_schedule_path
             calendar = user_profile&.calendar
             return nil unless calendar

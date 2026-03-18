@@ -22,6 +22,8 @@ Rails.application.routes.draw do
     resource :schedule, only: [ :show ]
     post "release_all_slots", to: "slots#release_all_slots"
   end
+  resources :invoices, only: [ :index ]
+
   resources :appointments do
     resources :call_rooms, only: [ :new, :create, :show ]
     member do
