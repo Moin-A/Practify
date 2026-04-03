@@ -6,11 +6,11 @@ module HomePage
     def initialize(current_user: nil)
       @current_user = current_user
       @calendar = current_user.calendar
-      @appointment = current_user.appointments
+      @appointment = Appointment
             .joins(:slot)
-            .includes(publisher: :user_profile)
+            .includes(user: :user_profile)
             .pending_or_in_progress_or_completed_or_booked
-            .where("slots.start_at >= ?", Time.now.beginning_of_day)
+            .where("slots.start_at >= ? AND publisher_id = ?", Time.now.beginning_of_day, current_user.id)
             .order("slots.start_at ASC")
             .first
       @upcoming_appointment = current_user.appointments

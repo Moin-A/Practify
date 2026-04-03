@@ -12,23 +12,25 @@
     "
   >
     <div class="space-y-4">
-      <div class="flex items-center gap-2 opacity-90 text-sm">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        Start Session:
+      <div class="inline-flex items-center gap-2 bg-emerald-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Next appointment at <%= @appointment&.slot&.start_at&.strftime("%I:%M %p") %>
       </div>
       <div>
-        <h2 class="text-3xl font-bold">Sarah J</h2>
-        <p class="opacity-90">10:00 AM</p>
+        <h2 class="text-3xl font-bold"><%= @appointment&.user&.user_profile&.full_name %></h2>
       </div>
-      <button
-        class="
-          bg-white text-emerald-600 px-6 py-2.5 rounded-full font-bold flex items-center
-          gap-2 hover:bg-emerald-50 transition-colors
-        "
-      >P
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M4.5 3.5v13L16 10 4.5 3.5z"/></svg>
-        Start Session
-      </button>
+      <% if @appointment %>
+        <%= link_to new_appointment_call_room_path(@appointment),
+              class: "bg-white text-emerald-600 px-6 py-2.5 rounded-full font-bold flex items-center gap-2 hover:bg-emerald-50 transition-colors" do %>
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M4.5 3.5v13L16 10 4.5 3.5z"/></svg>
+          Start Session
+        <% end %>
+      <% else %>
+        <button disabled class="bg-white text-emerald-300 px-6 py-2.5 rounded-full font-bold flex items-center gap-2 cursor-not-allowed">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M4.5 3.5v13L16 10 4.5 3.5z"/></svg>
+          Start Session
+        </button>
+      <% end %>
     </div>
     <div
       class="
@@ -36,7 +38,7 @@
         justify-center text-3xl font-bold border-4 border-emerald-300
       "
     >
-      S
+      <%= @appointment&.user&.user_profile&.first_name&.first&.upcase %>
     </div>
   </div>
 
