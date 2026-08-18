@@ -2,7 +2,11 @@
 	email admin@practify.co.in
 }
 
-practify.co.in, www.practify.co.in {
+# Hostnames come from SITE_ADDRESSES in .env.production. Caddy requests a
+# certificate for every name listed here at startup, so list only names whose
+# DNS already points at this box - a name that resolves elsewhere burns a
+# failed ACME attempt against Let's Encrypt's rate limit.
+{$SITE_ADDRESSES:practify.co.in, www.practify.co.in} {
 	encode zstd gzip
 	reverse_proxy web:3000
 }
