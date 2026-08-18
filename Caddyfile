@@ -1,0 +1,8 @@
+{
+	email admin@practify.co.in
+}
+
+practify.co.in, www.practify.co.in {
+	encode zstd gzip
+	reverse_proxy web:3000
+}

@@ -93,8 +93,10 @@ Rails.application.configure do
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true
 
-  # Allow your specific Tailscale domain
-  config.hosts << "rpi02.taila27a53.ts.net"
+  # Host header allowlist, comma-separated via APP_HOSTS.
+  ENV.fetch("APP_HOSTS", "practify.co.in,www.practify.co.in").split(",").each do |host|
+    config.hosts << host.strip
+  end
 
   # Now that we have a real cert, keep this TRUE
   config.force_ssl = true

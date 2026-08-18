@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Redeploy Practify on the EC2 host. Run from the repo root on the server.
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+COMPOSE="docker compose -f docker-compose.production.yml"
+
+echo "--- Pulling latest code ---"
+git pull --ff-only
+
+echo "--- Building image (this is slow on a t3.small) ---"
+$COMPOSE build
+
+echo "--- Starting services ---"
+$COMPOSE up -d
+
+echo "--- Preparing database ---"
+$COMPOSE exec -T web ./bin/rails db:prepare
+
+echo "--- Status ---"
+$COMPOSE ps

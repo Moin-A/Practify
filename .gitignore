@@ -3,6 +3,8 @@ log/
 .DS_Store
 node_modules/
 .env
+.env.production
+!.env.production.example
 config/master.key
 storage/
 public/assets

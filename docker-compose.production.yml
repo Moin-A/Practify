@@ -1,0 +1,96 @@
+name: practify
+
+x-app: &app
+  build:
+    context: .
+  image: practify:latest
+  restart: unless-stopped
+  env_file: .env.production
+  volumes:
+    - app_storage:/rails/storage
+  depends_on:
+    db:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+
+  web:
+    <<: *app
+    command: ["./bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+    expose:
+      - "3000"
+    healthcheck:
+      # force_ssl is on, so an unadorned http request would 301. The
+      # forwarded-proto header is what Caddy sends in real traffic.
+      test: ["CMD-SHELL", "curl -fsS -H 'X-Forwarded-Proto: https' http://127.0.0.1:3000/up > /dev/null"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  worker:
+    <<: *app
+    command: ["./bin/jobs", "start"]
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      POSTGRES_DB: practify_production
+      POSTGRES_USER: practify
+    command:
+      - postgres
+      - -c
+      - shared_buffers=128MB
+      - -c
+      - max_connections=50
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U practify -d practify_production"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    mem_limit: 400m
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # Action Cable only - nothing here needs to survive a restart.
+    command:
+      - redis-server
+      - --save
+      - ""
+      - --appendonly
+      - "no"
+      - --maxmemory
+      - 96mb
+      - --maxmemory-policy
+      - allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 128m
+
+volumes:
+  app_storage:
+  pg_data:
+  caddy_data:
+  caddy_config:
