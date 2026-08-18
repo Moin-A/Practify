@@ -17,6 +17,10 @@ class Slot < ApplicationRecord
 
   validate :end_at_after_start_at
 
+  def available?
+    status == "available" && appointment.nil?
+  end
+
   private
 
   def end_at_after_start_at
