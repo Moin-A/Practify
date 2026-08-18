@@ -34,9 +34,10 @@ services:
     expose:
       - "3000"
     healthcheck:
-      # force_ssl is on, so an unadorned http request would 301. The
-      # forwarded-proto header is what Caddy sends in real traffic.
-      test: ["CMD-SHELL", "curl -fsS -H 'X-Forwarded-Proto: https' http://127.0.0.1:3000/up > /dev/null"]
+      # Must mimic what Caddy sends: an allowed Host (APP_HOSTS gates every
+      # request, so 127.0.0.1 is rejected) and the forwarded-proto header,
+      # without which force_ssl answers 301.
+      test: ["CMD-SHELL", "curl -fsS -H 'Host: practify.co.in' -H 'X-Forwarded-Proto: https' http://127.0.0.1:3000/up > /dev/null"]
       interval: 30s
       timeout: 10s
       retries: 5
