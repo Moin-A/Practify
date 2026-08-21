@@ -106,3 +106,5 @@ gem "aws-sdk-ses"
 gem "razorpay", "~> 3.2"
 
 gem "activemerchant", "~> 1.12"
+
+gem "agent_cat", path: "engines/agent_cat"
