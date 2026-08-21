@@ -1,3 +1,9 @@
+PATH
+  remote: engines/agent_cat
+  specs:
+    agent_cat (0.1.0)
+      rails (>= 8.0.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -572,6 +578,7 @@ PLATFORMS
 
 DEPENDENCIES
   activemerchant (~> 1.12)
+  agent_cat!
   aws-sdk-ses
   bcrypt (~> 3.1.7)
   bootsnap
