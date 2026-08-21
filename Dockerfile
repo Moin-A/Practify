@@ -39,6 +39,8 @@ RUN gem install bundler -v 2.3.7
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
+# Path-based gems must be present before bundle install resolves them.
+COPY engines/ engines/
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
