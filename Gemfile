@@ -87,7 +87,7 @@ group :test do
   gem "factory_bot_rails"
 end
 
-gem "omnes", "~> 0.2.2"
+gem "omnes", "~> 0.2.3"
 gem "noticed", "~> 2.0"
 
 gem "vonage"
